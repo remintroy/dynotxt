@@ -1,0 +1,14 @@
+{
+  "name": "dynotxt-client",
+  "version": "1.0.0",
+  "description": "Client application for dynotxt",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dynotxt"
+  ],
+  "author": "Remin T Roy",
+  "license": "ISC"
+}
