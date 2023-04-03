@@ -3,23 +3,25 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import app from "./app.js";
-import { appConfig } from "./configs/";
-import { authInit } from "./app/middlewares";
+import app from "./app";
+import { serverConfig } from "./configs/";
+import admin from "./admin";
+import services from "./services";
 
 dotenv.config();
+services.config();
 
-const config = appConfig();
+const config = serverConfig();
 const server = express();
 
 server.use(logger("dev"));
-server.use(cors());
+server.use(cors(config.cors));
 server.use(express.json());
 server.use(cookieParser());
-server.use(authInit);
 
 // connecting app router to baseUrl
-server.use(config.baseUrl, app);
+server.use(config.appBaseUrl, app);
+server.use(config.adminBaseUrl, admin);
 
 // test reponse
 server.use((req, res) => res.send({ name: config.name }));

@@ -1,8 +1,8 @@
 import validator from "validator";
 import dotenv from "dotenv";
-import { createError } from "../util.js";
-import * as db from "../services/mongoDb.js";
-import { verifyIdToken } from "../services/firebase.js";
+import { createError } from "../utils";
+import { usersModel, refreshTokensModel } from "./services/mongoDb";
+import { verifyIdToken } from "./services/firebase.js";
 import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt/index.js";
 
 dotenv.config();
@@ -11,7 +11,7 @@ dotenv.config();
 export const getNewAccessTokenFromRefreshToken = async (refreshToken: string) => {
   try {
     try {
-      const tokenSavedInDB = await db.refreshTokens.findOne({ value: refreshToken });
+      const tokenSavedInDB = await refreshTokensModel.findOne({ value: refreshToken });
       if (!tokenSavedInDB) throw "Invalid refresh token";
     } catch (error) {
       throw typeof error == "string" ? createError(400, error) : "Faild to create token";
@@ -22,7 +22,7 @@ export const getNewAccessTokenFromRefreshToken = async (refreshToken: string) =>
     try {
       const accessToken = newAccessToken(payload);
       try {
-        await db.users.updateOne(
+        await usersModel.updateOne(
           { uid: payload?.uid },
           {
             $set: {
@@ -48,7 +48,7 @@ export const userAccessChecks = async (uid: string) => {
   let userData: any;
   try {
     try {
-      userData = await db.users.findOne({ uid: uid });
+      userData = await usersModel.findOne({ uid: uid });
     } catch (error) {
       throw createError(500, "Oops something went wrong, Try after some time");
     }
@@ -61,9 +61,9 @@ export const userAccessChecks = async (uid: string) => {
 };
 
 // login user if exist or create new user
-export const signInUser = async ({ idToken }: { idToken: string }) => {
+export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) => {
   try {
-    if (!validator.default.isJWT(idToken + "")) throw createError(400, "Invalid idToken");
+    if (!validator.isJWT(idToken + "")) throw createError(400, "Invalid idToken");
 
     // verfy idToken and retrive userData from firebase
     const user = await verifyIdToken({ idToken });
@@ -71,7 +71,7 @@ export const signInUser = async ({ idToken }: { idToken: string }) => {
     // check for existing data
     let existingData: object;
     try {
-      existingData = await db.users.findOne({ uid: user.uid });
+      existingData = await usersModel.findOne({ uid: user.uid });
     } catch (error) {
       throw createError(500, "Faild to fetch user data");
     }
@@ -89,7 +89,7 @@ export const signInUser = async ({ idToken }: { idToken: string }) => {
         phone: user.phoneNumber,
         disabled: user.disabled,
       };
-      const newUser = new db.users(newUserData);
+      const newUser = new usersModel(newUserData);
       try {
         await newUser.save();
       } catch (error) {
@@ -107,9 +107,9 @@ export const signInUser = async ({ idToken }: { idToken: string }) => {
     }
     // saves refresh token to db
     try {
-      await new db.refreshTokens({ value: tokensForUser.refreshToken, uid: user.uid }).save();
+      await new refreshTokensModel({ value: tokensForUser.refreshToken, uid: user.uid }).save();
       try {
-        await db.users.updateOne({ uid: user.uid }, { $set: { lastLogin: new Date() } });
+        await usersModel.updateOne({ uid: user.uid }, { $set: { lastLogin: new Date() } });
       } catch (error) {
         // error while updating login time
       }
@@ -119,13 +119,14 @@ export const signInUser = async ({ idToken }: { idToken: string }) => {
     // user data and tokes successfully created
     return { ...tokensForUser, email: user.email, photoURL: user.photoURL, name: user.displayName };
   } catch (error) {
+    console.log(error)
     throw error;
   }
 };
 
-export const getUserData = async ({ refreshToken }) => {
+export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
   try {
-    if (!validator.default.isJWT(refreshToken)) throw createError(400, "Invalid token");
+    if (!validator.isJWT(refreshToken)) throw createError(400, "Invalid token");
     const tokenPayload: any = await getRefreshTokenData(refreshToken);
     // check user access or status
     let userData: any = await userAccessChecks(tokenPayload?.uid);
@@ -147,7 +148,7 @@ export const getUserData = async ({ refreshToken }) => {
   }
 };
 
-export const updateUserData = async (uid: string, data: { name: string; photoURL: string; phone: string }) => {
+export const updateUserDataWithUid = async (uid: string, data: { name: string; photoURL: string; phone: string }) => {
   try {
     await userAccessChecks(uid);
 
@@ -160,11 +161,11 @@ export const updateUserData = async (uid: string, data: { name: string; photoURL
     if (data?.photoURL) {
       if (typeof data.photoURL != "string") throw createError(400, "Invalid ImgURL");
       data.photoURL = data.photoURL?.trim();
-      if (!validator.default.isURL(data.photoURL)) throw createError(400, "Invalid URL");
+      if (!validator.isURL(data.photoURL)) throw createError(400, "Invalid URL");
     }
 
     if (data?.phone) {
-      if (!validator.default.isMobilePhone(data?.phone)) throw createError(400, "Invalid phone number");
+      if (!validator.isMobilePhone(data?.phone)) throw createError(400, "Invalid phone number");
       data.phone = data?.phone?.trim();
     }
 
@@ -179,7 +180,7 @@ export const updateUserData = async (uid: string, data: { name: string; photoURL
     if (data.phone) dataToBeUpdated.phone = data.phone;
 
     try {
-      await db.users.updateOne(
+      await usersModel.updateOne(
         { uid },
         {
           $set: dataToBeUpdated,
