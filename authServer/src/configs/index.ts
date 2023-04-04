@@ -40,7 +40,7 @@ export const adminAppConfig = () => {
     accessTokenExires: "20m",
     minPasswordLength: 6,
     minPhoneLength: 10,
-    minNameLength: 1,
+    minNameLength: 2,
     refreshTokenSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
     accessTokenSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
     mongoDbUrl: process.env.MONGODB_URL_ADMIN,

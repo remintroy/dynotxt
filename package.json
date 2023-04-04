@@ -2,14 +2,13 @@
   "name": "dynotxt",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "authserver": "cd authServer && npm start",
-    "authserverBuild":"cd authServer && npm run build",
+    "authserverBuild": "cd authServer && npm run build",
     "userapp": "cd client && npm start",
     "backend": "concurrently \"npm run authserver\" ",
     "client": "concurrently \"npm run userapp\"",
-    "build":"concurrently \"npm run authserverBuild\""
+    "build": "concurrently \"npm run authserverBuild\""
   },
   "author": "",
   "license": "ISC",

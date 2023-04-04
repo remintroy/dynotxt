@@ -8,7 +8,7 @@ const config = adminAppConfig();
 export const inputValidator = async (data: IInputValidator, required?: IInputValidatorRequired) => {
   try {
     // data provided
-    const email = data.email?.toLowerCase() ?? "";
+    const email = data.email ?? "";
     const password = data.password ?? "";
     const phone = data.phone ?? "";
     const name = data.name ?? "";
@@ -23,17 +23,17 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
     };
 
     // validates email
-    if (email || required.email) {
-      if (email.length == 0) throw createError(400, "Email required");
+    if (email || required?.email) {
+      if (!email && required?.email) throw createError(400, "Email is Required");
       if (!validator.isEmail(email)) throw createError(400, `Invalid email`);
       // Email is good
-      output.email = email;
+      output.email = email?.toLowerCase();
     }
 
     // password validation
-    if (password || required.password) {
+    if (password || required?.password) {
+      if (!password && required?.password) throw createError(400, "Password is Required");
       if (typeof password != "string") throw createError(400, `Password must be a string`);
-      if (password.length == 0) throw createError(400, `Password required`);
       if (password.length < config.minPasswordLength)
         throw createError(400, `Password must be at least ${config.minPasswordLength} characters`);
       // Password is good
@@ -41,16 +41,18 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
     }
 
     // phone number validation
-    if (phone || required.phone) {
+    if (phone || required?.phone) {
+      if (!phone && required?.phone) throw createError(400, "Phone is Required");
       if (typeof phone !== "string") throw createError(400, `Invalid phone`);
       if (phone.length < config.minPhoneLength) throw createError(400, `Phone number is Invalid`);
-      if (validator.isMobilePhone(phone)) throw createError(400, `Phone number is Invalid`);
+      if (!validator.isMobilePhone(phone)) throw createError(400, `Phone number is Invalid`);
       // Phone is good
       output.phone = phone;
     }
 
     // name validation
-    if (name || required.name) {
+    if (name || required?.name) {
+      if (!name && required?.name) throw createError(400, "Name is Required");
       if (typeof name !== "string") throw createError(400, `Invalid name`);
       if (name.length < config.minNameLength) throw createError(400, `Invalid name`);
       // Name is good
@@ -58,8 +60,9 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
     }
 
     // photoURL validation
-    if (photoURL || required.photoURL) {
-      if (typeof photoURL !== "string") throw createError(400, "invalid photoURL");
+    if (photoURL || required?.photoURL) {
+      if (!photoURL && required?.photoURL) throw createError(400, "PhotoURL is Required");
+      if (typeof photoURL !== "string") throw createError(400, "Invalid photoURL");
       if (!validator.isURL(photoURL)) throw createError(400, "Invalid photoURL");
       // Photo URL good
       output.photoURL = photoURL;

@@ -73,6 +73,8 @@ export const createError = (code: number, error: string) => {
   // default error code
   const defaultErrCode = 500;
 
+  code = Number(code);
+
   return {
     message: statusMessages[code ? code : defaultErrCode],
     error: error ? error : "Oops thats an error",
