@@ -14,12 +14,16 @@ export const serverConfig = () => {
     },
     appBaseUrl: "/auth",
     adminBaseUrl: "/auth/su",
+    colors: {
+      serverIdColor: "yellow",
+      mainLogColor: "white",
+    },
   };
 };
 
 export const appConfig = () => {
   return {
-    name: "Auth-UserApp",
+    name: "Auth-UserApp", 
     refreshTokenExpires: "365d",
     accessTokenExires: "20m",
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
@@ -33,8 +37,11 @@ export const adminAppConfig = () => {
     name: "Auth-AdminApp",
     refreshTokenExpires: "1d",
     accessTokenExires: "20m",
+    minPasswordLength: 6,
+    minPhoneLength: 10,
+    minNameLength: 1,
     refreshTokenSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
     accessTokenSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
-    mongoDbUrl: process.env.MONGODB_URL,
+    mongoDbUrl: process.env.MONGODB_URL_ADMIN,
   };
 };

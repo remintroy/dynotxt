@@ -3,14 +3,22 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { appConfig, serverConfig } from "../../../configs";
 import { IRefreshToken, IUser, refreshTokenSchema, userSchema } from "./schema";
+import colors from "colors/safe";
 
 dotenv.config();
 const config = appConfig();
 const server = serverConfig();
 
 const dbLatencyLoggerTime = Date.now();
-const dbLatencyLogger = () =>
-  console.log(`[${server.serverId}] ${config.name} database in ${Date.now() - dbLatencyLoggerTime}ms`);
+const dbLatencyLogger = () => {
+  const { colors: color, serverId } = server;
+  const { name } = config;
+  //
+  const serverID = colors[color.serverIdColor](`[${server.serverId}]`);
+  const mainLog = colors[color.mainLogColor](`${name} database in ${Date.now() - dbLatencyLoggerTime}ms`);
+  //
+  console.log(`${serverID} ${mainLog}`);
+};
 
 const db = mongoose.createConnection(config.mongoDbUrl);
 

@@ -1,6 +1,6 @@
 import express from "express";
 import { getNewAccessToken, getUserData, signInUser, updateUserData } from "./controller";
-import { authInit, mustLoginAsUser } from "./middlewares";
+import { authInit, mustLoginAsUser } from "./middlewares"; 
 
 const app = express.Router();
 

@@ -31,8 +31,8 @@ export const newRefreshToken = (payload: object) => {
 };
 
 // creates new access token
-export const newAccessToken = (payload: { uid: string }) => {
-  return jwt.sign({ uid: payload.uid }, config.accessTokenSecret, {
+export const newAccessToken = (payload: { email?: string }) => {
+  return jwt.sign({ email: payload.email }, config.accessTokenSecret, {
     expiresIn: config.accessTokenExires,
   });
 };

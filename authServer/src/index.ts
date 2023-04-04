@@ -7,6 +7,7 @@ import app from "./app";
 import { serverConfig } from "./configs/";
 import admin from "./admin";
 import services from "./services";
+import colors from "colors/safe";
 
 dotenv.config();
 services.config();
@@ -28,5 +29,10 @@ server.use((req, res) => res.send({ name: config.name }));
 
 // starts server
 server.listen(config.port, () => {
-  console.log(`[${config.serverId}] ${config.name} listening on ${config.port}`);
+  const { colors: color, port, name, serverId } = config;
+  //
+  const serverID = colors[color.serverIdColor](`[${serverId}]`);
+  const mainLog = colors[color.mainLogColor](`${name} listening on ${port}`);
+  //
+  console.log(`${serverID} ${mainLog}`);
 });
