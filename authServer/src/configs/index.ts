@@ -15,6 +15,7 @@ export const serverConfig = () => {
     appBaseUrl: "/auth",
     adminBaseUrl: "/auth/su",
     colors: {
+      // these colors are for log
       serverIdColor: "yellow",
       mainLogColor: "white",
     },
@@ -23,7 +24,7 @@ export const serverConfig = () => {
 
 export const appConfig = () => {
   return {
-    name: "Auth-UserApp", 
+    name: "Auth-UserApp",
     refreshTokenExpires: "365d",
     accessTokenExires: "20m",
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
