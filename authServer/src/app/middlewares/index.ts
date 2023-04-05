@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { RequestDefention } from "../defenition";
-import { getAccessTokenData } from "../jwt";
-import { usersModel } from "../services/mongoDb";
+import { getAccessTokenData } from "../jwt"; 
+import { usersModel } from "../../services/mongoDb";
 
 // function that runs on every request
 export const authInit = async (req: RequestDefention, res: Response, next: NextFunction) => {

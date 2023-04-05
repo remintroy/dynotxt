@@ -2,11 +2,11 @@ import validator from "validator";
 import dotenv from "dotenv";
 import bCrypt from "bcryptjs";
 import { createError } from "../utils";
-import { usersModel, refreshTokensModel } from "./services/mongoDb";
 import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
 import { adminAppConfig } from "../configs";
 import { inputValidator } from "./validator";
-import { IUser } from "./services/mongoDb/schema";
+import { adminRefreshTokensModel, adminUsersModel } from "../services/mongoDb";
+import { IAdminUser } from "../services/mongoDb/interaface";
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const config = adminAppConfig();
 export const getNewAccessTokenFromRefreshToken = async (refreshToken: string) => {
   try {
     try {
-      const tokenSavedInDB = await refreshTokensModel.findOne({ value: refreshToken });
+      const tokenSavedInDB = await adminRefreshTokensModel.findOne({ value: refreshToken });
       if (!tokenSavedInDB) throw "Invalid refresh token";
     } catch (error) {
       throw typeof error == "string" ? createError(400, error) : "Faild to create token";
@@ -27,7 +27,7 @@ export const getNewAccessTokenFromRefreshToken = async (refreshToken: string) =>
     try {
       const accessToken = newAccessToken(payload);
       try {
-        await usersModel.updateOne(
+        await adminUsersModel.updateOne(
           { email: payload?.email },
           {
             $set: {
@@ -53,7 +53,7 @@ export const userAccessChecks = async (email: string) => {
   let userData: any;
   try {
     try {
-      userData = await usersModel.findOne({ email: email });
+      userData = await adminUsersModel.findOne({ email: email });
     } catch (error) {
       throw createError(500, "Oops something went wrong, Try after some time");
     }
@@ -67,9 +67,9 @@ export const userAccessChecks = async (email: string) => {
 
 export const checkPassword = async ({ email, password }: { email: string; password: string }) => {
   try {
-    let userData: IUser;
+    let userData: IAdminUser;
     try {
-      userData = await usersModel.findOne({ email: email });
+      userData = await adminUsersModel.findOne({ email: email });
     } catch (error) {
       throw createError(500, "Faild to fetch user data");
     }
@@ -100,7 +100,7 @@ export const signInUserWithPassword = async ({ email = "", password = "" }) => {
     };
 
     try {
-      await usersModel.updateOne({ email: user.email }, { $set: { lastLogin: new Date(), lastRefresh: new Date() } });
+      await adminUsersModel.updateOne({ email: user.email }, { $set: { lastLogin: new Date(), lastRefresh: new Date() } });
     } catch (error) {
       throw createError(500, "Faild to login, Error updating login status");
     }
@@ -123,7 +123,7 @@ export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
     if (!validator.isJWT(refreshToken)) throw createError(400, "Invalid token");
     const tokenPayload: any = await getRefreshTokenData(refreshToken);
     // check user access or status
-    let userData: IUser = await userAccessChecks(tokenPayload?.email);
+    let userData: IAdminUser = await userAccessChecks(tokenPayload?.email);
     // get new access token
     const accessToken = newAccessToken({ email: tokenPayload?.email });
     //...
@@ -172,7 +172,7 @@ export const updateUserDataWithEmail = async (email: string, data: { name: strin
     if (data.phone) dataToBeUpdated.phone = data.phone;
 
     try {
-      await usersModel.updateOne(
+      await adminUsersModel.updateOne(
         { email },
         {
           $set: dataToBeUpdated,

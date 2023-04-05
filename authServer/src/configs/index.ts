@@ -19,6 +19,7 @@ export const serverConfig = () => {
       serverIdColor: "yellow",
       mainLogColor: "white",
     },
+    mongoDbUrl: process.env.MONGODB_URL, // both app use same db
   };
 };
 
@@ -29,7 +30,6 @@ export const appConfig = () => {
     accessTokenExires: "20m",
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
     accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
-    mongoDbUrl: process.env.MONGODB_URL,
   };
 };
 
@@ -43,6 +43,5 @@ export const adminAppConfig = () => {
     minNameLength: 2,
     refreshTokenSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
     accessTokenSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
-    mongoDbUrl: process.env.MONGODB_URL_ADMIN,
   };
 };

@@ -1,9 +1,9 @@
 import validator from "validator";
 import dotenv from "dotenv";
 import { createError } from "../utils";
-import { usersModel, refreshTokensModel } from "./services/mongoDb";
-import { verifyIdToken } from "./services/firebase.js";
 import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
+import { refreshTokensModel, usersModel } from "../services/mongoDb";
+import { verifyIdToken } from "../services/firebase";
 
 dotenv.config();
 
