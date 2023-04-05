@@ -1,12 +1,12 @@
 import { Response } from "express";
 import { RequestDefention } from "../../defenition";
-import { disableUserWithUid, enableUserWithUid, getUserDataInPages } from "../auth";
+import { disableUserWithUid, enableUserWithUid, getUsersDataInPages } from "../auth";
 
-export const getUsersData = async (req: RequestDefention, res: Response) => {
+export const getAllUsersData = async (req: RequestDefention, res: Response) => {
   try {
-    const page = Number(req.query?.page) ?? 1;
-    const uid = req.params?.uid;
-    const data = await getUserDataInPages(uid, page);
+    const page = Number(req.query?.page) || 1;
+    const data = await getUsersDataInPages(page);
+    res.send(data);
   } catch (error) {
     res.status(error?.code ? error.code : 500).send(error);
   }

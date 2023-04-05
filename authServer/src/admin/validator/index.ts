@@ -34,8 +34,8 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
     if (password || required?.password) {
       if (!password && required?.password) throw createError(400, "Password is Required");
       if (typeof password != "string") throw createError(400, `Password must be a string`);
-      if (password.length < config.minPasswordLength)
-        throw createError(400, `Password must be at least ${config.minPasswordLength} characters`);
+      if (password.length < config.auth.minPasswordLength)
+        throw createError(400, `Password must be at least ${config.auth.minPasswordLength} characters`);
       // Password is good
       output.password = password.trim();
     }
@@ -44,7 +44,7 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
     if (phone || required?.phone) {
       if (!phone && required?.phone) throw createError(400, "Phone is Required");
       if (typeof phone !== "string") throw createError(400, `Invalid phone`);
-      if (phone.trim().length < config.minPhoneLength) throw createError(400, `Phone number is Invalid`);
+      if (phone.trim().length < config.auth.minPhoneLength) throw createError(400, `Phone number is Invalid`);
       if (!validator.isMobilePhone(phone)) throw createError(400, `Phone number is Invalid`);
       // Phone is good
       output.phone = phone.trim();
@@ -54,7 +54,7 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
     if (name || required?.name) {
       if (!name && required?.name) throw createError(400, "Name is Required");
       if (typeof name !== "string") throw createError(400, `Invalid name`);
-      if (name.trim().length < config.minNameLength) throw createError(400, `Invalid name`);
+      if (name.trim().length < config.auth.minNameLength) throw createError(400, `Invalid name`);
       // Name is good
       output.name = name.trim();
     }

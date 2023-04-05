@@ -1,5 +1,8 @@
+import { adminAppConfig } from "../../../configs";
 import { usersModel } from "../../../services/mongoDb";
 import { createError } from "../../../utils";
+
+const config = adminAppConfig();
 
 export const disableUserWithUid = async (uid: string) => {
   try {
@@ -35,9 +38,11 @@ export const enableUserWithUid = async (uid: string) => {
   }
 };
 
-export const getUserDataInPages = async (uid: string, page: number) => {
+export const getUsersDataInPages = async (page: number) => {
   try {
+    return usersModel.paginate({}, { limit: config.db.paginate.limit, page: page || 1, projection: config.db.userProjection });
   } catch (error) {
-    throw error;
+    console.log(error);
+    throw createError(500, "Faild to get user data");
   }
 };

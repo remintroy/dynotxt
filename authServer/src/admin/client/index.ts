@@ -1,9 +1,9 @@
 import express from "express";
-import { disableUser, enableUser, getUsersData } from "./controller";
+import { disableUser, enableUser, getAllUsersData  } from "./controller";
 
 const client = express.Router();
 
-client.get("/get/:uid", getUsersData);
+client.get("/get/", getAllUsersData);
 client.put("/disable/:uid", disableUser);
 client.put("/enable/:uid", enableUser);
 

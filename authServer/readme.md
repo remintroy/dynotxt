@@ -11,7 +11,7 @@ Dynotxt uses micro service arkitecture, this server is responsible for managing 
 
 ### Env File
 
-```BASH
+```ini
     MONGODB_URL = <MongoDB connection string> 
     GOOGLE_APPLICATION_CREDENTIALS =  path/to/firebase/admin/credentials.json
     ACCESS_TOKEN_SECRET  =  <UserAccessToken secret>

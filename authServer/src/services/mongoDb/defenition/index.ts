@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export interface IAdminUser {
   name: string;
   email: string;
@@ -21,7 +23,7 @@ export interface IAdminRefreshToken {
   createdAt: Date;
 }
 
-export interface IUser {
+export interface IUser extends Document {
   name: string;
   email: string;
   uid: string;

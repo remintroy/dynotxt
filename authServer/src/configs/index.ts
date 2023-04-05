@@ -15,33 +15,54 @@ export const serverConfig = () => {
     appBaseUrl: "/auth",
     adminBaseUrl: "/auth/su",
     colors: {
-      // these colors are for log
       serverIdColor: "yellow",
       mainLogColor: "white",
     },
-    mongoDbUrl: process.env.MONGODB_URL, // both app use same db
+    db: {
+      url: process.env.MONGODB_URL, // both app use same db
+    },
   };
 };
 
 export const appConfig = () => {
   return {
     name: "Auth-UserApp",
-    refreshTokenExpires: "365d",
-    accessTokenExires: "20m",
-    refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
-    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+    jwt: {
+      refreshTokenExpires: "365d",
+      accessTokenExires: "20m",
+      refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
+      accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
+    },
   };
 };
 
 export const adminAppConfig = () => {
   return {
     name: "Auth-AdminApp",
-    refreshTokenExpires: "1d",
-    accessTokenExires: "20m",
-    minPasswordLength: 6,
-    minPhoneLength: 10,
-    minNameLength: 2,
-    refreshTokenSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
-    accessTokenSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
+    auth: {
+      minPasswordLength: 6,
+      minPhoneLength: 10,
+      minNameLength: 2,
+    },
+    jwt: {
+      refreshTokenExpires: "1d",
+      accessTokenExires: "20m",
+      refreshTokenSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
+      accessTokenSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
+    },
+    db: {
+      paginate: {
+        limit: 10,
+      },
+      userProjection: {
+        _id: 0,
+        uid: 1,
+        email: 1,
+        name: 1,
+        phone: 1,
+        disabled: 1,
+        photoURL: 1,
+      },
+    },
   };
 };

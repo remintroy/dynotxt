@@ -4,10 +4,11 @@ import logger from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import app from "./app";
-import { serverConfig } from "./configs/";
 import admin from "./admin";
 import services from "./services";
 import colors from "colors/safe";
+import { serverConfig } from "./configs";
+import { createError } from "./utils";
 
 dotenv.config();
 services.config();
@@ -24,8 +25,11 @@ server.use(cookieParser());
 server.use(config.appBaseUrl, app);
 server.use(config.adminBaseUrl, admin);
 
-// test reponse
-server.use((req, res) => res.send({ name: config.name }));
+// 404 reponse
+server.use((req, res) => {
+  const error = createError(404, `${config.name}, The service you are looking for is not available on this server`);
+  res.status(error.code).send(error);
+});
 
 // starts server
 server.listen(config.port, () => {

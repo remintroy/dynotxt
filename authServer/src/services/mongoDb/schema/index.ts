@@ -1,7 +1,6 @@
 import { Schema } from "mongoose";
-import { IAdminRefreshToken, IAdminUser, IRefreshToken, IUser } from "../defenition";
 
-export const adminUserSchema = new Schema<IAdminUser>({
+export const adminUserSchema = new Schema({
   name: "String",
   email: String,
   uid: String,
@@ -18,7 +17,7 @@ export const adminUserSchema = new Schema<IAdminUser>({
   emailVerified: { type: Boolean, default: false },
 });
 
-export const adminRefreshTokenSchema = new Schema<IAdminRefreshToken>({
+export const adminRefreshTokenSchema = new Schema({
   value: String,
   uid: String,
   createdAt: {
@@ -27,16 +26,16 @@ export const adminRefreshTokenSchema = new Schema<IAdminRefreshToken>({
   },
 });
 
-export const userSchema = new Schema<IUser>({
-  name: "String",
+export const userSchema = new Schema({
+  name: String,
   email: String,
   uid: String,
   provider: String,
   img: String,
   photoURL: String,
-  phone: { type: String, default: null },
   referal: String,
   referedBy: String,
+  phone: { type: String, default: null },
   disabled: { type: Boolean, default: false },
   admin: { type: Boolean, default: false },
   createdAt: { type: Date, default: new Date() },
@@ -46,7 +45,9 @@ export const userSchema = new Schema<IUser>({
   emailVerified: { type: Boolean, default: false },
 });
 
-export const refreshTokenSchema = new Schema<IRefreshToken>({
+
+
+export const refreshTokenSchema = new Schema({
   value: String,
   uid: String,
   createdAt: {
