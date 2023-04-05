@@ -9,7 +9,7 @@ export const userSignIn = async (req: RequestDefention, res: Response) => {
     let next3months = new Date(currentdate.setMonth(currentdate.getMonth() + 3));
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: true, expires: next3months });
     res.send({ accessToken, email, photoURL, name });
-  } catch (error) { 
+  } catch (error) {
     res.status(error?.code ? error.code : 500);
     res.send(error);
   }

@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { IAdminRefreshToken, IAdminUser, IRefreshToken, IUser } from "./interaface";
+import { IAdminRefreshToken, IAdminUser, IRefreshToken, IUser } from "../defenition";
 
 export const adminUserSchema = new Schema<IAdminUser>({
   name: "String",

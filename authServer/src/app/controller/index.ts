@@ -1,6 +1,11 @@
 import { Response } from "express";
 import { RequestDefention } from "../defenition";
-import { getNewAccessTokenFromRefreshToken, getUserDataFromRefreshToken, signInUserWithTokenId, updateUserDataWithUid } from "../auth.js";
+import {
+  getNewAccessTokenFromRefreshToken,
+  getUserDataFromRefreshToken,
+  signInUserWithTokenId,
+  updateUserDataWithUid,
+} from "../auth";
 import { createError } from "../../utils";
 
 // signUp && signIn

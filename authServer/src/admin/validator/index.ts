@@ -27,7 +27,7 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
       if (!email && required?.email) throw createError(400, "Email is Required");
       if (!validator.isEmail(email)) throw createError(400, `Invalid email`);
       // Email is good
-      output.email = email?.toLowerCase();
+      output.email = email?.toLowerCase().trim();
     }
 
     // password validation
@@ -37,35 +37,35 @@ export const inputValidator = async (data: IInputValidator, required?: IInputVal
       if (password.length < config.minPasswordLength)
         throw createError(400, `Password must be at least ${config.minPasswordLength} characters`);
       // Password is good
-      output.password = password;
+      output.password = password.trim();
     }
 
     // phone number validation
     if (phone || required?.phone) {
       if (!phone && required?.phone) throw createError(400, "Phone is Required");
       if (typeof phone !== "string") throw createError(400, `Invalid phone`);
-      if (phone.length < config.minPhoneLength) throw createError(400, `Phone number is Invalid`);
+      if (phone.trim().length < config.minPhoneLength) throw createError(400, `Phone number is Invalid`);
       if (!validator.isMobilePhone(phone)) throw createError(400, `Phone number is Invalid`);
       // Phone is good
-      output.phone = phone;
+      output.phone = phone.trim();
     }
 
     // name validation
     if (name || required?.name) {
       if (!name && required?.name) throw createError(400, "Name is Required");
       if (typeof name !== "string") throw createError(400, `Invalid name`);
-      if (name.length < config.minNameLength) throw createError(400, `Invalid name`);
+      if (name.trim().length < config.minNameLength) throw createError(400, `Invalid name`);
       // Name is good
-      output.name = name;
+      output.name = name.trim();
     }
 
     // photoURL validation
     if (photoURL || required?.photoURL) {
       if (!photoURL && required?.photoURL) throw createError(400, "PhotoURL is Required");
       if (typeof photoURL !== "string") throw createError(400, "Invalid photoURL");
-      if (!validator.isURL(photoURL)) throw createError(400, "Invalid photoURL");
+      if (!validator.isURL(photoURL.trim())) throw createError(400, "Invalid photoURL");
       // Photo URL good
-      output.photoURL = photoURL;
+      output.photoURL = photoURL.trim();
     }
 
     // returns outuput with valid data;

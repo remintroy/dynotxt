@@ -2,7 +2,7 @@ import { Request } from "express";
 
 // for express request's
 export interface RequestDefention extends Request {
-  user: {
+  admin?: {
     name: string;
     provider: string;
     uid: string;
@@ -23,5 +23,4 @@ export interface RequestDefention extends Request {
       difficulty: number;
     };
   };
-  admin: Object;
 }

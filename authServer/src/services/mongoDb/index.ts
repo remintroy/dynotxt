@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import colors from "colors/safe";
-import { IAdminRefreshToken, IAdminUser, IRefreshToken, IUser } from "./interaface";
+import { IAdminRefreshToken, IAdminUser, IRefreshToken, IUser } from "./defenition";
 import { adminRefreshTokenSchema, adminUserSchema, refreshTokenSchema, userSchema } from "./schema";
 import { adminAppConfig, appConfig, serverConfig } from "../../configs";
 
