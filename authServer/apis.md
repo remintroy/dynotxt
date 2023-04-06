@@ -12,5 +12,5 @@ Apis used for admin dashboard are listed below
 
 - `PUT /<authBaseURL>/user/disable/<uid>`
 - `PUT /<authBaseURL>/user/enable/<uid>`
-- `GET /<authBaseURL>/user/get/<uid>?page=<pageNumber>`
+- `GET /<authBaseURL>/user/get?page=<pageNumber>`
 

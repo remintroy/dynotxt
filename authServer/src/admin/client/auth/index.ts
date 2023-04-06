@@ -40,9 +40,13 @@ export const enableUserWithUid = async (uid: string) => {
 
 export const getUsersDataInPages = async (page: number) => {
   try {
-    return usersModel.paginate({}, { limit: config.db.paginate.limit, page: page || 1, projection: config.db.userProjection });
+    const options = {
+      limit: config.db.paginate.limit,
+      page: page || 1,
+      projection: config.db.userProjection,
+    };
+    return usersModel.paginate({}, options);
   } catch (error) {
-    console.log(error);
     throw createError(500, "Faild to get user data");
   }
 };
