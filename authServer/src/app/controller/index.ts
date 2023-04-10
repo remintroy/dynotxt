@@ -7,6 +7,7 @@ import {
   updateUserDataWithUid,
 } from "../auth";
 import { createError } from "../../utils";
+import { refreshTokensModel } from "../../services/mongoDb";
 
 // signUp && signIn
 export const signInUser = async (req: RequestDefention, res: Response) => {
@@ -58,5 +59,25 @@ export const updateUserData = async (req: RequestDefention, res: Response) => {
   } catch (error) {
     res.status(error?.code ? error.code : 401);
     res.send(error);
+  }
+};
+
+export const logoutUser = async (req: RequestDefention, res: Response) => {
+  try {
+    const refreshToken = req.cookies?.refreshToken;
+    const user = req.user;
+    if (!user) throw createError(400, "Login to logout!");
+
+    try {
+      const data = await refreshTokensModel.deleteOne({ uid: user?.uid, value: refreshToken });
+    } catch (error) {
+      throw createError(500, "Faild while logging out");
+    }
+
+    res.cookie("refreshToken", "");
+
+    res.send({ message: "logged out successfully" });
+  } catch (error) {
+    res.status(error.status || 500).send(error);
   }
 };

@@ -8,6 +8,7 @@ export interface IUserSlice {
     disabled: boolean;
     createdAt: Date;
     lastLogin: Date;
+    accessToken: string | null;
   } | null;
   loading: boolean;
   error: string | undefined | null;

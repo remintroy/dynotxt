@@ -126,6 +126,12 @@ export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) =>
 export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
   try {
     if (!validator.isJWT(refreshToken)) throw createError(400, "Invalid token");
+    try {
+      const tokenSavedInDB = await refreshTokensModel.findOne({ value: refreshToken });
+      if (!tokenSavedInDB) throw "Invalid refresh token";
+    } catch (error) {
+      throw typeof error == "string" ? createError(400, error) : "Faild to create token";
+    }
     const tokenPayload: any = await getRefreshTokenData(refreshToken);
     // check user access or status
     let userData: any = await userAccessChecks(tokenPayload?.uid);

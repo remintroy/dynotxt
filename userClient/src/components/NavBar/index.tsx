@@ -6,8 +6,10 @@ import HomeIcon from "@mui/icons-material/Home";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/Message";
-import { Avatar } from "@mui/material"; 
-import { fetchUserData } from "../../redux/userSlice";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { Avatar } from "@mui/material";
+import { fetchUserData, setUser } from "../../redux/userSlice";
+import { authBackend } from "../../configs/axios";
 
 const NavBar = () => {
   const [isScrolled, setIsScorlled] = useState(false);
@@ -20,6 +22,19 @@ const NavBar = () => {
   useEffect(() => {
     dispatch(fetchUserData());
   }, []);
+
+  const logoutUser = async () => {
+    try {
+      const { data } = await authBackend.get("/logout", {
+        headers: {
+          Authorization: `Bearer ${user?.accessToken}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    dispatch(setUser(null));
+  };
 
   return (
     <>
@@ -43,15 +58,20 @@ const NavBar = () => {
         </ul>
 
         <ul>
-          <li>
+          {/* <li>
             <SettingsIcon />
-          </li>
+          </li> */}
 
           <Link to={"/settings/account"}>
             <li className="no">
               <Avatar alt={user?.email} src={user?.photoURL} />
             </li>
           </Link>
+          {user && (
+            <li onClick={() => logoutUser()}>
+              <LogoutIcon />
+            </li>
+          )}
         </ul>
       </div>
 
