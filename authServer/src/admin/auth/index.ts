@@ -123,11 +123,12 @@ export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
     if (!validator.isJWT(refreshToken)) throw createError(400, "Invalid token");
     const tokenPayload: any = await getRefreshTokenData(refreshToken);
     // check user access or status
-    let userData: IAdminUser = await userAccessChecks(tokenPayload?.email);
+    let userData: any = await userAccessChecks(tokenPayload?.email);
     // get new access token
     const accessToken = newAccessToken({ email: tokenPayload?.email });
     //...
     return {
+      uid: userData.uid,
       email: userData?.email,
       name: userData?.name,
       photoURL: userData?.photoURL,
@@ -139,7 +140,6 @@ export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
     throw error;
   }
 };
-
 export const updateUserDataWithEmail = async (email: string, data: { name: string; photoURL: string; phone: string }) => {
   try {
     await userAccessChecks(email);

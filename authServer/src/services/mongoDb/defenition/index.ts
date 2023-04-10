@@ -33,6 +33,9 @@ export interface IUser extends Document {
   phone: string;
   referal: string;
   referedBy: string;
+  privateAccount: boolean;
+  dob: Date;
+  gender: string;
   disabled: boolean;
   admin: boolean;
   createdAt: Date;

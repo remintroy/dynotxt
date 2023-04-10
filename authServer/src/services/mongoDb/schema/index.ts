@@ -35,6 +35,12 @@ export const userSchema = new Schema({
   photoURL: String,
   referal: String,
   referedBy: String,
+  privateAccount: {
+    type: Boolean,
+    default: false,
+  },
+  dob: Date,
+  gender: String,
   phone: { type: String, default: null },
   disabled: { type: Boolean, default: false },
   admin: { type: Boolean, default: false },
@@ -44,8 +50,6 @@ export const userSchema = new Schema({
   phoneVerified: { type: Boolean, default: false },
   emailVerified: { type: Boolean, default: false },
 });
-
-
 
 export const refreshTokenSchema = new Schema({
   value: String,

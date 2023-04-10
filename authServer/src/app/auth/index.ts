@@ -140,6 +140,9 @@ export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
       phone: userData?.phone,
       referal: userData?.referal,
       lastLogin: userData?.lastLogin,
+      dob: userData?.dob,
+      gender: userData?.gender,
+      privateAccount: userData?.privateAccount,
       accessToken,
     };
   } catch (error) {
@@ -147,7 +150,16 @@ export const getUserDataFromRefreshToken = async ({ refreshToken }) => {
   }
 };
 
-export const updateUserDataWithUid = async (uid: string, data: { name: string; photoURL: string; phone: string }) => {
+interface IUpdateUserInput {
+  name: string;
+  photoURL: string;
+  phone: string;
+  dob: string;
+  gender: string;
+  privateAccount: boolean | string;
+}
+
+export const updateUserDataWithUid = async (uid: string, data?: IUpdateUserInput) => {
   try {
     await userAccessChecks(uid);
 
@@ -168,15 +180,30 @@ export const updateUserDataWithUid = async (uid: string, data: { name: string; p
       data.phone = data?.phone?.trim();
     }
 
-    let dataToBeUpdated: { name: string; photoURL: string; phone: string } = {
+    if (data?.dob) {
+      if (!validator.isDate(data.dob)) throw createError(400, "Invalid date");
+    }
+
+    if (data?.gender) {
+      if (data.gender != "male" && data.gender != "female" && data.gender != "other")
+        throw createError(400, "Invalid gender");
+    }
+
+    let dataToBeUpdated: IUpdateUserInput = {
       name: undefined,
       photoURL: undefined,
       phone: undefined,
+      dob: undefined,
+      privateAccount: undefined,
+      gender: undefined,
     };
 
     if (data.name) dataToBeUpdated.name = data.name;
     if (data.photoURL) dataToBeUpdated.photoURL = data.photoURL;
     if (data.phone) dataToBeUpdated.phone = data.phone;
+    if (data.dob) dataToBeUpdated.dob = data.dob;
+    if (data.gender) dataToBeUpdated.gender = data.gender;
+    if (data.privateAccount) dataToBeUpdated.privateAccount = data.privateAccount == "true";
 
     try {
       await usersModel.updateOne(

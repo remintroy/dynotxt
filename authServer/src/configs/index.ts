@@ -9,7 +9,7 @@ export const serverConfig = () => {
     baseURl: "/",
     serverId: "1",
     cors: {
-      origin: ["*", "http://localhost:3000"],
+      origin: ["*", "https://dynotxt.com", "https://admin.dynotxt.com"],
       credentials: true,
     },
     appBaseUrl: "/auth",

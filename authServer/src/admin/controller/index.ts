@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { RequestDefention } from "../defenition";
-import { signInUserWithPassword } from "../auth";
+import { getUserDataFromRefreshToken, signInUserWithPassword } from "../auth";
+import { createError } from "../../utils";
 
 export const userSignIn = async (req: RequestDefention, res: Response) => {
   try {
@@ -15,3 +16,14 @@ export const userSignIn = async (req: RequestDefention, res: Response) => {
   }
 };
 
+export const getUserData = async (req: RequestDefention, res: Response) => {
+  try {
+    const refreshToken = req.cookies?.suRefreshToken;
+    if (!refreshToken) throw createError(401, "Unauthenticated");
+    const data = await getUserDataFromRefreshToken({ refreshToken });
+    res.send(data);
+  } catch (error) {
+    res.status(error?.status ? error.status : 401);
+    res.send(error);
+  }
+};
