@@ -1,125 +1,54 @@
 .NavBar {
-  width: 100%;
   position: fixed;
-  height: 55px;
-  background-color: var(--themeBg);
-  border-bottom: 1px solid var(--borderCommon);
-  box-sizing: border-box;
-  padding: 4px 15px;
-  display: grid;
-  grid-template-columns: 100px 150px;
-  gap: 20px;
-  justify-content: space-between;
-  z-index: 100;
-  transition: all 0.3s;
-}
-.NavBar button {
-  color: var(--textColor);
-}
-.NavBar .logo {
-  height: 40px;
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-.NavBar .logo img {
-  height: 40px;
-  width: 100%;
-}
-.NavBar .logo .action {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.NavBar .logo .action .title {
-  font-size: larger;
-  font-weight: bold;
-}
-.NavBar .right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-.NavBar .right .cart {
-  margin-right: 20px;
-}
-.NavBar .right .searchIcon {
-  display: flex;
-  align-items: center;
-}
-.NavBar .right .Avathar {
-  cursor: pointer;
-}
-.NavBar .right svg {
-  cursor: pointer;
-}
-
-.NavBar.MB {
-  grid-template-columns: auto 100px;
-}
-
-.NavBar.shadow {
-  box-shadow: 0 0 10px 10px rgba(30, 30, 30, 0.078);
-}
-
-.NavBar.PC {
-  grid-template-columns: 200px 1fr 200px;
-  padding: 0px 50px;
-  gap: 0;
-}
-.NavBar.PC .logo {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  width: 100px;
-}
-.NavBar.PC .logo img {
-  height: 40px;
-  width: 100%;
-}
-.NavBar.PC .left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-.NavBar.PC .left .buttons button {
-  color: var(--textColor);
-  font-weight: bold;
-}
-
-.content {
-  position: fixed;
+  left: 0;
   top: 0;
-  left: 0;
-  right: 0;
   bottom: 0;
-  padding: 55px 0 70px 0;
-  overflow-x: hidden;
-  background-color: var(--themeBg);
-}
-
-.bottomNav {
-  position: fixed;
-  width: 100%;
-  height: 50px;
-  bottom: 0;
-  left: 0;
-  border: 1px solid var(--borderCommon);
-  background-color: var(--themeBg);
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  align-items: center;
-  gap: 15px;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border-right: 1px solid var(--borderCommon);
   box-sizing: border-box;
-  padding: 5px 15px;
+  padding: 20px 0;
 }
-.bottomNav .iconCont {
-  height: 100%;
+.NavBar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.NavBar ul li.no,
+.NavBar ul li.no:hover,
+.NavBar ul li.no.on {
+  background-color: transparent;
+}
+.NavBar ul li {
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 50px;
   border-radius: 5px;
+  cursor: pointer;
+  background-color: rgba(68, 75, 168, 0.1764705882);
+  transition: all 0.2s;
+  text-decoration: none;
+  color: var(--textColor);
 }
-.bottomNav.shadow {
-  box-shadow: 0 0 10px 10px rgba(30, 30, 30, 0.078);
+.NavBar ul li:hover {
+  background-color: #545dd8;
+}
+.NavBar ul li.on {
+  background-color: #545dd8;
+}
+
+.Navcontent {
+  position: absolute;
+  right: 0;
+  top: 0;
+  left: 70px;
 }/*# sourceMappingURL=style.css.map */

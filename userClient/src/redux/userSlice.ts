@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IUserSlice } from "./type";
-import { authBackend } from "../axios";
+import { authBackend } from "../configs/axios";
 
 const initialState: IUserSlice = {
   data: null,

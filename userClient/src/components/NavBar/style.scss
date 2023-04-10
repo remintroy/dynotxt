@@ -1,149 +1,60 @@
 .NavBar {
-    width: 100%;
     position: fixed;
-    height: 55px;
-    background-color: var(--themeBg);
-    border-bottom: 1px solid var(--borderCommon);
-    box-sizing: border-box;
-    padding: 4px 15px;
-    display: grid;
-    grid-template-columns: 100px 150px;
-    gap: 20px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 70px;
+    display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    z-index: 100;
-    transition: all .3s;
+    overflow: hidden;
+    border-right: 1px solid var(--borderCommon);
+    box-sizing: border-box;
+    padding: 20px 0;
 
-    button{
-        color: var(--textColor);
-    }
-
-    .logo {
-        height: 40px;
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 0 5px;
         display: flex;
-        align-items: center;
-        height: 100%;
-
-        img {
-            height: 40px;
-            width: 100%;
-        }
-
-        .action {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            .title {
-                font-size: larger;
-                font-weight: bold;
-            }
-        }
-    }
-
-    .right {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-
-        .cart {
-            margin-right: 20px;
-        }
-
-        .searchIcon {
-            display: flex;
-            align-items: center;
-        }
-
-        .Avathar {
-            cursor: pointer;
-        }
-
-        svg {
-            cursor: pointer;
-        }
-    }
-}
-
-.NavBar.MB {
-    grid-template-columns: auto 100px;
-}
-
-.NavBar.shadow {
-    box-shadow: 0 0 10px 10px rgba(30, 30, 30, 0.078);
-}
-
-.NavBar.PC {
-    grid-template-columns: 200px 1fr 200px;
-    padding: 0px 50px;
-    gap: 0;
-
-    .logo {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        width: 100px;
-
-        img {
-            height: 40px;
-            width: 100%;
-        }
-    }
-
-    .left {
-        display: flex;
-        align-items: center;
+        flex-direction: column;
         gap: 15px;
 
-        .buttons {
-            button { 
-                color:var(--textColor);
-                font-weight: bold;
-            }
+        li.no,
+        li.no:hover,
+        li.no.on {
+            background-color: transparent;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #444ba82d;
+            transition: all .2s;
+            text-decoration: none;
+            color: var(--textColor);
+        }
+
+        li:hover {
+            background-color: #545dd8;
+        }
+
+        li.on {
+            background-color: #545dd8;
         }
     }
 
 }
 
-
-.content {
-    position: fixed;
-    top: 0;
-    left: 0;
+.Navcontent {
+    position: absolute;
     right: 0;
-    bottom: 0;
-    padding: 55px 0 70px 0;
-    overflow-x: hidden;
-    background-color: var(--themeBg);
-}
-
-.bottomNav {
-    position: fixed;
-    width: 100%;
-    height: 50px;
-    bottom: 0;
-    left: 0;
-    border: 1px solid var(--borderCommon);
-    background-color: var(--themeBg);
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    align-items: center;
-    gap: 15px;
-    box-sizing: border-box;
-    padding: 5px 15px;
-
-    .iconCont {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 5px;
-    }
-
-    .iconCont.on {
-        // background-color: rgb(229, 229, 229);
-    }
-}
-
-.bottomNav.shadow {
-    box-shadow: 0 0 10px 10px rgba(30, 30, 30, 0.078);
+    top: 0;
+    left: 70px;
 }

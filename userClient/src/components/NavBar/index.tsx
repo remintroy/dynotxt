@@ -1,10 +1,13 @@
 import "./style.css";
+import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useAppSelector } from "../../redux/hooks";
-import { Avatar, Badge, Button } from "@mui/material";
-import { useState } from "react";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import HomeIcon from "@mui/icons-material/Home";
+import SettingsIcon from "@mui/icons-material/Settings";
+import SearchIcon from "@mui/icons-material/Search";
+import MessageIcon from "@mui/icons-material/Message";
+import { Avatar } from "@mui/material"; 
+import { fetchUserData } from "../../redux/userSlice";
 
 const NavBar = () => {
   const [isScrolled, setIsScorlled] = useState(false);
@@ -12,50 +15,47 @@ const NavBar = () => {
   const user = useAppSelector((state) => state.user.data);
   const navigate = useNavigate();
 
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUserData());
+  }, []);
+
   return (
     <>
-      {thisIsPc && (
-        <>
-          <div className={`NavBar PC ${isScrolled ? "shadow" : ""} `}>
-            <div className="left">
-              <div className="logo">
-                <Link to={"/"}>
-                  <img src="/logo.png" alt="Logo" />
-                </Link>
-              </div>
-              <div className="buttons">
-                <Button variant="text" startIcon={<ShoppingBagIcon />} onClick={() => navigate("/shop")}>
-                  Shop
-                </Button>
-              </div>
-            </div>
-            <div>search</div>
-            {/* <SearchBar type={thisIsPc ? "pc" : "mb"} /> */}
-            <div className="right">
-              <Badge
-                className="cart"
-                onClick={() => {
-                  navigate("/cart");
-                }}
-                badgeContent={2}
-                color="primary"
-              >
-                <LocalGroceryStoreIcon />
-              </Badge>
-              {user && (
-                <Avatar className="Avathar" onClick={() => navigate("/settings")} alt={user.email} src={user.photoURL} />
-              )}
-              {!user && (
-                <Button   onClick={() => navigate("/signin")}>
-                  Login
-                </Button>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+      <div className="NavBar pc">
+        <ul>
+          <Link to={"/"}>
+            <li className="on">
+              <HomeIcon />
+            </li>
+          </Link>
+          <Link to={"/explore"}>
+            <li>
+              <SearchIcon />
+            </li>
+          </Link>
+          <Link to={"/chat"}>
+            <li>
+              <MessageIcon />
+            </li>
+          </Link>
+        </ul>
 
-      <div className="content">
+        <ul>
+          <li>
+            <SettingsIcon />
+          </li>
+
+          <Link to={"/settings/account"}>
+            <li className="no">
+              <Avatar alt={user?.email} src={user?.photoURL} />
+            </li>
+          </Link>
+        </ul>
+      </div>
+
+      <div className="Navcontent">
         <Outlet />
       </div>
     </>
