@@ -61,7 +61,9 @@ export const refreshTokenSchema = new Schema({
 });
 
 export const otpSchema = new Schema({
-  otp: String,
+  otp: {
+    type: String,
+  },
   uid: String, // for normal user
   email: String, // for admin user
   createdAt: {
@@ -70,8 +72,13 @@ export const otpSchema = new Schema({
   },
   expiresAt: {
     type: Date,
-    default: new Date(new Date().getTime() + 10 * 60000), // validity is defaulted to 10 minutes
+    default: new Date(),
+    expires: 60 * 10,
   },
-  forUser: Boolean,
+  forUser: {
+    default: true,
+    type: Boolean,
+  },
   forAdmin: Boolean,
+  reason:String
 });

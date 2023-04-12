@@ -37,6 +37,19 @@ export const appConfig = () => {
       refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
       accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
     },
+    db: {
+      userProjection: {
+        _id: 0,
+        uid: 1,
+        email: 1,
+        name: 1,
+        phone: 1,
+        disabled: 1,
+        photoURL: 1,
+        privateAccount: 1,
+        lastLogin: 1,
+      },
+    },
   };
 };
 

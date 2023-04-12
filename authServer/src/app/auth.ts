@@ -1,6 +1,5 @@
 import validator from "validator";
 import dotenv from "dotenv";
-import randomId from "random-id";
 import { createError } from "../utils";
 import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
 import { refreshTokensModel, usersModel } from "../services/mongoDb";
@@ -8,6 +7,7 @@ import { verifyIdToken } from "../services/firebase";
 import { IUser } from "../services/mongoDb/types";
 import { serverConfig } from "../configs";
 import { getEmail } from "dynotxt-common-services";
+import { createOtp } from "./otp";
 
 dotenv.config();
 const config = serverConfig();
@@ -69,7 +69,23 @@ export const userAccessChecks = async (uid: string, data?: IUser | null) => {
   return userData;
 };
 
-// login user if exist or create new user
+export const tokensForUser = async (uid: string) => {
+  // ----- TOKENS -----
+  const tokensForUser = {
+    accessToken: newAccessToken({ uid }),
+    refreshToken: newRefreshToken({ uid }),
+  };
+
+  try {
+    await new refreshTokensModel({ value: tokensForUser.refreshToken, uid }).save();
+  } catch (error) {
+    throw createError(500, "Faild to create tokes");
+  }
+
+  return tokensForUser;
+};
+
+// login user if exist or create new
 export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) => {
   try {
     if (!validator.isJWT(idToken + "")) throw createError(400, "Invalid idToken");
@@ -107,7 +123,7 @@ export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) =>
     }
 
     if (!existingData || !existingData.emailVerified) {
-      const otp = randomId(6, "A0");
+      const otp = await createOtp(user.uid, "signin/emailVerify");
       try {
         await email.sendOtp(user.email, `${otp}`);
       } catch (error) {
@@ -119,27 +135,16 @@ export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) =>
     }
 
     // ----- TOKENS -----
-    const tokensForUser: { accessToken: string; refreshToken: string } = { accessToken: null, refreshToken: null };
-    // creates token's for new user
+    const tokens = await tokensForUser(user.uid);
+
     try {
-      tokensForUser.accessToken = newAccessToken({ uid: user.uid });
-      tokensForUser.refreshToken = newRefreshToken({ uid: user.uid });
+      await usersModel.updateOne({ uid: user.uid }, { $set: { lastLogin: new Date() } });
     } catch (error) {
-      throw createError(500, `${existingData ? "" : "User created but "}Faild to login. Try to login after some time`);
+      throw createError(500, "Faild to login, Error updating login status");
     }
-    // saves refresh token to db
-    try {
-      await new refreshTokensModel({ value: tokensForUser.refreshToken, uid: user.uid }).save();
-      try {
-        await usersModel.updateOne({ uid: user.uid }, { $set: { lastLogin: new Date() } });
-      } catch (error) {
-        // error while updating login time
-      }
-    } catch (error) {
-      throw createError(500, `${existingData ? "" : "User created but "}Faild to login. Try to login after some time`);
-    }
+
     // user data and tokes successfully created
-    return { ...tokensForUser, email: user.email, photoURL: user.photoURL, name: user.displayName };
+    return { ...tokens, email: user.email, photoURL: user.photoURL, name: user.displayName };
   } catch (error) {
     throw error;
   }

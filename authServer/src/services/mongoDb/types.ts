@@ -59,4 +59,5 @@ export interface IOtp {
   expiresAt: Date;
   forUser: boolean;
   forAdmin: boolean;
+  reason: string;
 }

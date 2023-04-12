@@ -8,6 +8,7 @@ import {
 } from "./auth";
 import { createError } from "../utils";
 import { refreshTokensModel } from "../services/mongoDb";
+import { checkOtpExists, verifyOtp } from "./otp";
 
 // signUp && signIn
 export const signInUser = async (req: RequestDefention, res: Response) => {
@@ -31,7 +32,7 @@ export const getUserData = async (req: RequestDefention, res: Response) => {
     const data = await getUserDataFromRefreshToken({ refreshToken });
     res.send(data);
   } catch (error) {
-    res.status(error?.status ? error.status : 401);
+    res.status(error?.code ? error.code : 401);
     res.send(error);
   }
 };
@@ -44,7 +45,7 @@ export const getNewAccessToken = async (req: RequestDefention, res: Response) =>
     const data = await getNewAccessTokenFromRefreshToken(refreshToken);
     res.send(data);
   } catch (error) {
-    res.status(error?.status ? error.status : 401);
+    res.status(error?.code ? error.code : 401);
     res.send(error);
   }
 };
@@ -78,6 +79,34 @@ export const logoutUser = async (req: RequestDefention, res: Response) => {
 
     res.send({ message: "logged out successfully" });
   } catch (error) {
-    res.status(error.status || 500).send(error);
+    res.status(error.code || 500).send(error);
+  }
+};
+
+export const verifyEmailPageAuth = async (req: RequestDefention, res: Response) => {
+  try {
+    const uid = req.params.uid;
+    if (!uid) throw createError(400, "Uid is required");
+    const data = await checkOtpExists(uid, "signin/emailVerify");
+    if (!data) throw createError(404, "Page you are looking for does not exist!");
+    res.send({ uid: data.uid });
+  } catch (error) {
+    res.status(error.code || 500).send(error);
+  }
+};
+
+export const verifyEmailForAuth = async (req: RequestDefention, res: Response) => {
+  try {
+    const uid = req.body.uid;
+    const otp = req.body.otp;
+    if (!uid) throw createError(400, "UID is required");
+    if (!otp) throw createError(400, "OTP is required");
+    const data = await verifyOtp(uid, otp, "signin/emailVerify");
+    let currentdate = new Date();
+    let next3months = new Date(currentdate.setMonth(currentdate.getMonth() + 3));
+    res.cookie("refreshToken", data.refreshToken, { httpOnly: true, secure: true, expires: next3months });
+    res.send(data);
+  } catch (error) {
+    res.status(error.code || 500).send(error);
   }
 };
