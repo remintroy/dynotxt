@@ -73,6 +73,9 @@ const AccountSettings = () => {
             (error) => {
               // storage error
               console.error(error);
+              setStatus((state) => {
+                return { ...state, message: "Faild to upload image - Plz check file" };
+              });
               reject(error);
             },
             () => {

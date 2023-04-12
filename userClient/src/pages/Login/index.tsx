@@ -11,7 +11,7 @@ import Container from "@mui/material/Container";
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react"; 
+import { useState } from "react";
 import { authConfig } from "../../configs/firebase";
 import { authBackend } from "../../configs/axios";
 import { setUser } from "../../redux/userSlice";
@@ -55,17 +55,29 @@ export default function SignIn() {
       // console.log(response);
       const { user } = response;
       const idToken = await user.getIdToken();
-      const { data } = await authBackend.post("/signin", { idToken });
-      // saving tokens
-      dispatch(setUser(data));
-      setStatusDisp({ show: true, message: "Login success", error: false });
-      navigate("/");
+      try {
+        const { data } = await authBackend.post("/signin", { idToken });
+        // saving tokens
+        dispatch(setUser(data));
+        setStatusDisp({ show: true, message: "Login success", error: false });
+        navigate("/");
+      } catch (error: any) {
+        //
+        if (error?.response?.status && error.response?.data?.url) navigate(error.response?.data?.url);
+
+        const errorObj = {
+          code: error?.response?.data?.error
+            ? `authServer/${error.response.data.error?.split(" ")?.join("-")}`
+            : "Failed to login your plz try after some time",
+        };
+        throw errorObj;
+      }
       //..
     } catch (error: any) {
       setStatusDisp({
         show: true,
         error: true,
-        message: error?.code ? error?.code.split("/").pop().split("-").join(" ") : "Faild to login plz try after some time",
+        message: error?.code ? error?.code.split("/").pop().split("-").join(" ") : "Failed to login plz try after some time",
       });
     }
   };

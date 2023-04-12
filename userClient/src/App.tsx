@@ -8,6 +8,7 @@ import SignUp from "./pages/SignUp";
 import { ThemeProvider, createTheme } from "@mui/material";
 import Settings from "./pages/Settings";
 import AccountSettings from "./components/AccountSettings";
+import VerfyEmail from "./pages/VerifyEmail";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/auth/verify-email/:uid",
+    element: <VerfyEmail />,
+    errorElement: <Error />,
   },
   {
     path: "/auth/login",
