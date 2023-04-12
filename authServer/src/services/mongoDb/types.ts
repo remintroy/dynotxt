@@ -50,3 +50,13 @@ export interface IRefreshToken {
   uid: string;
   createdAt: Date;
 }
+
+export interface IOtp {
+  otp: string;
+  uid: string;
+  email: string;
+  createdAt: Date;
+  expiresAt: Date;
+  forUser: boolean;
+  forAdmin: boolean;
+}

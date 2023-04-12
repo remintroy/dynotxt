@@ -21,6 +21,10 @@ export const serverConfig = () => {
     db: {
       url: process.env.MONGODB_URL, // both app use same db
     },
+    email: {
+      user: process.env.MAIL_USERID,
+      pass: process.env.MAIL_APP_PASSWORD,
+    },
   };
 };
 

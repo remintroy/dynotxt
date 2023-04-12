@@ -7,7 +7,7 @@ export const firebaseInit = () => {
 };
 
 import { getAuth } from "firebase-admin/auth";
-import { createError } from "../../utils";
+import { createError } from "../utils";
 
 // verify idToken and return user data
 export const verifyIdToken = async ({ idToken }: { idToken: string }) => {

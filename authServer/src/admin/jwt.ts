@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
-import { appConfig } from "../../configs";
+import { adminAppConfig } from "../configs";
 
-const config = appConfig();
+const config = adminAppConfig();
 
 // verify access token
 export const getAccessTokenData = (accessToken: string) => {
@@ -31,8 +31,8 @@ export const newRefreshToken = (payload: object) => {
 };
 
 // creates new access token
-export const newAccessToken = (payload: { uid: string }) => {
-  return jwt.sign({ uid: payload.uid }, config.jwt.accessTokenSecret, {
+export const newAccessToken = (payload: { email?: string }) => {
+  return jwt.sign({ email: payload.email }, config.jwt.accessTokenSecret, {
     expiresIn: config.jwt.accessTokenExires,
   });
 };

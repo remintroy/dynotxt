@@ -1,9 +1,30 @@
 import validator from "validator";
-import { adminAppConfig } from "../../configs";
-import { createError } from "../../utils";
-import { IInputValidator, IInputValidatorOutput, IInputValidatorRequired } from "./types";
+import { adminAppConfig } from "../configs";
+import { createError } from "../utils";
 
 const config = adminAppConfig();
+
+export interface IInputValidator {
+  email?: string;
+  password?: string;
+  phone?: string;
+  name?: string;
+  photoURL?: string;
+}
+export interface IInputValidatorOutput {
+  email: string;
+  password: string;
+  phone: string;
+  name: string;
+  photoURL: string;
+}
+export interface IInputValidatorRequired {
+  email?: boolean;
+  password?: boolean;
+  phone?: boolean;
+  name?: boolean;
+  photoURL?: boolean;
+}
 
 export const inputValidator = async (data: IInputValidator, required?: IInputValidatorRequired) => {
   try {

@@ -3,7 +3,7 @@ import express from "express";
 import logger from "morgan";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import app from "./app";
+import app from "./app/";
 import admin from "./admin";
 import services from "./services";
 import colors from "colors/safe";

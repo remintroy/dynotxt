@@ -1,6 +1,6 @@
 import { Response } from "express";
-import { RequestDefention } from "../../defenition";
-import { disableUserWithUid, enableUserWithUid, getUsersDataInPages } from "../auth";
+import { RequestDefention } from "../types";
+import { disableUserWithUid, enableUserWithUid, getUsersDataInPages } from "./auth";
 
 export const getAllUsersData = async (req: RequestDefention, res: Response) => {
   try {

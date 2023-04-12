@@ -1,13 +1,13 @@
 import { Response } from "express";
-import { RequestDefention } from "../defenition";
+import { RequestDefention } from "./types";
 import {
   getNewAccessTokenFromRefreshToken,
   getUserDataFromRefreshToken,
   signInUserWithTokenId,
   updateUserDataWithUid,
-} from "../auth";
-import { createError } from "../../utils";
-import { refreshTokensModel } from "../../services/mongoDb";
+} from "./auth";
+import { createError } from "../utils";
+import { refreshTokensModel } from "../services/mongoDb";
 
 // signUp && signIn
 export const signInUser = async (req: RequestDefention, res: Response) => {

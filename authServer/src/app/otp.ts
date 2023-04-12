@@ -1,0 +1,3 @@
+const checkOtpExists = (uid:string) => {
+    
+}

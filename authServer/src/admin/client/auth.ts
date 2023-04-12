@@ -1,6 +1,6 @@
-import { adminAppConfig } from "../../../configs";
-import { usersModel } from "../../../services/mongoDb";
-import { createError } from "../../../utils";
+import { adminAppConfig } from "../../configs";
+import { usersModel } from "../../services/mongoDb";
+import { createError } from "../../utils";
 
 const config = adminAppConfig();
 

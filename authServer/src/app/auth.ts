@@ -1,11 +1,17 @@
 import validator from "validator";
 import dotenv from "dotenv";
-import { createError } from "../../utils";
-import { getRefreshTokenData, newAccessToken, newRefreshToken } from "../jwt";
-import { refreshTokensModel, usersModel } from "../../services/mongoDb";
-import { verifyIdToken } from "../../services/firebase";
+import randomId from "random-id";
+import { createError } from "../utils";
+import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
+import { refreshTokensModel, usersModel } from "../services/mongoDb";
+import { verifyIdToken } from "../services/firebase";
+import { IUser } from "../services/mongoDb/types";
+import { serverConfig } from "../configs";
+import { getEmail } from "dynotxt-common-services";
 
 dotenv.config();
+const config = serverConfig();
+const email = getEmail(config.email.user, config.email.pass);
 
 // create access token from refresh token
 export const getNewAccessTokenFromRefreshToken = async (refreshToken: string) => {
@@ -44,13 +50,16 @@ export const getNewAccessTokenFromRefreshToken = async (refreshToken: string) =>
 };
 
 // check user access
-export const userAccessChecks = async (uid: string) => {
-  let userData: any;
+export const userAccessChecks = async (uid: string, data?: IUser | null) => {
+  let userData: IUser;
   try {
-    try {
-      userData = await usersModel.findOne({ uid: uid });
-    } catch (error) {
-      throw createError(500, "Oops something went wrong, Try after some time");
+    if (data) userData = data;
+    else {
+      try {
+        userData = await usersModel.findOne({ uid: uid });
+      } catch (error) {
+        throw createError(500, "Oops something went wrong, Try after some time");
+      }
     }
     if (!userData) throw createError(400, "Can't find user account with given data");
     if (userData.disabled) throw createError(403, "Disabled User");
@@ -69,7 +78,7 @@ export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) =>
     const user = await verifyIdToken({ idToken });
 
     // check for existing data
-    let existingData: object;
+    let existingData: IUser | null;
     try {
       existingData = await usersModel.findOne({ uid: user.uid });
     } catch (error) {
@@ -96,6 +105,19 @@ export const signInUserWithTokenId = async ({ idToken }: { idToken: string }) =>
         throw createError(500, "Error creating user");
       }
     }
+
+    if (!existingData || !existingData.emailVerified) {
+      const otp = randomId(6, "A0");
+      try {
+        await email.sendOtp(user.email, `${otp}`);
+      } catch (error) {
+        throw createError(500, "Error while sending otp. Please try after sometime.");
+      }
+      throw createError(403, "You must verify your email to login", {
+        url: `${config.appBaseUrl}/verify-email/${user.uid}`,
+      });
+    }
+
     // ----- TOKENS -----
     const tokensForUser: { accessToken: string; refreshToken: string } = { accessToken: null, refreshToken: null };
     // creates token's for new user

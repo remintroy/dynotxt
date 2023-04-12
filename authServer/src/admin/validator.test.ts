@@ -1,4 +1,4 @@
-import { inputValidator } from ".";
+import { inputValidator } from "./validator";
 
 describe("Validator", () => {
   // --- NAME ---

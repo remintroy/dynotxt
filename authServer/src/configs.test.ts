@@ -1,4 +1,4 @@
-import { adminAppConfig, appConfig, serverConfig } from ".";
+import { adminAppConfig, appConfig, serverConfig } from "./configs";
 
 describe("Configs", () => {
   it("Server Config", () => {

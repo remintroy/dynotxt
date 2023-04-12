@@ -1,12 +1,12 @@
 import validator from "validator";
 import dotenv from "dotenv";
 import bCrypt from "bcryptjs";
-import { createError } from "../../utils";
-import { getRefreshTokenData, newAccessToken, newRefreshToken } from "../jwt";
-import { adminAppConfig } from "../../configs";
-import { inputValidator } from "../validator";
-import { adminRefreshTokensModel, adminUsersModel } from "../../services/mongoDb";
-import { IAdminUser } from "../../services/mongoDb/defenition";
+import { createError } from "../utils";
+import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
+import { adminAppConfig } from "../configs";
+import { inputValidator } from "./validator";
+import { adminRefreshTokensModel, adminUsersModel } from "../services/mongoDb";
+import { IAdminUser } from "../services/mongoDb/types";
 
 dotenv.config();
 

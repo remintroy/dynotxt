@@ -1,5 +1,5 @@
 // creates error object
-export const createError = (code: number, error: string) => {
+export const createError = (code: number, error: string, optionalData?: object | null) => {
   // all common error code and messages
   let statusMessages = {
     200: "OK",
@@ -79,5 +79,6 @@ export const createError = (code: number, error: string) => {
     message: statusMessages[code ? code : defaultErrCode],
     error: error ? error : "Oops thats an error",
     code: code ? code : defaultErrCode,
+    ...optionalData,
   };
 };

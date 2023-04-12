@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
 import dotenv from "dotenv";
 import colors from "colors/safe";
-import { IAdminRefreshToken, IAdminUser, IRefreshToken, IUser } from "./defenition";
-import { adminRefreshTokenSchema, adminUserSchema, refreshTokenSchema, userSchema } from "./schema";
+import { IAdminRefreshToken, IAdminUser, IOtp, IRefreshToken, IUser } from "./types";
+import { adminRefreshTokenSchema, adminUserSchema, otpSchema, refreshTokenSchema, userSchema } from "./schema";
 import { adminAppConfig, appConfig, serverConfig } from "../../configs";
 
 dotenv.config();
@@ -34,3 +34,4 @@ export const adminUsersModel = db.model<IAdminUser>("adminUser", adminUserSchema
 export const adminRefreshTokensModel = db.model<IAdminRefreshToken>("adminRefreshTokens", adminRefreshTokenSchema);
 export const usersModel = db.model<IUser, mongoose.PaginateModel<IUser>>("users", userSchema);
 export const refreshTokensModel = db.model<IRefreshToken>("refreshTokens", refreshTokenSchema);
+export const otpModel = db.model<IOtp>("otps", otpSchema);

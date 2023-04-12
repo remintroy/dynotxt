@@ -1,8 +1,8 @@
 import { Response } from "express";
-import { RequestDefention } from "../defenition";
-import { getUserDataFromRefreshToken, signInUserWithPassword } from "../auth";
-import { createError } from "../../utils";
-import { adminRefreshTokensModel } from "../../services/mongoDb";
+import { RequestDefention } from "./types";
+import { getUserDataFromRefreshToken, signInUserWithPassword } from "./auth";
+import { createError } from "../utils";
+import { adminRefreshTokensModel } from "../services/mongoDb";
 
 export const userSignIn = async (req: RequestDefention, res: Response) => {
   try {
