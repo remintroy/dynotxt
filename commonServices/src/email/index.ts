@@ -1,7 +1,7 @@
 import nodeMailer from "nodemailer";
 import sendOtp from "./sendOtp";
 
-const config = (AccountEmail: string, password: string) => {
+export default (AccountEmail: string, password: string) => {
   // creates a reusable transport instance
   const transport = nodeMailer.createTransport({
     host: "smtp.zoho.in",
@@ -25,5 +25,3 @@ const config = (AccountEmail: string, password: string) => {
     },
   };
 };
-
-export default config;

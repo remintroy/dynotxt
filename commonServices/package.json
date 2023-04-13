@@ -2,9 +2,9 @@
   "name": "dynotxt-common-services",
   "version": "1.0.0",
   "description": "common services server for dynotxt",
-  "main": "build/index.js",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc -w", 
+    "build": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,6 +15,7 @@
     "typescript": "^5.0.4"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.0",
     "@types/nodemailer": "^6.4.7"
   }
 }
