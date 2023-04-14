@@ -6,7 +6,7 @@ import {
   signInUserWithTokenId,
   updateUserDataWithUid,
 } from "./auth";
-import { createError } from "../utils";
+import { createError } from "dynotxt-common-services/utils/";
 import { refreshTokensModel } from "../services/mongoDb";
 import { checkOtpExists, verifyOtp } from "./otp";
 

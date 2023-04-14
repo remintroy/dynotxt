@@ -1,6 +1,6 @@
 import validator from "validator";
 import { adminAppConfig } from "../configs";
-import { createError } from "../utils";
+import { createError } from "dynotxt-common-services/utils/";
 
 const config = adminAppConfig();
 

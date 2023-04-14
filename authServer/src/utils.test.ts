@@ -1,4 +1,4 @@
-import { createError } from "./utils";
+import { createError } from "dynotxt-common-services/utils/";
 
 describe("Utils", () => {
   //

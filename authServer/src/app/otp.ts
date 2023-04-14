@@ -1,7 +1,7 @@
 import { appConfig } from "../configs";
 import { otpModel, usersModel } from "../services/mongoDb";
 import { IOtp, IUser } from "../services/mongoDb/types";
-import { createError } from "../utils";
+import { createError } from "dynotxt-common-services/utils/";
 import randomId from "random-id";
 import { tokensForUser } from "./auth";
 

@@ -1,6 +1,6 @@
 import { adminAppConfig } from "../../configs";
 import { usersModel } from "../../services/mongoDb";
-import { createError } from "../../utils";
+import { createError } from "dynotxt-common-services/utils/";
 
 const config = adminAppConfig();
 
@@ -45,7 +45,7 @@ export const getUsersDataInPages = async (page: number) => {
       page: page || 1,
       projection: config.db.userProjection,
     };
-    return usersModel.paginate({}, options);
+    return await usersModel.paginate({}, options); 
   } catch (error) {
     throw createError(500, "Faild to get user data");
   }

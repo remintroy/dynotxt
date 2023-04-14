@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { RequestDefention } from "./types";
 import { getUserDataFromRefreshToken, signInUserWithPassword } from "./auth";
-import { createError } from "../utils";
+import { createError } from "dynotxt-common-services/utils/";
 import { adminRefreshTokensModel } from "../services/mongoDb";
 
 export const userSignIn = async (req: RequestDefention, res: Response) => {

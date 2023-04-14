@@ -1,12 +1,12 @@
 import validator from "validator";
 import dotenv from "dotenv";
-import { createError } from "../utils";
+import { createError } from "dynotxt-common-services/utils/";
+import { getEmail } from "dynotxt-common-services/";
 import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
 import { refreshTokensModel, usersModel } from "../services/mongoDb";
 import { verifyIdToken } from "../services/firebase";
 import { IUser } from "../services/mongoDb/types";
 import { serverConfig } from "../configs";
-import { getEmail } from "dynotxt-common-services";
 import { createOtp } from "./otp";
 
 dotenv.config();

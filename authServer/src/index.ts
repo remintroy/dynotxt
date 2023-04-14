@@ -8,7 +8,7 @@ import admin from "./admin";
 import services from "./services";
 import colors from "colors/safe";
 import { serverConfig } from "./configs";
-import { createError } from "./utils";
+import { createError } from "dynotxt-common-services/utils/";
 
 dotenv.config();
 services.config();

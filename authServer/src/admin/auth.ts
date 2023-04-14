@@ -1,7 +1,7 @@
 import validator from "validator";
 import dotenv from "dotenv";
 import bCrypt from "bcryptjs";
-import { createError } from "../utils";
+import { createError } from "dynotxt-common-services/utils/";
 import { getRefreshTokenData, newAccessToken, newRefreshToken } from "./jwt";
 import { adminAppConfig } from "../configs";
 import { inputValidator } from "./validator";
