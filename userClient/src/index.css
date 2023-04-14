@@ -3,7 +3,8 @@
   line-height: 1.5;
   font-weight: 400;
 
-  --themeBg: #242424;
+  /* --themeBg: #242424; */
+  --themeBg: #171717;
   --borderCommon: rgb(51, 51, 51);
   --textColor: white;
 
@@ -16,9 +17,25 @@
   -webkit-text-size-adjust: 100%;
 }
 
+.dummy{
+ height: 500px;
+}
+
 .dim {
   color: rgb(124, 124, 124);
 }
 .dimm {
   filter: opacity(50%);
+}
+.sm {
+  font-size: smaller;
+}
+.line {
+  display: block;
+  height: 1px;
+  background-color: var(--borderCommon);
+  margin: 10px 0;
+}
+.b {
+  font-weight: bold;
 }

@@ -2,15 +2,16 @@
     position: fixed;
     left: 0;
     top: 0;
-    bottom: 0;
-    width: 70px;
+    right: 0;
+    height: 60px;
     display: flex;
-    flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
-    border-right: 1px solid var(--borderCommon);
+    border-bottom: 1px solid var(--borderCommon);
     box-sizing: border-box;
-    padding: 20px 0;
+    padding: 0 20px;
+    background-color: var(--themeBg);
+    z-index: 100;
 
     ul {
         list-style: none;
@@ -19,35 +20,49 @@
         box-sizing: border-box;
         padding: 0 5px;
         display: flex;
-        flex-direction: column;
         gap: 15px;
+        align-items: center;
 
-        li.no,
-        li.no:hover,
-        li.no.on {
-            background-color: transparent;
+        .logoImgCong {
+            max-width: 100px;
+            max-height: 100%;
+            img {
+                width: 100%;
+                height: 100%;
+            }
         }
 
-        li {
+        button.CreateIcon{
             display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 50px;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #444ba82d;
-            transition: all .2s;
-            text-decoration: none;
-            color: var(--textColor);
+            gap: 5px;
         }
 
-        li:hover {
-            background-color: #545dd8;
-        }
+        // li.no,
+        // li.no:hover,
+        // li.no.on {
+        //     background-color: transparent;
+        // }
 
-        li.on {
-            background-color: #545dd8;
-        }
+        // li {
+        //     display: flex;
+        //     align-items: center;
+        //     justify-content: center;
+        //     padding: 13px;
+        //     border-radius: 5px;
+        //     cursor: pointer;
+        //     background-color: #444ba82d;
+        //     transition: all .2s;
+        //     text-decoration: none;
+        //     color: var(--textColor);
+        // }
+
+        // li:hover {
+        //     background-color: #545dd8;
+        // }
+
+        // li.on {
+        //     background-color: #545dd8;
+        // }
     }
 
 }
@@ -55,6 +70,7 @@
 .Navcontent {
     position: absolute;
     right: 0;
-    top: 0;
-    left: 70px;
+    top: 70px;
+    left: 0px;
+    bottom: 0;
 }

@@ -63,7 +63,7 @@ export default function SignIn() {
         navigate("/");
       } catch (error: any) {
         //
-        if (error?.response?.status && error.response?.data?.url) navigate(error.response?.data?.url);
+        if (error?.response?.status == 403 && error.response?.data?.url) navigate(error.response?.data?.url);
 
         const errorObj = {
           code: error?.response?.data?.error

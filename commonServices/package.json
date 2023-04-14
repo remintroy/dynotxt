@@ -1,6 +1,6 @@
 {
   "name": "dynotxt-common-services",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "common services server for dynotxt",
   "main": "index.js",
   "scripts": {

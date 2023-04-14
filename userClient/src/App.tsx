@@ -9,6 +9,8 @@ import { ThemeProvider, createTheme } from "@mui/material";
 import Settings from "./pages/Settings";
 import AccountSettings from "./components/AccountSettings";
 import VerfyEmail from "./pages/VerifyEmail";
+import ProfilePage from "./pages/Profile";
+import BlogView from "./pages/BlogView";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +18,10 @@ const router = createBrowserRouter([
     element: <NavBar />,
     errorElement: <Error />,
     children: [
+      {
+        path: "/test",
+        element: <BlogView />,
+      },
       {
         path: "/",
         element: <Home />,
@@ -31,6 +37,10 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: "/user",
+    element: <ProfilePage />,
   },
   {
     path: "/auth/verify-email/:uid",

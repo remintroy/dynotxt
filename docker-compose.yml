@@ -1,0 +1,42 @@
+version: "3"
+services:
+
+  auth_server:
+    build:
+      dockerfile: Dockerfile
+      context: ./authServer/
+    ports:
+      - "5001:5001"
+    volumes:
+      - /app/node_modules
+      - ./authServer/build:/app/build
+
+  blog_server:
+    build:
+      dockerfile: Dockerfile
+      context: ./blogServer/
+    ports:
+      - "5003:5003"
+    volumes:
+      - /app/node_modules
+      - ./blogServer/build:/app/build
+
+  user_client:
+    build:
+      dockerfile: Dockerfile
+      context: ./userClient/
+    ports:
+      - "5000:5000"
+    volumes:
+      - /app/node_modules
+      - ./userClient/src:/app/src
+
+  admin_client:
+    build:
+      dockerfile: Dockerfile
+      context: ./adminClient/
+    ports:
+      - "5002:5002"
+    volumes:
+      - /app/node_modules
+      - ./adminClient/src:/app/src

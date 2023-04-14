@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { useState } from "react"; 
+import { useState } from "react";
 import { authConfig } from "../../configs/firebase";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { setUser } from "../../redux/userSlice";
@@ -60,11 +60,21 @@ export default function SignUp() {
       // console.log(response);
       const { user } = response;
       const idToken = await user.getIdToken();
-      const { data } = await authBackend.post("/signin", { idToken });
-      // saving tokens
-      dispatch(setUser(data));
-      setStatusDisp({ show: true, message: "Login success", error: false });
-      navigate("/");
+      try {
+        const { data } = await authBackend.post("/signin", { idToken });
+        // saving tokens
+        dispatch(setUser(data));
+        setStatusDisp({ show: true, message: "Login success", error: false });
+        navigate("/");
+      } catch (error: any) {
+        if (error?.response?.status == 403 && error.response?.data?.url) navigate(error.response?.data?.url);
+        const errorObj = {
+          code: error?.response?.data?.error
+            ? `authServer/${error.response.data.error?.split(" ")?.join("-")}`
+            : "Failed to login your plz try after some time",
+        };
+        throw errorObj;
+      }
       //..
     } catch (error: any) {
       setStatusDisp({

@@ -1,0 +1,56 @@
+.BlogView .imgCont {
+  border: 1px solid var(--borderCommon);
+  overflow: hidden;
+  padding: 0;
+  border-radius: 5px;
+  background-color: black;
+  max-height: 500px;
+  display: flex;
+}
+.BlogView .imgCont img {
+  max-height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  -o-object-fit: scale-down;
+     object-fit: scale-down;
+}
+.BlogView .descrition-page {
+  margin-top: 15px;
+}
+.BlogView .descrition-page .profile-shareCont {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.BlogView .descrition-page .profile-shareCont .profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.BlogView .descrition-page .profile-shareCont .profile .details {
+  display: flex;
+  flex-direction: column;
+}
+.BlogView .descrition-page .profile-shareCont .buttons {
+  display: flex;
+  gap: 10px;
+}
+.BlogView .contents {
+  border: 1px solid var(--borderCommon);
+  border-radius: 5px;
+  padding: 15px;
+  margin-top: 20px;
+}
+.BlogView .contents-chip {
+  margin-top: 10px;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.BlogView .contents-chip .chips {
+  display: flex;
+  gap: 5px;
+}
+.BlogView .contents-chip::-webkit-scrollbar {
+  display: none;
+}/*# sourceMappingURL=style.css.map */
