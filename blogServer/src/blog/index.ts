@@ -1,4 +1,6 @@
 import { blogValidator } from "../validator";
-import buildMakeBlog from "./blog";
+import createMakeBlog from "./blog";
 
-export const makeBlog = buildMakeBlog({ validator: blogValidator });
+export const makeBlog = createMakeBlog({ validator: blogValidator });
+
+export default makeBlog;

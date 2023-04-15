@@ -105,6 +105,7 @@ export default function buildMakeBlog({ validator }: { validator: typeof blogVal
 
     return Object.freeze({
       // methord's without inputs
+      getId: () => blogId,
       setBody: () => setUpdated(body),
       addViewCount: () => setUpdated(++views),
       decreaseViewCount: () => setUpdated(views > 0 ? --views : (views = 0)),
