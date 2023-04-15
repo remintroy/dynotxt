@@ -1,4 +1,5 @@
 .BlogView .imgCont {
+  margin-top: 20px;
   border: 1px solid var(--borderCommon);
   overflow: hidden;
   padding: 0;
@@ -35,11 +36,20 @@
   display: flex;
   gap: 10px;
 }
-.BlogView .contents {
+.BlogView .box {
   border: 1px solid var(--borderCommon);
   border-radius: 5px;
   padding: 15px;
   margin-top: 20px;
+}
+.BlogView .contents {
+  border-radius: 5px;
+  margin-top: 20px;
+}
+.BlogView .underline {
+  padding-bottom: 20px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--borderCommon);
 }
 .BlogView .contents-chip {
   margin-top: 10px;
@@ -53,4 +63,30 @@
 }
 .BlogView .contents-chip::-webkit-scrollbar {
   display: none;
+}
+.BlogView .code-snippet {
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid var(--borderCommon);
+}
+.BlogView .code-snippet .title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.BlogView .code-snippet .title .button {
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.BlogView .code-snippet pre {
+  background-color: rgb(27, 27, 27);
+  background-color: rgba(0, 0, 0, 0.286);
+  border-radius: 5px;
+  padding: 20px;
+  overflow: scroll;
+  max-height: 400px;
 }/*# sourceMappingURL=style.css.map */

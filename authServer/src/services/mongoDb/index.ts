@@ -22,16 +22,19 @@ const dbLatencyLogger = () => {
   console.log(`${serverID} ${mainLog}`);
 };
 
-const db = mongoose.createConnection(server.db.url);
+const db = mongoose.connect(server.db.url);
 
-db.on("error", (error) => console.error(error));
-db.once("open", () => dbLatencyLogger());
+db.then((value) => {
+  dbLatencyLogger();
+}).catch((error) => {
+  console.error(error);
+});
 
 // PLUGINS
 userSchema.plugin(paginate);
 
-export const adminUsersModel = db.model<IAdminUser>("adminUser", adminUserSchema);
-export const adminRefreshTokensModel = db.model<IAdminRefreshToken>("adminRefreshTokens", adminRefreshTokenSchema);
-export const usersModel = db.model<IUser, mongoose.PaginateModel<IUser>>("users", userSchema);
-export const refreshTokensModel = db.model<IRefreshToken>("refreshTokens", refreshTokenSchema);
-export const otpModel = db.model<IOtp>("otps", otpSchema);
+export const adminUsersModel = mongoose.model<IAdminUser>("adminUser", adminUserSchema);
+export const adminRefreshTokensModel = mongoose.model<IAdminRefreshToken>("adminRefreshTokens", adminRefreshTokenSchema);
+export const usersModel = mongoose.model<IUser, mongoose.PaginateModel<IUser>>("users", userSchema);
+export const refreshTokensModel = mongoose.model<IRefreshToken>("refreshTokens", refreshTokenSchema);
+export const otpModel = mongoose.model<IOtp>("otps", otpSchema);

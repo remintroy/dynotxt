@@ -1,5 +1,6 @@
 .BlogView {
     .imgCont {
+        margin-top: 20px;
         border: 1px solid var(--borderCommon);
         overflow: hidden;
         padding: 0;
@@ -44,12 +45,26 @@
         }
     }
 
-    .contents{
+    .box {
         border: 1px solid var(--borderCommon);
         border-radius: 5px;
-        padding: 15px ;
+        padding: 15px;
         margin-top: 20px;
     }
+
+    .contents {
+        // border: 1px solid var(--borderCommon);
+        // padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px; 
+    }
+ 
+    .underline {
+        padding-bottom: 20px;
+        border-radius: 0;
+        border-bottom: 1px solid var(--borderCommon);
+    }
+
 
     .contents-chip {
         margin-top: 10px;
@@ -66,5 +81,38 @@
 
     .contents-chip::-webkit-scrollbar {
         display: none;
+    }
+
+    .code-snippet {
+        padding: 15px;
+        border-radius: 5px;
+        // background-color: rgb(45, 45, 53);
+        border: 1px solid var(--borderCommon);
+
+        .title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .button{
+                padding: 0 10px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+             justify-content: center;
+                gap: 5px;
+            }
+
+        }
+
+        pre {
+            background-color: rgb(27, 27, 27);
+            background-color: rgba(0, 0, 0, 0.286);
+            border-radius: 5px;
+            padding: 20px;
+            overflow: scroll;
+            max-height: 400px;
+        }
+
     }
 }

@@ -1,6 +1,5 @@
 version: "3"
 services:
-
   auth_server:
     build:
       dockerfile: Dockerfile
@@ -29,7 +28,7 @@ services:
       - "5000:5000"
     volumes:
       - /app/node_modules
-      - ./userClient/src:/app/src
+      - ./userClient/:/app/
 
   admin_client:
     build:
