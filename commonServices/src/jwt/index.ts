@@ -6,3 +6,5 @@ export const getJwt = ({ secret }: { secret: string }) => {
     verifyAssessToken: createVerifyAccessToken({ jwt, secret }),
   };
 };
+
+export default getJwt;

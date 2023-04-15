@@ -1,9 +1,9 @@
 import createErrorFile from "./createError";
 
-export default () => {
+export const getUtils = () => {
   return {
     createError: createErrorFile,
   };
 };
 
-export const createError = createErrorFile;
+export default getUtils;

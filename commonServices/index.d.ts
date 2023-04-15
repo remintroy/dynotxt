@@ -9,6 +9,11 @@ declare const _default: {
             code: number;
         };
     };
+    getJwt: ({ secret }: {
+        secret: string;
+    }) => {
+        verifyAssessToken: (token: string) => any;
+    };
 };
 export default _default;
 export declare const getEmail: (AccountEmail: string, password: string) => {
@@ -20,4 +25,9 @@ export declare const getUtils: () => {
         error: string;
         code: number;
     };
+};
+export declare const getJwt: ({ secret }: {
+    secret: string;
+}) => {
+    verifyAssessToken: (token: string) => any;
 };
