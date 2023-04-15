@@ -12,6 +12,7 @@ export const appConfig = () => {
       id: 2,
       name: "Dynotxt BlogServer",
       baseUrl: "/blog/",
+      baseUrlAdmin: "/blog/su",
       port: process.env.PORT || 5003,
     },
   };

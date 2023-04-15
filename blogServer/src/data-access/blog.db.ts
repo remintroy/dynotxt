@@ -1,9 +1,17 @@
-import blogModel from "../models/blog.model";
+import { IMakeBlogData } from "../blog/types.blog";
 
-export const getBlogById = async (blogId: string) => {
-  return await blogModel.findOne({ blogId });
-};
+export const createBlogDb = ({ createError, blogValidator, blogModel }) => {
+  const getBlogById = async (blogId: string) => {
+    return await blogModel.findOne({ blogId });
+  };
 
-export const addNewBlog = async (blogData: any) => {
-  return await new blogModel(blogData).save();
+  const addNewBlog = async (blogData: IMakeBlogData) => {
+    if (blogValidator.isBlogWithIdExist(blogData.blogId)) throw createError(400, "Blog already exists");
+    return await new blogModel(blogData).save();
+  };
+
+  return {
+    getBlogById,
+    addNewBlog,
+  };
 };
