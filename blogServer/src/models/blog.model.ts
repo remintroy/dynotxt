@@ -1,16 +1,5 @@
 import mongoose from "mongoose";
+import { BlogSchema } from "./blog.schemas";
+import { IBlogModel } from "./blog.types";
 
-export default mongoose.model(
-  "blogs",
-  new mongoose.Schema({
-    createdAt: Date,
-    updatedAt: Date,
-    published: Boolean,
-    blogId: String,
-    author: String,
-    title: String,
-    views: Number,
-    bannerImgURL: String,
-    body: [],
-  })
-);
+export default mongoose.model<IBlogModel>("blogs", BlogSchema);
