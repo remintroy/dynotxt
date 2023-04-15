@@ -1,26 +1,64 @@
-import { blogValidator } from "../validator";
-
 interface IMakeBlogData {
-  createdAt: Date | string;
-  updatedAt: Date | string;
-  published: boolean;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  published?: boolean;
   blogId: string;
   author: string;
   title: string;
-  views: number;
+  views?: number;
   bannerImgURL: string;
-  body: IMakeBlogDataBody[];
+  body?: IMakeBlogDataBody[];
 }
 
-interface IMakeBlogDataBody {
+interface IMakeBlogDataBodyBuild {
   title: string;
-  type: "code" | "img" | "text" | "list" | "youtube";
-  data: string | object;
+  data?: object | object[];
   id?: string;
   content?: string;
 }
 
-export default function buildMakeBlog({ validator }: { validator: typeof blogValidator }) {
+interface IMakeBlogDataBodyTypeCode extends IMakeBlogDataBodyBuild {
+  type: "code";
+  data: {
+    language?: string;
+    value: string;
+  };
+}
+
+interface IMakeBlogDataBodyTypeText extends IMakeBlogDataBodyBuild {
+  type: "text";
+  data: string[];
+}
+
+interface IMakeBlogDataBodyTypeImg extends IMakeBlogDataBodyBuild {
+  type: "img";
+  data: {
+    src: string;
+    alt?: string;
+  };
+}
+
+interface IMakeBlogDataBodyTypeList extends IMakeBlogDataBodyBuild {
+  type: "list";
+  data: string[];
+}
+
+interface IMakeBlogDataBodyTypeYoutube extends IMakeBlogDataBodyBuild {
+  type: "youtube";
+  data: {
+    id?: string;
+    url: string;
+  };
+}
+
+type IMakeBlogDataBody =
+  | IMakeBlogDataBodyTypeCode
+  | IMakeBlogDataBodyTypeText
+  | IMakeBlogDataBodyTypeImg
+  | IMakeBlogDataBodyTypeList
+  | IMakeBlogDataBodyTypeYoutube;
+
+export default function createMakeBlog({ validator }: { validator: any }) {
   return function makeBlog({
     createdAt = new Date(),
     updatedAt = new Date(),
@@ -72,30 +110,139 @@ export default function buildMakeBlog({ validator }: { validator: typeof blogVal
       return published;
     };
 
-    const validateCreateAt = (createdAt: Date | string) => {
-      if (!validator.isValidDate(`${createdAt}`)) throw new Error("A valid date must be provided in createdAt field");
+    const validateCreateAt = (createdAt: Date | string | any) => {
+      if (!validator.isValidDate(createdAt)) throw new Error("A valid date must be provided in createdAt field");
       return createdAt;
     };
 
-    const validateUpdatedAt = (updatedAt: Date | string) => {
-      if (!validator.isValidDate(`${updatedAt}`)) throw new Error("A valid date must be provided in updatedAt field");
+    const validateUpdatedAt = (updatedAt: Date | string | any) => {
+      if (!validator.isValidDate(updatedAt)) throw new Error("A valid date must be provided in updatedAt field");
       return updatedAt;
+    };
+
+    const validateBodySection = (section: IMakeBlogDataBody) => {
+      // required
+      const validTypes = ["code", "img", "text", "list", "youtube"];
+      if (!validTypes.includes(section.type.trim())) throw new Error("section type must be a valid type");
+      if (!section.data) throw new Error("section data cannot be empty");
+      if (typeof section.title !== "string") throw new Error("section title must be a string");
+
+      // optional
+      if (section.id && typeof section.id !== "string") throw new Error("section id must be a string");
+      if (section.content && typeof section.content !== "string") throw new Error("section content must be a string");
+
+      const output: IMakeBlogDataBody = {
+        title: section.title,
+        type: section.type,
+        content: section.content ?? null,
+        id: section.id ?? null,
+        data: null,
+      };
+
+      switch (section.type) {
+        case "code": {
+          // required
+          if (typeof section.data != "object") throw new Error("section data must be a object");
+          const { language = "", value = "" } = section.data;
+          if (!value) throw new Error("Code section data cannot be empty");
+          if (typeof value != "string") throw new Error("value of code section must be a string");
+
+          // optional
+          if (language && typeof language != "string") throw new Error("language of code section must be a string");
+
+          // result
+          output.data = { language: language.length == 0 ? null : language, value: value };
+          return output;
+        }
+
+        case "text": {
+          if (!Array.isArray(section.data)) throw new Error("Section data of text must be an array of strings");
+          for (const values of section.data) {
+            if (typeof values != "string") throw new Error("Section data of text must be a array of string");
+          }
+          // filter empty array values
+          section.data = section.data.filter((value) => value).map((value) => value.trim());
+          output.data = section.data;
+          return output;
+        }
+
+        case "img": {
+          // required
+          if (typeof section.data != "object") throw new Error("Image section body must be an object");
+          if (!section.data.src) throw new Error("Image section need image URL");
+          if (!validator.isValidUrl(section.data.src)) throw new Error("Image section Image URL is invalid");
+
+          // optional
+          if (section.data?.alt && typeof section.data.alt !== "string")
+            throw new Error("Image section Image alternate text must be a string");
+
+          output.data = {
+            alt: section.data.alt ?? null,
+            src: section.data.src,
+          };
+          return output;
+        }
+
+        case "list": {
+          if (!Array.isArray(section.data)) throw new Error("Section data of list must be an array of strings");
+          for (const values of section.data) {
+            if (typeof values != "string") throw new Error("Section data of list must be a array of string");
+          }
+          // filter empty array values
+          section.data = section.data.filter((value) => value).map((value) => value.trim());
+          output.data = section.data;
+          return output;
+        }
+
+        case "youtube": {
+          // Required
+          if (typeof section.data != "object") throw new Error("Youtube section body must be an object");
+          if (!validator.isValidUrl(section.data.url)) throw new Error("Youtube section video link is invalid");
+
+          // Optional
+          if (section.data.id && typeof section.data.id !== "string")
+            throw new Error("Youtube section video id must be a string");
+          if (section.data.id && section.data.id.length > 15) throw new Error("Youtube section video id is not valid");
+
+          output.data = {
+            id: section.data.id ?? null,
+            url: section.data.url,
+          };
+
+          return output;
+        }
+
+        default: {
+          return null;
+        }
+      }
     };
 
     const validateBody = (body: IMakeBlogDataBody[]) => {
       if (!Array.isArray(body)) throw new Error("Blog body must be an array of blog content");
+
+      for (let i = 0; i < body.length; i++) {
+        body[i] = validateBodySection(body[i]);
+      }
+
+      // removes empty indexes from body
+      body = body.filter((value) => {
+        if (value?.type) return true;
+        else false;
+      });
+
       return body;
     };
 
-    validateTitle(title);
-    validateImgURL(bannerImgURL);
-    validateViews(views);
-    validateBlogId(blogId);
-    validateAuthor(author);
-    validatePublished(published);
-    validateCreateAt(createdAt);
-    validateUpdatedAt(updatedAt);
-    validateBody(body);
+    title = validateTitle(title);
+    bannerImgURL = validateImgURL(bannerImgURL);
+    views = validateViews(views);
+    blogId = validateBlogId(blogId);
+    author = validateAuthor(author);
+    published = validatePublished(published);
+    createdAt = validateCreateAt(createdAt);
+    updatedAt = validateUpdatedAt(updatedAt);
+    body = validateBody(body);
 
     // UPDATE FUNCTIONS
     const setUpdated = (input?: any | null) => {
@@ -133,20 +280,24 @@ export default function buildMakeBlog({ validator }: { validator: typeof blogVal
         return setUpdated((title = validateTitle(newTitle)));
       },
 
-      setBodyIndex: (index: number, data: IMakeBlogDataBody) => {
-        return (body[validateIndex(index)] = data);
+      setBodySectionIndex: (index: number, data: IMakeBlogDataBody) => {
+        return (body[validateIndex(index)] = validateBodySection(data));
       },
 
-      removeBodyIndex: (index: number) => {
+      removeBodySectionIndex: (index: number) => {
         return body.splice(validateIndex(index), 1);
       },
 
-      addToBody: (data: IMakeBlogDataBody) => {
-        return body.push(data);
+      addToSectionBody: (data: IMakeBlogDataBody) => {
+        return body.push(validateBodySection(data));
       },
 
-      editBodyTitleInIndex: (index: number, newTitle: string) => {
+      editSectionTitleInIndex: (index: number, newTitle: string) => {
         return (body[index].title = validateTitle(newTitle));
+      },
+
+      editSectionDataInIndex: (index: number, newSectionData: IMakeBlogDataBody) => {
+        return (body[index] = validateBodySection({ ...body[index], ...newSectionData }));
       },
     });
   };
