@@ -1,6 +1,5 @@
 import { IMakeBlogData, IMakeBlogDataBody } from "./types.blog";
 
-
 export default function createMakeBlog({ validator }: { validator: any }) {
   return function makeBlog({
     createdAt = new Date(),
@@ -15,7 +14,7 @@ export default function createMakeBlog({ validator }: { validator: any }) {
   }: IMakeBlogData) {
     // VALIDATION FUNCTIONS
     const validateTitle = (title: string): string => {
-      if (!title) throw new Error("A title required to create a blog");
+      // if (!title) throw new Error("A title required to create a blog");
       if (typeof title != "string") throw new Error("Title must be a string");
       return (title = title.trim());
     };
@@ -177,8 +176,8 @@ export default function createMakeBlog({ validator }: { validator: any }) {
       return body;
     };
 
-    title = validateTitle(title);
-    bannerImgURL = validateImgURL(bannerImgURL);
+    title = title ? validateTitle(title) : "";
+    bannerImgURL = bannerImgURL ? validateImgURL(bannerImgURL) : "";
     views = validateViews(views);
     blogId = validateBlogId(blogId);
     author = validateAuthor(author);

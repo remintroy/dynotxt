@@ -1,4 +1,4 @@
-export const crateExpressCallback = (controller) => {
+export const createExpressCallback = (controller) => {
   return (req, res) => {
     //
     const requestObj = {

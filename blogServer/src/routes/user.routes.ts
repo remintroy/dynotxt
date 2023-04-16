@@ -1,9 +1,15 @@
 import express from "express";
-import { crateExpressCallback } from "./express.callback";
-import { getFetchBlogById } from "../controllers/user.controller";
+import { createExpressCallback } from "./express.callback";
+import { deleteBlogData, getFetchBlogById, postCreateNewBlog, putUpdateBlogData } from "../controllers/user.controller";
+import { authInit, mustLogin } from "./middlewares";
 
 export const app = express.Router();
 
-app.get("/posts/:id", crateExpressCallback(getFetchBlogById));
+app.use(authInit);
+
+app.get("/post/:id", createExpressCallback(getFetchBlogById));
+app.post("/post/create", mustLogin, createExpressCallback(postCreateNewBlog));
+app.put("/post/:id", mustLogin, createExpressCallback(putUpdateBlogData));
+app.delete("/post/:id", mustLogin, createExpressCallback(deleteBlogData));
 
 export default app;
