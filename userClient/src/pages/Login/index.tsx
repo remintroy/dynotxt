@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -144,7 +144,7 @@ export default function SignIn() {
             </Grid>
             <Grid item>
               <Link href="/auth/signup" variant="body2">
-                {"Already have an account? Sign Up"}
+                {"Don't have an account? Sign Up"}
               </Link>
             </Grid>
           </Grid>

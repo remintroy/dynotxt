@@ -1,20 +1,22 @@
-import "./style.css";
+import "./style.scss";
 import { useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import HomeIcon from "@mui/icons-material/Home";
-import SettingsIcon from "@mui/icons-material/Settings";
 import SearchIcon from "@mui/icons-material/Search";
 import MessageIcon from "@mui/icons-material/Message";
-import LogoutIcon from "@mui/icons-material/Logout";
 import CreateIcon from "@mui/icons-material/Create";
 import { Avatar, Button, IconButton, Tooltip } from "@mui/material";
 import { fetchUserData, setUser } from "../../redux/userSlice";
 import { authBackend } from "../../configs/axios";
+import ExploreIcon from "@mui/icons-material/Explore";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import SettingsIcon from "@mui/icons-material/Settings";
+import HomeIcon from "@mui/icons-material/Home";
 
 const NavBar = () => {
   const [isScrolled, setIsScorlled] = useState(false);
-  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
+  // useAppSelector((state) => state.config.thisIsPc)
+  const thisIsPc = false;
   const user = useAppSelector((state) => state.user.data);
   const navigate = useNavigate();
 
@@ -49,23 +51,27 @@ const NavBar = () => {
         </ul>
 
         <ul>
-          {user && (
+          {user && thisIsPc && (
             <Tooltip title="Create new blog">
-              <Button className="CreateIcon" variant="outlined" onClick={() => logoutUser()}>
-                <CreateIcon fontSize="small" /> Create Blog
-              </Button>
+              <Link to="/blog/create" className="link">
+                <Button className="CreateIcon" variant="outlined">
+                  <CreateIcon fontSize="small" /> Create Blog
+                </Button>
+              </Link>
             </Tooltip>
           )}
-          <Link to={"/explore"}>
+          <Link to={"/explore"} className="link">
             <IconButton>
               <SearchIcon />
             </IconButton>
           </Link>
-          <Link to={"/chat"}>
-            <IconButton>
-              <MessageIcon />
-            </IconButton>
-          </Link>
+          {thisIsPc && (
+            <Link to={"/chat"}>
+              <IconButton>
+                <MessageIcon />
+              </IconButton>
+            </Link>
+          )}
           {user && (
             <Link to={"/settings/account"}>
               <li className="no">
@@ -84,6 +90,31 @@ const NavBar = () => {
       <div className="Navcontent">
         <Outlet />
       </div>
+
+      {!thisIsPc && (
+        <ul className="BottomNav ">
+          <Link to="/" className="link">
+            <li>
+              <HomeIcon />
+            </li>
+          </Link>
+          <Link to="/blog/create" className="link">
+            <li>
+              <AddCircleIcon />
+            </li>
+          </Link>
+          <Link to="/chat" className="link">
+            <li>
+              <MessageIcon />
+            </li>
+          </Link>
+          <Link to="/settings" className="link">
+            <li>
+              <SettingsIcon />
+            </li>
+          </Link>
+        </ul>
+      )}
     </>
   );
 };

@@ -11,6 +11,7 @@ import AccountSettings from "./components/AccountSettings";
 import VerfyEmail from "./pages/VerifyEmail";
 import ProfilePage from "./pages/Profile";
 import BlogView from "./pages/BlogView";
+import CreateBlog from "./pages/CreateBlog";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
             element: <AccountSettings />,
           },
         ],
+      },
+      {
+        path: "/blog/create",
+        element: <CreateBlog />,
       },
     ],
   },

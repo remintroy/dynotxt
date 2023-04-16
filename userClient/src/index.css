@@ -10,6 +10,9 @@
 
   color-scheme: light dark;
 
+  background-color: var(--themeBg);
+  color: white;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -17,8 +20,8 @@
   -webkit-text-size-adjust: 100%;
 }
 
-.dummy{
- height: 500px;
+.dummy {
+  height: 500px;
 }
 
 .dim {
@@ -29,6 +32,10 @@
 }
 .sm {
   font-size: smaller;
+}
+.link {
+  text-decoration: none;
+  color: white;
 }
 .line {
   display: block;

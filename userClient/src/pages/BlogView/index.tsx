@@ -1,5 +1,5 @@
 import { Avatar, Button, Chip, Container, IconButton, Tooltip } from "@mui/material";
-import "./style.css";
+import "./style.scss";
 import { useAppSelector } from "../../redux/hooks";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareIcon from "@mui/icons-material/Share";
@@ -8,7 +8,7 @@ import hljs from "highlight.js";
 import "highlight.js/styles/tokyo-night-dark.css";
 import prettier from "prettier/standalone";
 import parserBabel from "prettier/parser-babel";
-import CopyAllIcon from '@mui/icons-material/CopyAll';
+import CopyAllIcon from "@mui/icons-material/CopyAll";
 
 const BlogView = () => {
   const user = useAppSelector((state) => state.user.data);
@@ -66,7 +66,7 @@ const BlogView = () => {
   };
   `;
 
-  console.log(codeString);
+  // console.log(codeString);
 
   let finalCodeString: string = "";
   try {
@@ -82,11 +82,6 @@ const BlogView = () => {
 
   return (
     <Container className="BlogView">
-      <div className="title">
-        <h1>Getting started with creating server using nodejs and express</h1>
-      </div>
-
-
       <div className="descrition-page box">
         <div className="profile-shareCont">
           <div className="profile">
@@ -122,6 +117,13 @@ const BlogView = () => {
           </div>
         </div>
 
+        <div className="imgCont">
+          <img src="/sample/title-img.jpg" alt="" />
+        </div>
+        <div className="title">
+          <h1>Getting started with creating server using nodejs and express</h1>
+        </div>
+
         <div className="blog-details">
           <div className="line"></div>
           <div className="sm">
@@ -130,10 +132,6 @@ const BlogView = () => {
             {new Date(`${user?.dob}`).toDateString()}
           </div>
         </div>
-      </div>
-      
-      <div className="imgCont">
-        <img src="/sample/title-img.jpg" alt="" />
       </div>
 
       <div className="contents underline">
@@ -153,7 +151,7 @@ const BlogView = () => {
           </div>
         </div>
       </div>
- 
+
       <div className="content-section">
         <h2># Intro</h2>
         <p>Lets start by understanding the basic concept of nodejs and express</p>

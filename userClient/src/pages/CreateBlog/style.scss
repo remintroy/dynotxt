@@ -1,0 +1,12 @@
+.Editor {
+    .quill {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .quill>div {
+        border: 1px solid var(--borderCommon) !important; 
+        border-radius: 5px;
+    }
+}

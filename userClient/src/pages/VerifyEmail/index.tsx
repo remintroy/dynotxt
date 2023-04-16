@@ -5,6 +5,7 @@ import { authBackend } from "../../configs/axios";
 import EmailIcon from "@mui/icons-material/Email";
 import { useAppDispatch } from "../../redux/hooks";
 import { setUser } from "../../redux/userSlice";
+import "./style.scss"
 
 const VerfyEmail = () => {
   const [statusDisp, setStatusDisp] = useState({ show: false, message: "", error: false });
