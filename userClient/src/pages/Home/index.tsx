@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import "./style.css";
+import "./style.scss";
 
 const Home = () => {
   return (

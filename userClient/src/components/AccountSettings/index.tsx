@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import EditIcon from "@mui/icons-material/Edit";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";

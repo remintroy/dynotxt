@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import { Outlet } from "react-router-dom";
 import { Container } from "@mui/material";
 

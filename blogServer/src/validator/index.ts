@@ -1,5 +1,4 @@
 import { createBlogValidator } from "./blog.validator";
-import { getBlogById } from "../data-access/blog.db";
+import { blogDb } from "../data-access/";
 
-export const blogValidator = createBlogValidator({ getBlogById });
-
+export const blogValidator = createBlogValidator({ getBlogById: blogDb.getBlogById });
