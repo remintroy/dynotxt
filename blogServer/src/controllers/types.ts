@@ -1,7 +1,6 @@
-export interface IRequest {
-  query?: any;
-  params?: any;
-  body?: any;
-  method: string;
-  path: string;
+import { Request } from "express";
+import { IUser } from "../models/user.types";
+
+export interface IRequest extends Request {
+  user: IUser;
 }

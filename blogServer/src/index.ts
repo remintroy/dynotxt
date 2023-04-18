@@ -3,9 +3,12 @@ import logger from "morgan";
 import { appConfig } from "./configs";
 import userRouter from "./routes/user.routes";
 import adminRouter from "./routes/admin.routes";
+import { mongoInit } from "./models";
 
 const server = express();
 const config = appConfig();
+
+mongoInit()
 
 server.use(logger("dev"));
 server.use(express.json());

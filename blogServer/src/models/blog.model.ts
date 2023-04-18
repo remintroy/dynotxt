@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
+import { model } from "mongoose";
 import { BlogSchema } from "./blog.schemas";
 import { IBlogModel } from "./blog.types";
 
-export default mongoose.model<IBlogModel>("blogs", BlogSchema);
+export default model<IBlogModel>("blogs", BlogSchema);

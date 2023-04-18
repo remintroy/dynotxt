@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 export const appConfig = () => {
   return {
     db: {
@@ -11,9 +14,18 @@ export const appConfig = () => {
     server: {
       id: 2,
       name: "Dynotxt BlogServer",
-      baseUrl: "/blog/",
+      baseUrl: "/blog",
       baseUrlAdmin: "/blog/su",
       port: process.env.PORT || 5003,
+    },
+    id: {
+      length: 22,
+      minLen: 22,
+      maxLen: 22,
+      pattern: "A0",
+    },
+    jwt: {
+      userSecret: process.env.ACCESS_TOKEN_SECRET,
     },
   };
 };

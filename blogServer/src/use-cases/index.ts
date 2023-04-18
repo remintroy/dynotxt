@@ -1,8 +1,21 @@
+import { getBlogId } from "../id";
 import { utils } from "../services";
-import createAddBlog from "./add-blog";
+import { blogValidator } from "../validator";
+import createCreateBlog from "./blog-create";
+import createDeleteBlog from "./blog-delete";
+import createGetBlogDataById from "./blog-get-by-id";
+import createUpdateBlogData from "./blog-update";
 
-export const addBlog = createAddBlog({ createError: utils.createError });
+const blogId = getBlogId();
+
+export const createBlog = createCreateBlog({ blogId });
+export const getBlogById = createGetBlogDataById();
+export const updateBlog = createUpdateBlogData({ createError: utils.createError, blogValidator });
+export const deleteBlog = createDeleteBlog();
 
 export default {
-  addBlog,
+  createBlog,
+  getBlogById,
+  updateBlog,
+  deleteBlog,
 };

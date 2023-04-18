@@ -6,9 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getJwt = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const verifyAccessToken_1 = __importDefault(require("./verifyAccessToken"));
-const getJwt = ({ secret }) => {
+const verifyRefreshToken_1 = __importDefault(require("./verifyRefreshToken"));
+const createAccessToken_1 = __importDefault(require("./createAccessToken"));
+const createRefreshToken_1 = __importDefault(require("./createRefreshToken"));
+const getJwt = ({ secret, accessOptions, refreshOptions, }) => {
     return {
         verifyAssessToken: (0, verifyAccessToken_1.default)({ jwt: jsonwebtoken_1.default, secret }),
+        verifyRefreshToken: (0, verifyRefreshToken_1.default)({ jwt: jsonwebtoken_1.default, secret }),
+        createAccessToken: (0, createAccessToken_1.default)(jsonwebtoken_1.default, secret, accessOptions),
+        createRefreshToken: (0, createRefreshToken_1.default)(jsonwebtoken_1.default, secret, refreshOptions),
     };
 };
 exports.getJwt = getJwt;
