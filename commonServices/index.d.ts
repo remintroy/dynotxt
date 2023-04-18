@@ -9,10 +9,16 @@ declare const _default: {
             code: number;
         };
     };
-    getJwt: ({ secret }: {
+    getJwt: ({ secret, options }: {
         secret: string;
+        options: {
+            expiresIn: string | number;
+        };
     }) => {
         verifyAssessToken: (token: string) => any;
+        verifyRefreshToken: (token: string) => any;
+        createAccessToken: (payload: string) => any;
+        createRefreshToken: (payload: string) => any;
     };
 };
 export default _default;
@@ -26,8 +32,14 @@ export declare const getUtils: () => {
         code: number;
     };
 };
-export declare const getJwt: ({ secret }: {
+export declare const getJwt: ({ secret, options }: {
     secret: string;
+    options: {
+        expiresIn: string | number;
+    };
 }) => {
     verifyAssessToken: (token: string) => any;
+    verifyRefreshToken: (token: string) => any;
+    createAccessToken: (payload: string) => any;
+    createRefreshToken: (payload: string) => any;
 };
