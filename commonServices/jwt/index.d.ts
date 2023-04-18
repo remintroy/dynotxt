@@ -1,12 +1,15 @@
-export declare const getJwt: ({ secret, options }: {
+export declare const getJwt: ({ secret, accessOptions, refreshOptions, }: {
     secret: string;
-    options: {
-        expiresIn: string | number;
+    accessOptions?: {
+        expiresIn?: string | number;
+    };
+    refreshOptions?: {
+        expiresIn?: string | number;
     };
 }) => {
     verifyAssessToken: (token: string) => any;
     verifyRefreshToken: (token: string) => any;
-    createAccessToken: (payload: string) => any;
-    createRefreshToken: (payload: string) => any;
+    createAccessToken: (payload: object) => any;
+    createRefreshToken: (payload: object) => any;
 };
 export default getJwt;
