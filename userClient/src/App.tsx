@@ -11,6 +11,9 @@ import VerfyEmail from "./pages/VerifyEmail";
 import ProfilePage from "./pages/Profile";
 import BlogView from "./pages/BlogView";
 import CreateBlog from "./pages/CreateBlog";
+import { useAppDispatch } from "./redux/hooks";
+import { setThisIsPcConfig } from "./redux/configSlice";
+import { useEffect } from "react";
 
 const router = createBrowserRouter([
   {
@@ -69,6 +72,13 @@ function App() {
       mode: "dark",
     },
   });
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setThisIsPcConfig(window.innerWidth > 766));
+    window.addEventListener("resize", () => dispatch(setThisIsPcConfig(window.innerWidth > 766)));
+  }, []);
 
   return (
     <div className="App">

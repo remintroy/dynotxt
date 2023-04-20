@@ -6,6 +6,7 @@ const initialState = {
     path: "",
     title: "",
   },
+  allowBottomNav: true,
   loading: false,
   error: false,
 };
@@ -19,6 +20,10 @@ export const navBarSlice = createSlice({
         path: "/",
         title: "",
       };
+      state.allowBottomNav = true;
+    },
+    allowBottomNav: (state, action) => {
+      state.allowBottomNav = action.payload ? true : false;
     },
     setNavBarData: (state, action) => {
       state = { ...state, ...action.payload };
@@ -26,6 +31,6 @@ export const navBarSlice = createSlice({
   },
 });
 
-export const { clearNavBar, setNavBarData } = navBarSlice.actions;
+export const { clearNavBar, setNavBarData, allowBottomNav } = navBarSlice.actions;
 
 export default navBarSlice.reducer;

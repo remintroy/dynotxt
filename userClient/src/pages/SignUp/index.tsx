@@ -11,7 +11,7 @@ import Container from "@mui/material/Container";
 import { useState } from "react";
 import { authConfig } from "../../configs/firebase";
 import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { setUser } from "../../redux/userSlice";
+import { fetchUserData, setUser } from "../../redux/userSlice";
 import { authBackend } from "../../configs/axios";
 import { Alert, Checkbox, FormControlLabel } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -65,6 +65,7 @@ export default function SignUp() {
         // saving tokens
         dispatch(setUser(data));
         setStatusDisp({ show: true, message: "Login success", error: false });
+        dispatch(fetchUserData());
         navigate("/");
       } catch (error: any) {
         if (error?.response?.status == 403 && error.response?.data?.url) navigate(error.response?.data?.url);

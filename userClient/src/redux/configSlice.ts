@@ -9,7 +9,10 @@ export const configSlice = createSlice({
   initialState,
   reducers: {
     setConfigState: (state, action) => {
-      state = { ...state, ...action };
+      state = { ...state, ...action.payload };
+    },
+    setThisIsPcConfig: (state, action) => {
+      state.thisIsPc = action.payload ? true : false;
     },
     resetConfig: (state) => {
       state = {
@@ -19,6 +22,6 @@ export const configSlice = createSlice({
   },
 });
 
-export const { setConfigState, resetConfig } = configSlice.actions;
+export const { setConfigState,setThisIsPcConfig, resetConfig } = configSlice.actions;
 
 export default configSlice.reducer;

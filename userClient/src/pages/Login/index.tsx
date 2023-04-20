@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { authConfig } from "../../configs/firebase";
 import { authBackend } from "../../configs/axios";
-import { setUser } from "../../redux/userSlice";
+import { fetchUserData, setUser } from "../../redux/userSlice";
 import { useAppDispatch } from "../../redux/hooks";
 
 function Copyright(props: any) {
@@ -60,6 +60,9 @@ export default function SignIn() {
         // saving tokens
         dispatch(setUser(data));
         setStatusDisp({ show: true, message: "Login success", error: false });
+       
+        dispatch(fetchUserData());
+      
         navigate("/");
       } catch (error: any) {
         //
