@@ -14,15 +14,16 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
 
 const NavBar = () => {
-  const [isScrolled, setIsScorlled] = useState(false);
-  // useAppSelector((state) => state.config.thisIsPc)
-  const thisIsPc = false;
+  // const [isScrolled, setIsScorlled] = useState(false); 
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
   const user = useAppSelector((state) => state.user.data);
+  const allowBottomNav = useAppSelector((state) => state.navBar.allowBottomNav);
   const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
+  useEffect(() => { 
+    
     dispatch(fetchUserData());
   }, []);
 
@@ -45,7 +46,7 @@ const NavBar = () => {
         <ul>
           <Link to={"/"}>
             <div className="logoImgCong">
-              <img className="logo" src="/logo.png" alt="" />
+              <img className="logo" src="/logo-large.png" alt="" />
             </div>
           </Link>
         </ul>
@@ -91,7 +92,7 @@ const NavBar = () => {
         <Outlet />
       </div>
 
-      {!thisIsPc && (
+      {!thisIsPc && allowBottomNav && (
         <ul className="BottomNav ">
           <Link to="/" className="link">
             <li>

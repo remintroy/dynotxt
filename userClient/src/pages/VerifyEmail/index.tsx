@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { authBackend } from "../../configs/axios";
 import EmailIcon from "@mui/icons-material/Email";
 import { useAppDispatch } from "../../redux/hooks";
-import { setUser } from "../../redux/userSlice";
-import "./style.scss"
+import { fetchUserData, setUser } from "../../redux/userSlice";
+import "./style.scss";
 
 const VerfyEmail = () => {
   const [statusDisp, setStatusDisp] = useState({ show: false, message: "", error: false });
@@ -41,6 +41,7 @@ const VerfyEmail = () => {
       const { data } = await authBackend.post("/verify_email", { uid: params.uid, otp: otp });
       dispatch(setUser(data));
       setStatusDisp({ show: true, message: "Login success", error: false });
+      dispatch(fetchUserData());
       navigate("/");
     } catch (error: any) {
       setStatusDisp({

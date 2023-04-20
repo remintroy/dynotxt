@@ -27,7 +27,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   uid: string;
-  provider: string;
+  provider: string; 
   img: string;
   photoURL: string;
   phone: string;
