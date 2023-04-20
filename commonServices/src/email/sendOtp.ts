@@ -8,27 +8,73 @@ export default async (
   otp: string
 ) => {
   try {
-    const template = `<div style="font-family: Helvetica,Arial,sans-serif;overflow:auto;line-height:2">
-    <div style="auto;width:95%; margin: 50px auto;">
-      <div style="border-bottom:1px solid #eee">
-        <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Dynotxt</a>
-      </div>
-      <p style="font-size:1.1em">Hi,</p>
-      <p>Thank you for choosing Dynotxt. Use the following OTP to complete your Authentication procedures. OTP is valid for 10 minutes</p>
-      <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
-      <p style="font-size:0.9em;">Regards,<br />Dynotxt.com</p>
-      <hr style="border:none;border-top:1px solid #eee" />
-      <div style="float:left;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
-        <p>Dynotxt.com</p>
-        <p>Kerala, India</p> 
-      </div>
+    const template = ` 
+    <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 100px;
+            margin-bottom: 100px;
+            background-color: rgb(235, 235, 235);
+            box-sizing: border-box;
+            padding: 20px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .content {
+            box-sizing: border-box;
+            padding: 50px;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            border: 1px solid rgb(185, 185, 185);
+            border-radius: 4px;
+            max-width: 500px;
+        }
+
+        .content h1 {
+            margin-top: 0;
+            font-size: 40px;
+        }
+
+        .content img.logo {
+            width: 100px;
+            filter: invert(100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Verification code</h1>
+        <p>Please use the code below to verify you email with <b>dynotxt.com</b></p>
+        <h2>${otp}</h2>
+        <p>If you <b>didn’t request</b> this, you can ignore this email.</p>
+        <div class="align-left">
+            <b> Thanks, <br>
+                Dynotxt support &hearts;
+            </b>
+        </div>
     </div>
-  </div>`;
+</body>
+
+</html>`;
 
     return await tarnsport.sendMail({
-      from: fromEmail,
+      from: `"Dynotxt Team" <${fromEmail}>`,
       to: toEmail,
-      subject: "OTP for Dynotxt.com",
+      subject: "Verification code for dynotxt",
       html: template,
     });
   } catch (e) {
