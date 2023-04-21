@@ -1,9 +1,10 @@
 import { Request } from "express";
-import IuserRepositoryMongoDB from "../../frameworks/databases/mongoDb/repository/userRepositoryMongoDb";
 import IauthServiceImpl from "../../frameworks/services/authServices";
-import { normalUserValidatorImpl } from "../../frameworks/services/validator";
 import userSignin from "../../application/use-cases/user/signIn";
-import tokenRepositoryMongoDB from "../../frameworks/databases/mongoDb/repository/tockensRepositoryMongoDb";
+import normalUserValidator from "../../application/services/normalUserValidator";
+import useDbrRepository from "../../application/repository/userDbRepository";
+import tokenDbRepository from "../../application/repository/tokensDbRepository";
+import authService from "../../application/services/authServices";
 
 interface IRequest extends Request {
   user: string;
@@ -18,19 +19,16 @@ export default class userController {
   private _emailService: any;
 
   constructor(
-    userDbRepository,
-    userDbRepositoryImpl: typeof IuserRepositoryMongoDB,
-    authServiceInterface,
-    authServiceImpl: typeof IauthServiceImpl,
-    tokenRepositoryInterface,
-    tokenRepositoryImpl: typeof tokenRepositoryMongoDB,
-    validator: typeof normalUserValidatorImpl,
+    userDbRepository: useDbrRepository,
+    tokernDbRepository: tokenDbRepository,
+    authService: authService,
+    validator: normalUserValidator,
     createError,
     emailService
   ) {
-    this._authService = authServiceInterface(authServiceImpl());
-    this._userRepository = userDbRepository(userDbRepositoryImpl());
-    this._tokenRepository = tokenRepositoryInterface(tokenRepositoryImpl());
+    this._authService = authService;
+    this._userRepository = userDbRepository;
+    this._tokenRepository = tokernDbRepository;
     this._validator = validator;
     this._createError = createError;
     this._emailService = emailService;
@@ -50,6 +48,6 @@ export default class userController {
   };
 
   getUserRefresh = (req: IRequest) => {
-
+    //
   };
 }

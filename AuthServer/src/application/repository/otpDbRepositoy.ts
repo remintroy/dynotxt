@@ -1,19 +1,14 @@
 import { IOtp } from "../../frameworks/databases/mongoDb/models/otp.schema";
+import otpRepositoryMongoDB from "../../frameworks/databases/mongoDb/repository/otpRepositoyMongoDb";
 
-export default function otpDbRepository(respository) {
-  // const respository = getRespository();
-
-  const add = (data: IOtp) => respository.add(data);
-  const removeById = (uid: string) => respository.removeById(uid);
-  const removeByEmail = (email: string) => respository.removeByEmail(email);
-  const getById = (uid: string) => respository.getById(uid);
-  const getByEmail = (email: string) => respository.getByEmail(email);
-
-  return {
-    add,
-    removeById,
-    removeByEmail,
-    getById,
-    getByEmail,
-  };
+export default class otpDbRepository {
+  private _respository: otpRepositoryMongoDB;
+  constructor(respository: otpRepositoryMongoDB) {
+    this._respository = respository;
+  }
+  add = (data: IOtp) => this._respository.add(data);
+  removeById = (uid: string) => this._respository.removeById(uid);
+  removeByEmail = (email: string) => this._respository.removeByEmail(email);
+  getById = (uid: string) => this._respository.getById(uid);
+  getByEmail = (email: string) => this._respository.getByEmail(email);
 }

@@ -1,6 +1,6 @@
 import validator from "validator";
 
-export default class createNormalUserValidator {
+export default class createNormalUserValidatorImpl {
   constructor() {
     //! TODO : Add validaton logic
     //

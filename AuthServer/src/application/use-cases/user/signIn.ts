@@ -1,12 +1,13 @@
 import { getConfigs } from "../../../configs";
 import { userNormal } from "../../../entities";
 import { IUser } from "../../../entities/user.normal";
+import normalUserValidator from "../../services/normalUserValidator";
 
 export default async function userSignin(
   authService,
   userRepository,
   tokenRepository,
-  validator,
+  validator: normalUserValidator,
   createError,
   email,
   idToken: string
@@ -32,7 +33,7 @@ export default async function userSignin(
     }
     if (!existingData) {
       // creates and saves new user
-      const newUserData =  new userNormal({
+      const newUserData = new userNormal({
         uid: user.uid,
         name: user.displayName,
         email: user.email,

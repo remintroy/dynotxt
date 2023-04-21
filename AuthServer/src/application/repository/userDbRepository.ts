@@ -1,15 +1,14 @@
 import { IUser } from "../../entities/user.normal";
+import userRepositoryMongoDB from "../../frameworks/databases/mongoDb/repository/userRepositoryMongoDb";
 
-export default function useDbrRepository(respository) {
-  // const respository = getRespository();
+export default class useDbrRepository {
+  private _repository: userRepositoryMongoDB;
 
-  const add = (data: IUser) => respository.add(data);
-  const update = (uid: string, data: IUser) => respository.update(uid, data);
-  const getById = (uid: string) => respository.getById(uid);
+  constructor(respository: userRepositoryMongoDB) {
+    this._repository = respository;
+  }
 
-  return {
-    add,
-    update,
-    getById,
-  };
+  add = (data: IUser) => this._repository.add(data);
+  update = (uid: string, data: IUser) => this._repository.update(uid, data);
+  getById = (uid: string) => this._repository.getById(uid);
 }

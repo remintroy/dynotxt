@@ -1,5 +1,5 @@
 import { getUtils } from "dynotxt-common-services/utils";
-import { normalUserValidatorImpl } from "../frameworks/services/validator";
+import normalUserValidator from "../application/services/normalUserValidator";
 
 const { createError: createErrorType } = getUtils();
 
