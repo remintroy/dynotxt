@@ -1,8 +1,7 @@
-export declare const getUtils: () => {
-    createError: (code: number, error: string, optionalData?: object) => {
+export default class utilService {
+    createError: (code: number, error: string, optionalData?: object | null) => {
         message: any;
         error: string;
         code: number;
     };
-};
-export default getUtils;
+}
