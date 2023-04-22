@@ -14,6 +14,8 @@ import {
   emailService,
   utilService,
 } from "../../../application/services/commonServices";
+import otpRepositoryInterface from "../../../application/repository/otpRepositoyInteraface";
+import otpRepositoryImpl from "../../databases/mongoDb/repository/otpRepositoryImpl";
 
 export default function userRouter(express: typeof ExpressApp) {
   const router = express.Router();
@@ -24,10 +26,12 @@ export default function userRouter(express: typeof ExpressApp) {
   const userRepository = userRepositoryInteraface(userRepositoryImpl());
   const tokenRepository = tokenRepositoryInteraface(tokenRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
+  const otpRepository = otpRepositoryInterface(otpRepositoryImpl());
 
   const controller = userController(
     userRepository,
     tokenRepository,
+    otpRepository,
     authService,
     validator,
     utils.createError,
@@ -36,18 +40,23 @@ export default function userRouter(express: typeof ExpressApp) {
 
   router.use(authMiddleware);
 
-  router.route("/user_data").get().post();
-  router.route("/verify_email").get().post();
-  router.route("/logout").get();
   router
-    .route("/update")
-    .post(makeExpressResponseCallback(controller.postUserUpdate));
+    .route("/verify_email")
+    .get(makeExpressResponseCallback(controller.getUserEmailVerificationStatus))
+    .post(makeExpressResponseCallback(controller.postVerifyEmail));
+  router
+    .route("/logout")
+    .get(makeExpressResponseCallback(controller.getUserLogout));
   router
     .route("/refresh")
     .get(makeExpressResponseCallback(controller.getUserRefresh));
   router
     .route("/signin")
     .post(makeExpressResponseCallback(controller.userPostSignin));
+  router
+    .route("/user_data")
+    .get(makeExpressResponseCallback(controller.getUserData))
+    .post(makeExpressResponseCallback(controller.postUserUpdate));
 
   return router;
 }

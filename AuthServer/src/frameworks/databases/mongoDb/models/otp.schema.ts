@@ -1,14 +1,14 @@
 import { Schema } from "mongoose";
 
 export interface IOtp {
-  otp: string;
-  uid: string;
-  email: string;
-  createdAt: Date;
-  expiresAt: Date;
-  forUser: boolean;
-  forAdmin: boolean;
-  reason: string;
+  otp?: string;
+  uid?: string;
+  email?: string;
+  createdAt?: Date;
+  expiresAt?: Date;
+  forUser?: boolean;
+  forAdmin?: boolean;
+  reason?: string;
 }
 
 export const optSchema = new Schema({

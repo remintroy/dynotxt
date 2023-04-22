@@ -1,5 +1,5 @@
 import { IOtp } from "../../frameworks/databases/mongoDb/models/otp.schema";
-import otpRepositoryImpl from "../../frameworks/databases/mongoDb/repository/otpRepositoyMongoDb";
+import otpRepositoryImpl from "../../frameworks/databases/mongoDb/repository/otpRepositoryImpl";
 
 const otpRepositoryInterface = (
   respository: ReturnType<typeof otpRepositoryImpl>
@@ -9,6 +9,7 @@ const otpRepositoryInterface = (
   const removeByEmail = (email: string) => respository.removeByEmail(email);
   const getById = (uid: string) => respository.getById(uid);
   const getByEmail = (email: string) => respository.getByEmail(email);
+  const getByData = (data: IOtp) => respository.getByData(data);
 
   return {
     add,
@@ -16,6 +17,7 @@ const otpRepositoryInterface = (
     removeByEmail,
     getById,
     getByEmail,
+    getByData,
   };
 };
 
