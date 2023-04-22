@@ -1,7 +1,7 @@
 import OptModel from "../models/otp";
 import { IOtp } from "../models/otp.schema";
 
-const otpRepositoryMongoDB = () => {
+const otpRepositoryImpl = () => {
   const add = async (data: IOtp) => {
     const response = await new OptModel(data).save();
     return response;
@@ -22,13 +22,18 @@ const otpRepositoryMongoDB = () => {
     const response = await OptModel.findOne({ email });
     return response;
   };
+  const getByData = async (data: IOtp) => {
+    const response = await OptModel.findOne(data);
+    return response;
+  };
   return {
     add,
     removeByEmail,
     removeById,
     getById,
     getByEmail,
+    getByData,
   };
 };
 
-export default otpRepositoryMongoDB;
+export default otpRepositoryImpl;

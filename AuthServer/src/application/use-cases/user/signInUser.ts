@@ -5,11 +5,13 @@ import authServiceInterface from "../../services/authServices";
 import validatorInteraface from "../../services/validatorInteraface";
 import { userEntity } from "../../../entities";
 import { IUser } from "../../../entities/user.normal";
+import otpRepositoryInterface from "../../repository/otpRepositoyInteraface";
 
 export default async function userSignin(
   authService: ReturnType<typeof authServiceInterface>,
   userRepository: ReturnType<typeof userRepositoryInteraface>,
   tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
+  otpRepository: ReturnType<typeof otpRepositoryInterface>,
   validator: ReturnType<typeof validatorInteraface>,
   createError,
   email,
@@ -56,8 +58,13 @@ export default async function userSignin(
   }
 
   if (!existingData || !existingData.emailVerified) {
-    const otp = await authService.createOtp(user.uid, "signin/emailVerify");
+    const otp = await authService.createOtp();
     try {
+      await otpRepository.add({
+        uid: user.uid,
+        reason: config.actions.VERIFY_EMAIL_AT_SIGNIN,
+        otp,
+      });
       await email.sendOtp(user.email, `${otp}`);
     } catch (error) {
       throw createError(
@@ -71,13 +78,12 @@ export default async function userSignin(
   }
 
   // ----- TOKENS -----
-  const tokens = await authService.tokensForUser(user.uid);
+  const tokens = authService.tokensForUser(user.uid);
 
   try {
     await tokenRepository.add(user.uid, tokens.refreshToken);
     await userRepository.update(user.uid, { lastLogin: new Date() });
   } catch (error) {
-    console.log(error);
     throw createError(500, "Faild to login, Error updating login status");
   }
 

@@ -13,8 +13,6 @@ const app = express();
 
 const server = http.createServer(app);
 
-serverConfig(server, getConfigs).startServer();
-
 expressConfig(app, getConfigs);
 
 connection(mongoose, getConfigs).connectToMongodb();
@@ -24,3 +22,5 @@ initializeFirebase();
 routes(app, express, getConfigs);
 
 app.use(errorHandlingMiddlware);
+
+serverConfig(server, getConfigs).startServer();

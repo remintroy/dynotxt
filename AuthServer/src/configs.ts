@@ -60,7 +60,10 @@ const getConfigs = () => {
       pass: process.env.MAIL_APP_PASSWORD,
     },
     actions: {
-      VERIFY_EMAIL_AT_SIGNIN: "verify-email-at-signup",
+      VERIFY_EMAIL_AT_SIGNIN: "VRFYMIL",
+      REDIRECT_TO_HOME: "BTHOME",
+      VERIFIED: "VERIFIED",
+      NOT_VERIFIED: "NVERIFIED",
     },
   };
 };

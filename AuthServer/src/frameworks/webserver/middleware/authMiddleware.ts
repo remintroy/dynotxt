@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import {
   userJwtService,
   utilService,
@@ -18,11 +18,10 @@ export default async function authMiddleware(
   next: NextFunction
 ) {
   try {
-    if (req.headers.authorization?.split(" ")[0] !== "Bearer")
+    if (!(req.headers.authorization?.split(" ")[0].trim() === "Bearer"))
       throw createError(400, "Invalid authorization token type");
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization?.split(" ")[1]?.trim();
     const { uid } = jwt.verifyAssessToken(token);
-
     if (uid) {
       req.user = await userRepository.getById(uid);
       if (req.user.disabled) req.user = null;
@@ -30,5 +29,6 @@ export default async function authMiddleware(
   } catch (error) {
     req.user = null;
   }
+
   next();
 }

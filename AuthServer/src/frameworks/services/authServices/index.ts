@@ -4,7 +4,7 @@ import { userJwtServiceImpl } from "../commonServices";
 const authServiceImpl = () => {
   const verifyIdToken = (idToken: string) => firebase.verifyIdToken(idToken);
 
-  const createOtp = async (uid: string, reason: string) => "67F24G";
+  const createOtp = async () => "67F24G";
 
   const tokensForUser = (uid: string) => {
     return {

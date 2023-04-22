@@ -5,8 +5,7 @@ const authServiceInterface = (
 ) => {
   const verifyIdToken = (token: string) => authService.verifyIdToken(token);
 
-  const createOtp = (uid: string, reason: string) =>
-    authService.createOtp(uid, reason);
+  const createOtp = () => authService.createOtp();
 
   const tokensForUser = (uid: string) => authService.tokensForUser(uid);
 
