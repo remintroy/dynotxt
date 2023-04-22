@@ -18,7 +18,6 @@ export default async function userUpdate(
   });
 
   const validUpdatableData = user.getSafeData();
-
   try {
     return await userRepository.update(userId, validUpdatableData);
   } catch (error) {

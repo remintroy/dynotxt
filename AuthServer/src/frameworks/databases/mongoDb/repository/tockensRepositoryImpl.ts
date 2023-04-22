@@ -3,7 +3,11 @@ import { IToken } from "../models/tokens.schema";
 
 const tokenRepositoryImpl = () => {
   const add = async (uid: string, token: string, optons?: object) => {
-    const response = await new TokensModel({ uid, token, ...optons }).save();
+    const response = await new TokensModel({
+      uid,
+      value: token,
+      ...optons,
+    }).save();
     return response;
   };
 
