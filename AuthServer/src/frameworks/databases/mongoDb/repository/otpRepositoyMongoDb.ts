@@ -1,27 +1,34 @@
-import optModel from "../models/otp";
+import OptModel from "../models/otp";
 import { IOtp } from "../models/otp.schema";
 
-export default function otpRepositoryMongoDB() {
+const otpRepositoryMongoDB = () => {
   const add = async (data: IOtp) => {
-    return await new optModel(data).save();
+    const response = await new OptModel(data).save();
+    return response;
   };
   const removeById = async (uid: string) => {
-    return await optModel.deleteOne({ uid });
+    const response = await OptModel.deleteOne({ uid });
+    return response;
   };
   const removeByEmail = async (email: string) => {
-    return await optModel.deleteOne({ email });
+    const response = await OptModel.deleteOne({ email });
+    return response;
   };
   const getById = async (uid: string) => {
-    return await optModel.findOne({ uid });
+    const response = await OptModel.findOne({ uid });
+    return response;
   };
   const getByEmail = async (email: string) => {
-    return await optModel.findOne({ email });
+    const response = await OptModel.findOne({ email });
+    return response;
   };
   return {
     add,
-    removeById,
     removeByEmail,
+    removeById,
     getById,
-    getByEmail
+    getByEmail,
   };
-}
+};
+
+export default otpRepositoryMongoDB;

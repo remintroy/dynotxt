@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
+
 dotenv.config();
 
-export const getConfigs = () => {
+const getConfigs = () => {
   return {
     server: {
       name: "Dynotxt AuthServer",
@@ -13,10 +14,26 @@ export const getConfigs = () => {
       logoUrl: "https://remintroy.github.io/dynotxt/userClient/public/logo.png",
     },
     jwt: {
-      adminAccessSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
-      adminRefreshSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
-      userAccessSecret: process.env.ACCESS_TOKEN_SECRET,
-      userRefreshSecret: process.env.REFRESH_TOKEN_SECRET,
+      user: {
+        accessSecret: process.env.ACCESS_TOKEN_SECRET,
+        refreshSecret: process.env.REFRESH_TOKEN_SECRET,
+        accessOptions: {
+          expiresIn: "20m",
+        },
+        refreshOptions: {
+          expiresIn: "365d",
+        },
+      },
+      admin: {
+        refreshSecret: process.env.ADMIN_REFRESH_TOKEN_SECRET,
+        accessSecret: process.env.ADMIN_ACCESS_TOKEN_SECRET,
+        accessOptions: {
+          expiresIn: "15m",
+        },
+        refreshOptions: {
+          expiresIn: "1d",
+        },
+      },
     },
     cors: {
       origin: ["*", "https://dynotxt.com", "https://admin.dynotxt.com"],
@@ -47,3 +64,5 @@ export const getConfigs = () => {
     },
   };
 };
+
+export default getConfigs;

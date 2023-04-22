@@ -1,55 +1,64 @@
 import { Request } from "express";
-import IuserRepositoryMongoDB from "../../frameworks/databases/mongoDb/repository/userRepositoryMongoDb";
-import IauthServiceImpl from "../../frameworks/services/authServices";
-import { normalUserValidatorImpl } from "../../frameworks/services/validator";
 import userSignin from "../../application/use-cases/user/signIn";
-import tokenRepositoryMongoDB from "../../frameworks/databases/mongoDb/repository/tockensRepositoryMongoDb";
+import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
+import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
+import authServiceInterface from "../../application/services/authServices";
+import refreshUser from "../../application/use-cases/user/refresh";
+import validatorInteraface from "../../application/services/validatorInteraface";
+import { IUser } from "../../entities/user.normal";
+import userUpdate from "../../application/use-cases/user/update";
 
-interface IRequest extends Request {
-  user: string;
+export interface IRequest extends Request {
+  user: IUser;
 }
 
-export default class userController {
-  private _authService: any;
-  private _userRepository: any;
-  private _tokenRepository: any;
-  private _validator: any;
-  private _createError: any;
-  private _emailService: any;
-
-  constructor(
-    userDbRepository,
-    userDbRepositoryImpl: typeof IuserRepositoryMongoDB,
-    authServiceInterface,
-    authServiceImpl: typeof IauthServiceImpl,
-    tokenRepositoryInterface,
-    tokenRepositoryImpl: typeof tokenRepositoryMongoDB,
-    validator: typeof normalUserValidatorImpl,
-    createError,
-    emailService
-  ) {
-    this._authService = authServiceInterface(authServiceImpl());
-    this._userRepository = userDbRepository(userDbRepositoryImpl());
-    this._tokenRepository = tokenRepositoryInterface(tokenRepositoryImpl());
-    this._validator = validator;
-    this._createError = createError;
-    this._emailService = emailService;
-  }
-
-  userPostSignin = async (req: IRequest) => {
-    const idToken = req.body.idToken;
-    return await userSignin(
-      this._authService,
-      this._userRepository,
-      this._tokenRepository,
-      this._validator,
-      this._createError,
-      this._emailService,
+const userController = (
+  userRepository: ReturnType<typeof userRepositoryInteraface>,
+  tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
+  authService: ReturnType<typeof authServiceInterface>,
+  validator: ReturnType<typeof validatorInteraface>,
+  createError,
+  emailService
+) => {
+  const userPostSignin = async (req: IRequest) => {
+    const { idToken } = req.body;
+    const response = await userSignin(
+      authService,
+      userRepository,
+      tokenRepository,
+      validator,
+      createError,
+      emailService,
       idToken
     );
+    return response;
   };
 
-  getUserRefresh = (req: IRequest) => {
-
+  const getUserRefresh = async (req: IRequest) => {
+    const { refreshToken } = req.cookies;
+    const response = await refreshUser(
+      tokenRepository,
+      userRepository,
+      authService,
+      validator,
+      createError,
+      refreshToken
+    );
+    return response;
   };
-}
+
+  const postUserUpdate = async (req: IRequest) => {
+    const uid = req.user?.uid;
+    const data = req.body;
+    const response = await userUpdate(userRepository, createError, data, uid);
+    return response;
+  };
+
+  return {
+    userPostSignin,
+    getUserRefresh,
+    postUserUpdate,
+  };
+};
+
+export default userController;

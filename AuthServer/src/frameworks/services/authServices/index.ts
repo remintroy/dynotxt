@@ -1,24 +1,38 @@
 import * as firebase from "./firebase";
-import jwt from "./jwt";
+import { userJwtServiceImpl } from "../commonServices";
 
-export default function authServiceImpl() {
+const authServiceImpl = () => {
   const verifyIdToken = (idToken: string) => firebase.verifyIdToken(idToken);
+
   const createOtp = async (uid: string, reason: string) => "67F24G";
 
-  const adminJwt = jwt.adminJwt;
-  const userJwt = jwt.userJwt;
   const tokensForUser = (uid: string) => {
     return {
-      accessToken: jwt.userJwt.createAccessToken({ uid: uid }),
-      refreshTOken: jwt.userJwt.createRefreshToken({ uid: uid }),
+      accessToken: userJwtServiceImpl.createAccessToken({ uid }),
+      refreshToken: userJwtServiceImpl.createRefreshToken({ uid }),
     };
+  };
+
+  const getRefreshTokenPayload = (token: string) => {
+    return userJwtServiceImpl.verifyRefreshToken(token);
+  };
+
+  const getAccessTokenPayload = (token: string) => {
+    return userJwtServiceImpl.verifyAssessToken(token);
+  };
+
+  const createAccessToken = (payload: { uid?: string; email?: string }) => {
+    return userJwtServiceImpl.createAccessToken(payload);
   };
 
   return {
     verifyIdToken,
     createOtp,
-    adminJwt,
-    userJwt,
     tokensForUser,
+    getRefreshTokenPayload,
+    getAccessTokenPayload,
+    createAccessToken,
   };
-}
+};
+
+export default authServiceImpl;

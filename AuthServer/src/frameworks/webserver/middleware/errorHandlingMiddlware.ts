@@ -6,7 +6,12 @@ interface IErrorRequestHandler extends ErrorRequestHandler {
   message?: string;
 }
 
-export default function errorHandlingMiddlware(err: IErrorRequestHandler, req: Request, res: Response, next: NextFunction) {
+export default function errorHandlingMiddlware(
+  err: IErrorRequestHandler,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   err.statusCode = err.statusCode || 404;
   return err.customMessage || err.message
     ? res.status(err.statusCode).json({

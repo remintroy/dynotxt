@@ -1,12 +1,15 @@
-import { Express } from "express";
-
-import logger from "morgan";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import bodyParser from "body-parser";
+import { Express } from "express";
+import logger from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { getConfigs } from "../../configs";
+import getConfigs from "../../configs";
 
-export default function expressConfig(app: Express, configs: typeof getConfigs) {
+export default function expressConfig(
+  app: Express,
+  configs: typeof getConfigs
+) {
   const config = configs();
 
   app.use(logger("dev"));

@@ -1,8 +1,9 @@
 import { IOtp } from "../../frameworks/databases/mongoDb/models/otp.schema";
+import otpRepositoryImpl from "../../frameworks/databases/mongoDb/repository/otpRepositoyMongoDb";
 
-export default function otpDbRepository(respository) {
-  // const respository = getRespository();
-
+const otpRepositoryInterface = (
+  respository: ReturnType<typeof otpRepositoryImpl>
+) => {
   const add = (data: IOtp) => respository.add(data);
   const removeById = (uid: string) => respository.removeById(uid);
   const removeByEmail = (email: string) => respository.removeByEmail(email);
@@ -16,4 +17,6 @@ export default function otpDbRepository(respository) {
     getById,
     getByEmail,
   };
-}
+};
+
+export default otpRepositoryInterface;
