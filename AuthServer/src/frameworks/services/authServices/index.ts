@@ -1,21 +1,38 @@
 import * as firebase from "./firebase";
-import jwt from "./jwt";
+import { userJwtServiceImpl } from "../commonServices";
 
-export default class authServiceImpl {
-  private _adminJwt: typeof jwt.adminJwt;
-  private _userJwt: typeof jwt.userJwt;
+const authServiceImpl = () => {
+  const verifyIdToken = (idToken: string) => firebase.verifyIdToken(idToken);
 
-  constructor() {
-    this._adminJwt = jwt.adminJwt;
-    this._userJwt = jwt.userJwt;
-  }
+  const createOtp = async (uid: string, reason: string) => "67F24G";
 
-  verifyIdToken = (idToken: string) => firebase.verifyIdToken(idToken);
-  createOtp = async (uid: string, reason: string) => "67F24G";
-  tokensForUser = (uid: string) => {
+  const tokensForUser = (uid: string) => {
     return {
-      accessToken: this._userJwt.createAccessToken({ uid: uid }),
-      refreshTOken: this._userJwt.createRefreshToken({ uid: uid }),
+      accessToken: userJwtServiceImpl.createAccessToken({ uid }),
+      refreshToken: userJwtServiceImpl.createRefreshToken({ uid }),
     };
   };
-}
+
+  const getRefreshTokenPayload = (token: string) => {
+    return userJwtServiceImpl.verifyRefreshToken(token);
+  };
+
+  const getAccessTokenPayload = (token: string) => {
+    return userJwtServiceImpl.verifyAssessToken(token);
+  };
+
+  const createAccessToken = (payload: { uid?: string; email?: string }) => {
+    return userJwtServiceImpl.createAccessToken(payload);
+  };
+
+  return {
+    verifyIdToken,
+    createOtp,
+    tokensForUser,
+    getRefreshTokenPayload,
+    getAccessTokenPayload,
+    createAccessToken,
+  };
+};
+
+export default authServiceImpl;

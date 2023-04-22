@@ -1,8 +1,16 @@
+import validatorInteraface from "../application/services/validatorInteraface";
+import validatorImpl from "../frameworks/services/validator/validatorImpl";
 import createNormalUser from "./user.normal";
-import { normalUserValidatorImpl } from "../frameworks/services/validator";
-import { getUtils } from "dynotxt-common-services";
-import User from "./user.normal";
+import { utilService } from "../application/services/commonServices";
 
-const createError = getUtils().createError;
+const { createError } = utilService;
+const validator = validatorInteraface(validatorImpl());
 
-export const userNormal = createNormalUser({ normalUserValidator: normalUserValidatorImpl, createError });
+export const userEntity = createNormalUser({
+  validator,
+  createError,
+});
+
+export default {
+  userEntity,
+};

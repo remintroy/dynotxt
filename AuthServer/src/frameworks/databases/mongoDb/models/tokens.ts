@@ -1,6 +1,6 @@
 import { model } from "mongoose";
 import { IToken, tockenSchema } from "./tokens.schema";
 
-const tokensModel = model<IToken>("tokens", tockenSchema);
+const TokensModel = model<IToken>("tokens", tockenSchema);
 
-export default tokensModel;
+export default TokensModel;

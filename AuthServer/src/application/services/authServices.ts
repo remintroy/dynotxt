@@ -1,13 +1,32 @@
 import authServiceImpl from "../../frameworks/services/authServices";
 
-export default class authServiceInterface {
-  private _authService: authServiceImpl;
+const authServiceInterface = (
+  authService: ReturnType<typeof authServiceImpl>
+) => {
+  const verifyIdToken = (token: string) => authService.verifyIdToken(token);
 
-  constructor(authService: authServiceImpl) {
-    this._authService = authService;
-  }
+  const createOtp = (uid: string, reason: string) =>
+    authService.createOtp(uid, reason);
 
-  verifyIdToken = (token: string) => this._authService.verifyIdToken(token);
-  createOtp = (uid: string, reason: string) => this._authService.createOtp(uid, reason);
-  tokensForUser = (uid: string) => this._authService.tokensForUser(uid);
-}
+  const tokensForUser = (uid: string) => authService.tokensForUser(uid);
+
+  const getAccessTokenPayload = (token: string) =>
+    authService.getAccessTokenPayload(token);
+
+  const getRefreshTokenPayload = (token: string) =>
+    authService.getRefreshTokenPayload(token);
+
+  const createAccessToken = (payload: { uid?: string; email?: string }) =>
+    authService.createAccessToken(payload);
+
+  return {
+    verifyIdToken,
+    createOtp,
+    tokensForUser,
+    getAccessTokenPayload,
+    getRefreshTokenPayload,
+    createAccessToken,
+  };
+};
+
+export default authServiceInterface;
