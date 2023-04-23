@@ -34,7 +34,7 @@ function createNormalUser({
   // Check class fucntionally
   return async (data: IUser) => {
     try {
-      Promise.all([
+      const userValidatedData = await Promise.all([
         validator.isValidUid(data.uid),
         validator.isValidName(data.name),
         validator.isValidEmail(data.email),
@@ -53,26 +53,25 @@ function createNormalUser({
         validator.isValidBoolean(data.emailVerified),
         validator.isValidHash(data.hash),
         validator.isValidProvider(data.provider),
-      ]).then((userValidatedData) => {
-        data.uid = userValidatedData[0];
-        data.name = userValidatedData[1];
-        data.email = userValidatedData[2];
-        data.phone = userValidatedData[3];
-        data.photoURL = userValidatedData[4];
-        data.privateAccount = userValidatedData[5];
-        data.referal = userValidatedData[6];
-        data.referedBy = userValidatedData[7];
-        data.gender = userValidatedData[8];
-        data.dob = userValidatedData[9];
-        data.createdAt = userValidatedData[10];
-        data.lastLogin = userValidatedData[11];
-        data.lastRefresh = userValidatedData[12];
-        data.disabled = userValidatedData[13];
-        data.phoneVerified = userValidatedData[14];
-        data.emailVerified = userValidatedData[15];
-        data.hash = userValidatedData[16];
-        data.provider = userValidatedData[17];
-      });
+      ]);
+      data.uid = userValidatedData[0];
+      data.name = userValidatedData[1];
+      data.email = userValidatedData[2];
+      data.phone = userValidatedData[3];
+      data.photoURL = userValidatedData[4];
+      data.privateAccount = userValidatedData[5];
+      data.referal = userValidatedData[6];
+      data.referedBy = userValidatedData[7];
+      data.gender = userValidatedData[8];
+      data.dob = userValidatedData[9];
+      data.createdAt = userValidatedData[10];
+      data.lastLogin = userValidatedData[11];
+      data.lastRefresh = userValidatedData[12];
+      data.disabled = userValidatedData[13];
+      data.phoneVerified = userValidatedData[14];
+      data.emailVerified = userValidatedData[15];
+      data.hash = userValidatedData[16];
+      data.provider = userValidatedData[17];
 
       const makePublicAccount = () => {
         this.privateAccount = false;

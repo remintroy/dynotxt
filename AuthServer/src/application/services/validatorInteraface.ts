@@ -28,6 +28,9 @@ const validatorInteraface = (validator: ReturnType<typeof validatorImpl>) => {
 
   const isValidHash = (hash: string) => validator.isValidHash(hash);
 
+  const isValidPassword = (password: string) =>
+    validator.isValidPassword(password);
+
   const isValidProvider = (provider: string) =>
     validator.isValidProvider(provider);
 
@@ -46,6 +49,7 @@ const validatorInteraface = (validator: ReturnType<typeof validatorImpl>) => {
     isValidJwt,
     isValidHash,
     isValidProvider,
+    isValidPassword,
   };
 };
 

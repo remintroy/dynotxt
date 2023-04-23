@@ -26,11 +26,25 @@ const tokenRepositoryImpl = () => {
     return response;
   };
 
+  const addWithEmail = async (
+    email: string,
+    token: string,
+    optons?: object
+  ) => {
+    const response = await new TokensModel({
+      email,
+      value: token,
+      ...optons,
+    }).save();
+    return response;
+  };
+
   return {
     add,
     remove,
     getById,
     getByToken,
+    addWithEmail,
   };
 };
 

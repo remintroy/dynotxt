@@ -1,11 +1,11 @@
-import { IUser } from "../../../entities/user.normal";
+import { IAdminUser } from "../../../frameworks/databases/mongoDb/models/admin.schema";
+import adminUserRepositoryInteraface from "../../repository/adminUserRepositoryInteraface";
 import tokenRepositoryInteraface from "../../repository/tokensRepositoryInteraface";
-import userRepositoryInteraface from "../../repository/userRepositoryInteraface";
 import authServiceInterface from "../../services/authServices";
 import validatorInteraface from "../../services/validatorInteraface";
 
-export default async function getUserFromRefreshToken(
-  userRepository: ReturnType<typeof userRepositoryInteraface>,
+export default async function getAdminFromRefreshToken(
+  adminRepository: ReturnType<typeof adminUserRepositoryInteraface>,
   validator: ReturnType<typeof validatorInteraface>,
   tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
   authService: ReturnType<typeof authServiceInterface>,
@@ -24,26 +24,27 @@ export default async function getUserFromRefreshToken(
     throw createError(500, "Faild to fetch nessory data from server", error);
   }
 
-  let existingData: IUser;
+  let existingData: IAdminUser;
 
   try {
-    const { uid } = await authService.getRefreshTokenPayload(refreshToken);
-    existingData = await userRepository.getById(uid);
+    const { email } = await authService.adminGetRefreshTokenPayload(
+      refreshToken
+    );
+    existingData = await adminRepository.getByEmail(email);
   } catch (error) {
     throw createError(500, "Faild to fetch nessory data from server", error);
   }
 
-  const accessToken = authService.createAccessToken({ uid: existingData.uid });
+  const accessToken = authService.createAccessToken({
+    email: existingData.email,
+  });
 
   return {
     accessToken,
     email: existingData.email,
     photoURL: existingData.photoURL,
     name: existingData.name,
-    gender: existingData.gender,
-    privateAccount: existingData.privateAccount,
     uid: existingData.uid,
-    dob: existingData.dob,
     phone: existingData.phone,
   };
 }

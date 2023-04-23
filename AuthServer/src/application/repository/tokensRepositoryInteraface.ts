@@ -7,6 +7,9 @@ const tokenRepositoryInteraface = (
   const add = (uid: string, token: string, options?: object) =>
     respository.add(uid, token, options);
 
+  const addWithEmail = (email: string, token: string, options?: object) =>
+    respository.addWithEmail(email, token, options);
+
   const getById = (uid: string) => respository.getById(uid);
 
   const getByToken = (token: string) => respository.getByToken(token);
@@ -18,6 +21,7 @@ const tokenRepositoryInteraface = (
     getById,
     getByToken,
     remove,
+    addWithEmail,
   };
 };
 

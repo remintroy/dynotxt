@@ -18,15 +18,23 @@ const validatorImpl = () => {
   };
 
   const isValidEmail = async (email: string) => {
-    return email;
+    const valid = email ? validator.isEmail(email) : email;
+    return valid ? email : null;
   };
 
   const isValidPhone = async (phone: string) => {
+    if (phone) {
+      const valid = phone ? validator.isMobilePhone(phone) : phone;
+      if (valid) return phone;
+      // eslint-disable-next-line no-throw-literal
+      throw "Invalid phone";
+    }
     return phone;
   };
 
   const isValidUrl = async (url: string) => {
-    return url;
+    const valid = url ? validator.isURL(url) : url;
+    return valid ? url : null;
   };
 
   const isValidBoolean = async (bool: boolean) => {
@@ -42,11 +50,13 @@ const validatorImpl = () => {
   };
 
   const isValidDate = async (date: Date | string) => {
-    return date;
+    const valid = validator.isDate(date as string);
+    return valid ? date : null;
   };
 
   const isValidJwt = async (jwt: string) => {
-    return !validator.isJWT(jwt.trim());
+    const valid = validator.isJWT(jwt.trim());
+    return valid ? jwt.trim() : null;
   };
 
   const isValidHash = async (hash: string) => {
@@ -55,6 +65,10 @@ const validatorImpl = () => {
 
   const isValidProvider = async (provider: string) => {
     return provider;
+  };
+
+  const isValidPassword = async (password: string) => {
+    return password;
   };
 
   return {
@@ -72,6 +86,7 @@ const validatorImpl = () => {
     isValidJwt,
     isValidHash,
     isValidProvider,
+    isValidPassword,
   };
 };
 

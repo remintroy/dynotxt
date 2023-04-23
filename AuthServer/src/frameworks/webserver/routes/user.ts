@@ -41,7 +41,7 @@ export default function userRouter(express: typeof ExpressApp) {
   router.use(authMiddleware);
 
   router
-    .route("/verify_email")
+    .route("/verify_email/:uid")
     .get(makeExpressResponseCallback(controller.getUserEmailVerificationStatus))
     .post(makeExpressResponseCallback(controller.postVerifyEmail));
   router

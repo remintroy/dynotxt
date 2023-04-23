@@ -13,6 +13,9 @@ const getConfigs = () => {
       adminBaseUrl: "/auth/su",
       logoUrl: "https://remintroy.github.io/dynotxt/userClient/public/logo.png",
     },
+    bcrypt: {
+      salt: 10,
+    },
     jwt: {
       user: {
         accessSecret: process.env.ACCESS_TOKEN_SECRET,
