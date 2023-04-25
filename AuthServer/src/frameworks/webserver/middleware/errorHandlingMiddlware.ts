@@ -10,8 +10,10 @@ export default function errorHandlingMiddlware(
   err: IErrorRequestHandler,
   req: Request,
   res: Response,
-  next: NextFunction,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction
 ) {
+  // eslint-disable-next-line no-param-reassign
   err.statusCode = err.statusCode || 404;
   return err.customMessage || err.message
     ? res.status(err.statusCode).json({

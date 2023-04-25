@@ -14,12 +14,13 @@ const app = express.Router();
 
 app.use(authInit);
 
-app.get("/user_data", getUserData);
+app.post("/signin", signInUser);
 app.get("/refresh", getNewAccessToken);
 app.get("/logout", mustLoginAsUser, logoutUser);
-app.get("/verify_email_page/:uid", verifyEmailPageAuth);
-app.post("/verify_email", verifyEmailForAuth);
-app.post("/signin", signInUser);
 app.post("/update_user_data", mustLoginAsUser, updateUserData);
+app.get("/user_data", getUserData);
+app.post("/verify_email", verifyEmailForAuth);
+app.get("/verify_email_page/:uid", verifyEmailPageAuth);
+
 
 export default app;

@@ -20,7 +20,7 @@ export default class jwtService {
     accessOptions,
     refreshOptions,
   }: {
-    refreshSecret: string;
+    refreshSecret?: string;
     accessSecret: string;
     accessOptions?: IOptions;
     refreshOptions?: IOptions;

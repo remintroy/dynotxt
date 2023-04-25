@@ -17,7 +17,7 @@ export default async function refreshUser(
 
   const existingToken = await tokensRepository.getByToken(refreshToken);
 
-  if (!existingToken) throw createError(400, "Invalid refresh token");
+  if (!existingToken) throw createError(401, "Invalid refresh token");
 
   const payload = authServices.getRefreshTokenPayload(refreshToken);
 

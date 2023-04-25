@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "authserver": "cd authServer && npm start",
+    "authserver": "cd AuthServer && npm start",
     "authserverBuild": "cd authServer && npm run build",
     "userapp": "cd userClient && npm run dev",
     "adminApp": "cd adminClient && npm run dev",

@@ -3,12 +3,12 @@ services:
   auth_server:
     build:
       dockerfile: Dockerfile
-      context: ./authServer/
+      context: ./AuthServer/
     ports:
       - "5001:5001"
     volumes:
       - /app/node_modules
-      - ./authServer/build:/app/build
+      - ./AuthServer/build:/app/build
 
   blog_server:
     build:
@@ -39,3 +39,8 @@ services:
     volumes:
       - /app/node_modules
       - ./adminClient/src:/app/src
+
+  # kafka_server:
+  #   image: confluentinc/cp-kafka
+  #   ports:
+  #     - "9092:9092"

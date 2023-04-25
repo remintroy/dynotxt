@@ -87,7 +87,7 @@ const AccountSettings = () => {
                   });
 
                   const { data } = await authBackend.post(
-                    "update_user_data",
+                    "user_data",
                     { photoURL: downloadURL },
                     { headers: { Authorization: `Bearer ${user?.accessToken}` } }
                   );
@@ -115,10 +115,7 @@ const AccountSettings = () => {
       const dataPayload = {
         [type]: dataValue ?? modal.value.trim(),
       };
-
-      console.log(dataPayload);
-
-      const { data } = await authBackend.post("/update_user_data", dataPayload, {
+      const { data } = await authBackend.post("/user_data", dataPayload, {
         headers: { Authorization: `Bearer ${user?.accessToken}` },
       });
       dispatch(fetchUserData());

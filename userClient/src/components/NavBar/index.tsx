@@ -14,7 +14,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import HomeIcon from "@mui/icons-material/Home";
 
 const NavBar = () => {
-  // const [isScrolled, setIsScorlled] = useState(false); 
+  // const [isScrolled, setIsScorlled] = useState(false);
   const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
   const user = useAppSelector((state) => state.user.data);
   const allowBottomNav = useAppSelector((state) => state.navBar.allowBottomNav);
@@ -22,8 +22,7 @@ const NavBar = () => {
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => { 
-    
+  useEffect(() => {
     dispatch(fetchUserData());
   }, []);
 
@@ -61,11 +60,11 @@ const NavBar = () => {
               </Link>
             </Tooltip>
           )}
-          <Link to={"/explore"} className="link">
-            <IconButton>
-              <SearchIcon />
-            </IconButton>
-          </Link>
+          {/* <Link to={"/explore"} className="link"> */}
+          <IconButton onClick={logoutUser}>
+            <SearchIcon />
+          </IconButton>
+          {/* </Link> */}
           {thisIsPc && (
             <Link to={"/chat"}>
               <IconButton>
