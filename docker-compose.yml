@@ -13,22 +13,22 @@ services:
   blog_server:
     build:
       dockerfile: Dockerfile
-      context: ./blogServer/
+      context: ./BlogServer/
     ports:
       - "5003:5003"
     volumes:
       - /app/node_modules
-      - ./blogServer/build:/app/build
+      - ./BlogServer/build:/app/build
 
   user_client:
     build:
       dockerfile: Dockerfile
-      context: ./userClient/
+      context: ./UserClient/
     ports:
       - "5000:5000"
     volumes:
       - /app/node_modules
-      - ./userClient/:/app/
+      - ./UserClient/:/app/
 
   admin_client:
     build:
