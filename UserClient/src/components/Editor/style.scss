@@ -6,6 +6,13 @@
         gap: 20px;
     }
 
+    .ql-snow .ql-tooltip{
+        z-index: 100;
+        border: 1px solid var(--borderCommon);
+        box-shadow: none;
+        border-radius: 5px;  
+    }
+
     .ql-snow .ql-fill,
     .ql-snow .ql-stroke.ql-fillI,
     .ql-snow .ql-picker {

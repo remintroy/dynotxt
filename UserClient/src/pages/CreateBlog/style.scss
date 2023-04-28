@@ -23,8 +23,8 @@
         bottom: 80px;
         margin-top: 20px;
         // background-color: rgb(27, 27, 27);
-        padding: 30px;
         // border: 1px solid var(--borderCommon);
+        padding: 30px;
         border-radius: 10px;
         overflow-x: hidden;
         box-sizing: border-box;
@@ -39,6 +39,10 @@
             width: 100%;
             font-family: 'Rubik', sans-serif;
             resize: none;
+        }
+
+        .inputContainerPadding {
+            padding: 30px;
         }
     }
 
