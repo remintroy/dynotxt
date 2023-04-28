@@ -1,0 +1,28 @@
+.Login {
+
+    margin-top: 50px;
+
+    // .disp {
+    //     margin-top: 15px;
+    //     box-sizing: border-box;
+    //     border-radius: 5px;
+    //     width: 100%;
+    //     text-transform: capitalize;
+    //     margin-bottom: 10px;
+    // }
+
+    .google {
+
+        width: 100%;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+        color: inherit; 
+        margin-top: 20px;
+
+        img {
+            width: 30px;
+        }
+    }
+}
