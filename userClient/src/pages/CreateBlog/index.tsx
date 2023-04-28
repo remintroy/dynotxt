@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import "./style.scss";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.bubble.css"; // import the styles
 import "react-quill/dist/quill.snow.css"; // import the styles
-import { Button, Container, IconButton } from "@mui/material";
-import { useAppDispatch } from "../../redux/hooks";
+import { Button, Container, IconButton, Stack } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { allowBottomNav } from "../../redux/navBarSlice";
 import { SHA256 } from "crypto-js";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/DeleteOutline";
 import DoneIcon from "@mui/icons-material/Done";
 import EditIcon from "@mui/icons-material/Edit";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import PublicIcon from "@mui/icons-material/Public";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
 
 const Editor = ({ value, setValue }: { value: any; setValue: any }) => {
   const [editorContent, setEditorContent] = useState(value ? value : "");
@@ -18,6 +22,7 @@ const Editor = ({ value, setValue }: { value: any; setValue: any }) => {
   const handleEditorChange = (content: any, delta: any, source: any, editor: any) => {
     setEditorContent(editor.getContents());
     const hash = SHA256(JSON.stringify(editorContent)).toString();
+    console.log(hash);
     setValue(content, delta, hash);
   };
 
@@ -153,36 +158,59 @@ const CreateBlog = () => {
     };
   }, []);
 
-  const [list, setList] = useState([Math.random() * 100]);
-
-  const remove = (index: number) => {
-    setList((arrs) => {
-      return arrs.filter((val, inde) => {
-        if (inde === index) return false;
-        else return true;
-      });
-    });
-  };
+  const [value, setValue] = useState("");
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
 
   return (
-    <Container className="CreateBlog">
+    <Container className={`CreateBlog ${thisIsPc ? "" : "mb"}`} maxWidth="md">
       <div className="titleBar">
         <div>
-          <h2>Create Blog</h2>
-          <p className="dim">Select text to get edit bubble</p>
+          <h2>Dynotxt</h2>
         </div>
-        <div className="dim ">Draft Saved</div>
+        <div className="buttons">
+          <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
+            <Button variant="outlined">Edit</Button>
+            <Button variant="outlined">Preview</Button>
+          </Stack>
+        </div>
       </div>
-
-      {list.map((item, index) => {
-        return <BlockInput key={item} remove={remove} index={index} setList={setList} />;
-      })}
-
-      <div className="buttonCont">
-        <Button variant="outlined">Publish Blog</Button>
+      <div className="inputsContainer">
+        <Button variant="outlined" startIcon={<CameraAltIcon />}>
+          Choose Cover photo
+        </Button>
+        <br />
+        <br />
+        <TextareaAutosize
+          className="titleInput"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
+          minRows={1}
+          placeholder="You Story Title Here..."
+          style={{ fontSize: "2.3rem", fontWeight: "bold" }}
+        ></TextareaAutosize>
+        <TextareaAutosize
+          className="titleInput"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+            }
+          }}
+          minRows={1}
+          placeholder="Subtitle here"
+          style={{ fontSize: "1.3rem" }}
+        ></TextareaAutosize>
+        <br />
+        <Editor value={value} setValue={setValue} />
       </div>
-      <br />
-      <br />
+      <Stack className="BottomBtn" direction="row" spacing={1} sx={{ mb: 1 }} marginTop={3}>
+        <Button variant="outlined" startIcon={<PublicIcon />} size="large">
+          Publish
+        </Button>
+        <Button startIcon={<SaveAsIcon />}>Save as draft</Button>
+      </Stack>
     </Container>
   );
 };

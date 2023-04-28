@@ -19,7 +19,7 @@ const VerfyEmail = () => {
   useEffect(() => {
     const getPageData = async () => {
       try {
-        const { data } = await authBackend.get(`/verify_email_page/${params.uid}`);
+        const { data } = await authBackend.get(`/verify_email/${params.uid}`);
         console.log(data);
         setLoading(false);
       } catch (error: any) {
@@ -38,7 +38,7 @@ const VerfyEmail = () => {
 
   const submitOtp = async () => {
     try {
-      const { data } = await authBackend.post("/verify_email", { uid: params.uid, otp: otp });
+      const { data } = await authBackend.post(`/verify_email/${params.uid}`, { otp: otp });
       dispatch(setUser(data));
       setStatusDisp({ show: true, message: "Login success", error: false });
       dispatch(fetchUserData());

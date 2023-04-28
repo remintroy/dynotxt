@@ -1,0 +1,79 @@
+.CreateBlog.mb {
+    .inputsContainer {
+        width: 100%;
+        left: 0;
+        right: 0;
+        border-radius: 0;
+        padding: 20px;
+    }
+}
+
+.CreateBlog {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .inputsContainer {
+        width: calc(100% - 35px);
+        position: absolute;
+        top: 60px;
+        bottom: 80px;
+        margin-top: 20px;
+        // background-color: rgb(27, 27, 27);
+        // border: 1px solid var(--borderCommon);
+        padding: 30px;
+        border-radius: 10px;
+        overflow-x: hidden;
+        box-sizing: border-box;
+
+        .titleInput textarea {
+            // padding: 0;
+            overflow: hidden;
+            margin-top: 10px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            width: 100%;
+            font-family: 'Rubik', sans-serif;
+            resize: none;
+        }
+
+        .inputContainerPadding {
+            padding: 30px;
+        }
+    }
+
+    .BottomBtn {
+        position: absolute;
+        bottom: 10px;
+    }
+
+
+    h2 {
+        margin: 0;
+        padding-bottom: 0;
+    }
+
+    p {
+        margin-top: 0;
+    }
+
+    .titleBar {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+
+    img {
+        max-width: 100%;
+    }
+
+    .buttonCont {
+        margin-top: 20px;
+    }
+}

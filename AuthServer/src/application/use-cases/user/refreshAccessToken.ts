@@ -12,12 +12,12 @@ export default async function refreshUser(
   refreshToken: string
 ) {
   if (!refreshToken) throw createError(400, "Refresh token is required");
-  if (!(await validator.isValidJwt(refreshToken)))
-    throw createError(400, "Refresh token is not valid");
+
+  await validator.isValidJwt(refreshToken);
 
   const existingToken = await tokensRepository.getByToken(refreshToken);
 
-  if (!existingToken) throw createError(400, "Invalid refresh token");
+  if (!existingToken) throw createError(401, "Invalid refresh token");
 
   const payload = authServices.getRefreshTokenPayload(refreshToken);
 

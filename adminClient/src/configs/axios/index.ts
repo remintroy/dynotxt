@@ -1,5 +1,5 @@
 import axios from "axios";
 
-const baseUrl = "https://server.dynotxt.com/auth/su";
+const baseUrl = "https://server.dynotxt.com";
 
-export const authBackend = axios.create({ baseURL: baseUrl, withCredentials: true });
+export const authBackend = axios.create({ baseURL: `${baseUrl}/auth/su/api/v1/`, withCredentials: true });

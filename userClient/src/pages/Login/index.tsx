@@ -60,13 +60,14 @@ export default function SignIn() {
         // saving tokens
         dispatch(setUser(data));
         setStatusDisp({ show: true, message: "Login success", error: false });
-       
+
         dispatch(fetchUserData());
-      
+
         navigate("/");
       } catch (error: any) {
         //
-        if (error?.response?.status == 403 && error.response?.data?.url) navigate(error.response?.data?.url);
+        if (error?.response?.status == 403 && error.response?.data?.action === "VRFYMIL")
+          navigate(`/auth/verify-email/${user.uid}`);
 
         const errorObj = {
           code: error?.response?.data?.error

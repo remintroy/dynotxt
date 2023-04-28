@@ -38,7 +38,15 @@ const userController = (
       emailService,
       idToken
     );
-    res.cookie("refreshToken", response.refreshToken);
+    const currentdate = new Date();
+    const next3months = new Date(
+      currentdate.setMonth(currentdate.getMonth() + 3)
+    );
+    res.cookie("refreshToken", response.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      expires: next3months,
+    });
     response.refreshToken = null;
     return response;
   };
@@ -90,7 +98,7 @@ const userController = (
   };
 
   const postVerifyEmail = async (req: IRequest, res: Response) => {
-    const { uid } = req.body;
+    const { uid } = req.params;
     const { otp } = req.body;
     const response = await verifyEmail(
       userRepository,
@@ -101,13 +109,21 @@ const userController = (
       uid,
       otp
     );
-    res.cookie("refreshToken", response.refreshToken);
+    const currentdate = new Date();
+    const next3months = new Date(
+      currentdate.setMonth(currentdate.getMonth() + 3)
+    );
+    res.cookie("refreshToken", response.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      expires: next3months,
+    });
     response.refreshToken = null;
     return response;
   };
 
   const getUserEmailVerificationStatus = async (req: IRequest) => {
-    const { uid } = req.user;
+    const { uid } = req.params;
     const typeofVerification = "email";
     const response = await userVerificationStatus(
       userRepository,
