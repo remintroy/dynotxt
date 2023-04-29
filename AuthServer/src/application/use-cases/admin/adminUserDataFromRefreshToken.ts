@@ -35,7 +35,7 @@ export default async function getAdminFromRefreshToken(
     throw createError(500, "Faild to fetch nessory data from server", error);
   }
 
-  const accessToken = authService.createAccessToken({
+  const accessToken = authService.adminCreateAccessToken({
     email: existingData.email,
   });
 

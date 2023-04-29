@@ -25,8 +25,19 @@ const getConfigs = () => {
       serverIdColor: "yellow",
       mainLogColor: "white",
     },
+    blog: {
+      blogIdLength: 22,
+      authorLength: 24,
+      title: {
+        minChar: 3,
+        maxChar: 800,
+      },
+      subtitle: {
+        maxChar: 1000,
+      },
+    },
     mongo: {
-      url: process.env.MONGODB_URL, // both app use same db
+      url: process.env.MONGODB_URL,
       reconnectInterval: 10000,
       autoReconnect: true,
       db: process.env.MONGODB_NAME,
@@ -36,6 +47,13 @@ const getConfigs = () => {
         keepAlive: true,
         connectTimeoutMS: 1000,
       },
+    },
+    aws: {
+      accessKeyId: process.env.AWS_S3_ACESS_KEY,
+      secretKeyId: process.env.AWS_S3_SECRET_KEY,
+      region: process.env.AWS_S3_REGION,
+      version: "v4",
+      bucketName: process.env.AWS_S3_BUCKET_NAME,
     },
     email: {
       user: process.env.MAIL_USERID,

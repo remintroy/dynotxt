@@ -1,10 +1,15 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import bodyParser from "body-parser";
-import { Express } from "express";
+import { Express, Request } from "express";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import getConfigs from "../../configs";
+
+export interface RequestWithUser extends Request {
+  user?: string;
+  admin?: string;
+}
 
 export default function expressConfig(
   app: Express,

@@ -164,8 +164,8 @@ export default function SignUnComponent() {
             <Link className="link" to="#">
               <Button variant="default"> Forgot password?</Button>
             </Link>
-            <Link className="link" to="/auth/signup">
-              <Button variant="default">{"Sign Up"}</Button>
+            <Link className="link" to="/auth/signin">
+              <Button variant="default">{"Sign In"}</Button>
             </Link>
           </div>
           <Button
