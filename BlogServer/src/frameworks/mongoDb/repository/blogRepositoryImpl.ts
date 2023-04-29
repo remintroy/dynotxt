@@ -1,4 +1,4 @@
-import { Blog } from "../../../../entites/blog";
+import { Blog } from "../../../entities/blog";
 import BlogModel from "../models/blog";
 
 const blogRepositoryImpl = () => {

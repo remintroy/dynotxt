@@ -1,5 +1,5 @@
 import { Mongoose } from "mongoose";
-import getConfigs from "../../../configs";
+import getConfigs from "../../configs";
 
 /* eslint-disable no-console */
 

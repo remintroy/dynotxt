@@ -1,5 +1,5 @@
-import { Blog } from "../../entites/blog";
-import blogRepositoryImpl from "../../frameworks/database/mongoDb/repository/blogRepositoryImpl";
+import { Blog } from "../../entities/blog";
+import blogRepositoryImpl from "../../frameworks/mongoDb/repository/blogRepositoryImpl";
 
 const blogRepositoryInteraface = (
   repository: ReturnType<typeof blogRepositoryImpl>

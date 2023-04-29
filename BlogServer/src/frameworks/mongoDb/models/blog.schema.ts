@@ -10,6 +10,7 @@ export const BlogSchema = new Schema({
   title: String,
   views: Number,
   bannerImgURL: String,
+  version: { type: Number, default: 0 },
   body: [],
 });
 
