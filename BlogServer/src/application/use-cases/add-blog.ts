@@ -1,30 +1,28 @@
 import blogRepositoryInteraface from "../../adaptor/repositorys/blogRepositoryInteraface";
-import validatorInterface from "../../adaptor/validator";
 import { Blog } from "../../entities/blog";
+import { blogValidator } from "../validators/blog";
 
 const addNewBlog = async (
   blogRepository: ReturnType<typeof blogRepositoryInteraface>,
   createError,
   blogData: Blog,
-  validator: ReturnType<typeof validatorInterface>
+  author: string
 ) => {
-  const { title, body, blogId, version, bannerImgURL, author, subtitle } =
-    blogData;
-  const finalBlogData: Blog = {};
+  // To create new blog, author and blogId is requried
+  // authorId must me collected from access token or logined user !
+  const blogId = "";
+
+  const dataToCheck = { ...blogData, blogId, author };
+  const validBlogData = blogValidator(dataToCheck, createError);
 
   try {
-    // basic validation
-    if (title)
-      finalBlogData.title = (await validator.isValidTitle(title)).trim();
-    if (subtitle)
-      finalBlogData.subtitle = (await validator.isValidTitle(subtitle)).trim();
-    if (bannerImgURL)
-      finalBlogData.bannerImgURL = (
-        await validator.isValidUrl(bannerImgURL)
-      ).trim();
-    if (body) finalBlogData.body = body;
+    const responseFromDb = await blogRepository.addNewBlog(validBlogData);
+    return {
+      blogId,
+      status: responseFromDb,
+    };
   } catch (error) {
-    // console.log(error);
+    throw createError(500, "Faild to save blog");
   }
 };
 

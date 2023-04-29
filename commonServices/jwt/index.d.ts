@@ -7,7 +7,7 @@ export default class jwtService {
     private _accessOptions;
     private _refreshOptions;
     constructor({ refreshSecret, accessSecret, accessOptions, refreshOptions, }: {
-        refreshSecret: string;
+        refreshSecret?: string;
         accessSecret: string;
         accessOptions?: IOptions;
         refreshOptions?: IOptions;

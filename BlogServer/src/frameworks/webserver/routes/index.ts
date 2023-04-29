@@ -5,11 +5,8 @@ import adminRoute from "./admin";
 import notFoundError from "../middleware/notFound";
 import errorHandlingMiddlware from "../middleware/errorHandling";
 import createAuthMiddleware from "../middleware/createAuthMiddleware";
-import {
-  adminJwtServiceInteraface,
-  userJwtServiceInteraface,
-} from "../../../adaptor/commonServices";
-import { adminJwtServiceImpl, userJwtServiceImpl } from "../../commonServices";
+// eslint-disable-next-line import/order
+import JwtService from "dynotxt-common-services/jwt";
 
 export default function routes(
   app: Express,
@@ -17,8 +14,8 @@ export default function routes(
   configs: typeof getConfigs
 ) {
   const config = configs();
-  const userJwt = userJwtServiceInteraface(userJwtServiceImpl);
-  const adminJwt = adminJwtServiceInteraface(adminJwtServiceImpl);
+  const userJwt = new JwtService({ accessSecret: config.jwt.user });
+  const adminJwt = new JwtService({ accessSecret: config.jwt.admin });
 
   app.use(createAuthMiddleware(userJwt, adminJwt));
 

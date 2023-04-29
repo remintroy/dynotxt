@@ -25,6 +25,17 @@ const getConfigs = () => {
       serverIdColor: "yellow",
       mainLogColor: "white",
     },
+    blog: {
+      blogIdLength: 22,
+      authorLength: 24,
+      title: {
+        minChar: 3,
+        maxChar: 800,
+      },
+      subtitle: {
+        maxChar: 1000,
+      },
+    },
     mongo: {
       url: process.env.MONGODB_URL,
       reconnectInterval: 10000,
