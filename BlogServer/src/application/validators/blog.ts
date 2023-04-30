@@ -48,6 +48,9 @@ export const blogValidator = (blogBody: Blog, createError) => {
   author = mustBeAStirng(author, createError, "Author");
   blogId = mustBeAStirng(blogId, createError, "BlogId");
 
+  output.author = author;
+  output.blogId = blogId;
+
   if (author.length !== authorLength) throw createError(400, "Invalid author");
   if (blogId.length !== blogIdLength) throw createError(400, "Invalid blogId");
 

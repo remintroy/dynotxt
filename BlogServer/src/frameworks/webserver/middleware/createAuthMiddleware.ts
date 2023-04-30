@@ -1,14 +1,9 @@
 import { NextFunction, Response } from "express";
-import {
-  adminJwtServiceInteraface,
-  userJwtServiceInteraface,
-} from "../../../adaptor/commonServices";
 import { RequestWithUser } from "../express";
+// eslint-disable-next-line import/order
+import jwtService from "dynotxt-common-services/jwt";
 
-const createAuthMiddleware = (
-  userJwt: ReturnType<typeof userJwtServiceInteraface>,
-  adminJwt: ReturnType<typeof adminJwtServiceInteraface>
-) => {
+const createAuthMiddleware = (userJwt: jwtService, adminJwt: jwtService) => {
   return async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const accessToken = req.headers.authorization?.split(" ")[1];

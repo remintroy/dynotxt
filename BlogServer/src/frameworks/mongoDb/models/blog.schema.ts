@@ -1,14 +1,26 @@
 import { Schema } from "mongoose";
 
 export const BlogSchema = new Schema({
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: {
+    type: Date,
+    default: new Date(),
+  },
+  updatedAt: {
+    type: Date,
+    default: new Date(),
+  },
   subtitle: String,
-  published: Boolean,
+  published: {
+    type: Boolean,
+    default: false,
+  },
   blogId: String,
   author: String,
   title: String,
-  views: Number,
+  views: {
+    type: Number,
+    default: 0,
+  },
   bannerImgURL: String,
   version: { type: Number, default: 0 },
   body: [],
