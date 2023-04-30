@@ -1,12 +1,12 @@
 import { Button, Loader } from "@mantine/core";
-import { IconCheck, IconRotateClockwise2, IconUpload } from "@tabler/icons-react";
+import { IconCheck, IconRotateClockwise2, IconStatusChange, IconUpload } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { blogBackend } from "../../configs/axios";
 import { useAppSelector } from "../../redux/hooks";
 import axios from "axios";
 
-const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValue: any; blogId: string }) => {
+const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValue: any; blogId: string | undefined }) => {
   const accessToken = useAppSelector((state) => state.user.accessToken);
 
   const inputref: any = useRef(null);
@@ -35,15 +35,21 @@ const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValu
           } = await blogBackend.get(`/upload/${blogId}`, {
             headers: { Authorization: `Bearer ${accessToken}` },
           });
-  
-          const response = await axios.put(url, file);
+
+          await axios.put(url, file);
+
+          await blogBackend.put(`/blog/${blogId}`, { bannerImgURL: url?.split("?")[0] }, { headers: { Authorization: `Bearer ${accessToken}` }, });
 
           setValue(url?.split("?")[0]);
 
           setLoading(false);
           setUploaded(true);
-        } catch (error) {
-          console.log(error)
+        } catch (error: any) {
+          notifications.show({
+            color: "red",
+            title: "Error uploading image !",
+            message: error?.response?.data?.error ? error.response.data.error : "Consider refreshing the page. If issue presist please contact support team"
+          })
           setLoading(false);
           setError(true);
         }
@@ -72,7 +78,7 @@ const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValu
           <IconCheck size={"20px"} />
         ) : loading ? (
           <Loader size={"xs"} />
-        ) : (
+        ) : value ? <IconStatusChange /> : (
           <IconUpload size={"20px"} />
         )
       }
@@ -81,10 +87,10 @@ const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValu
       {error
         ? "Retry Upload"
         : uploaded
-        ? "Banner Uploaded. Click to re-select"
-        : loading
-        ? "Uploading..."
-        : "Choose banner image"}
+          ? "Banner Uploaded. Click to re-select"
+          : loading
+            ? "Uploading..."
+            : value ? "Change banner image" : "Choose banner image"}
       <input
         type="file"
         ref={inputref}

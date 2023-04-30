@@ -14,6 +14,7 @@ import VerifyEmailComponent from "./components/Auth/VerifyEmail";
 import SignIn from "./components/Auth/Sgnin";
 import SignUp from "./components/Auth/Signup";
 import { Notifications } from "@mantine/notifications";
+import NewBlogStarter from "./components/NewBlogStarter";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/blog/create",
+    element: <NewBlogStarter />,
+  },
+  {
+    path: "/blog/create/:id",
     element: <CreateBlogPage />,
   },
   {
