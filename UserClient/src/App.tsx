@@ -13,6 +13,7 @@ import CreateBlogPage from "./pages/CreateBlog";
 import VerifyEmailComponent from "./components/Auth/VerifyEmail";
 import SignIn from "./components/Auth/Sgnin";
 import SignUp from "./components/Auth/Signup";
+import { Notifications } from "@mantine/notifications";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +73,7 @@ function App() {
     <div className="App">
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+          <Notifications />
           <RouterProvider router={router} />
         </MantineProvider>
       </ColorSchemeProvider>

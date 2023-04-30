@@ -20,6 +20,12 @@
         color: white !important;
     }
 
+    .ql-snow .ql-editor pre.ql-syntax{
+        background-color: #262626 !important;
+        font-size: small;
+        border: 1px solid var(--borderCommon);
+    }
+
     .ql-snow .ql-picker-options {
         background-color: #252525;
     }

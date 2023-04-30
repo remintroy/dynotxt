@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import Editor from "../../components/Editor";
 import { allowBottomNav } from "../../redux/navBarSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { Button, Card, Container, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
+import { Button, Card, Container, Image, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
 import { IconCamera, IconEdit, IconEye, IconFile, IconGlobe } from "@tabler/icons-react";
 import { Prism } from "@mantine/prism";
+import parse from "html-react-parser";
 import ImageUploadButton from "../../components/ImageUploadButton";
 
 const CreateBlogPage = () => {
@@ -24,6 +25,14 @@ const CreateBlogPage = () => {
   const [bodyValue, setBodyValue] = useState({ content: "", value: {}, hash: "" });
   const [toggelEditor, setToggleEditor] = useState(true);
   const [bannerImg, setBannerImg] = useState("");
+
+  const reactBody = parse(bodyValue.content, {
+    replace: (domNode: any) => {
+      if (domNode.name === "pre" && domNode.children?.[0]?.data) {
+        return <Prism language="javascript">{domNode.children?.[0]?.data}</Prism>;
+      }
+    },
+  });
 
   return (
     <Container className={`CreateBlog ${thisIsPc ? "" : "mb"}`}>
@@ -45,7 +54,7 @@ const CreateBlogPage = () => {
       <Card withBorder className="inputsContainer">
         {toggelEditor && (
           <ScrollArea offsetScrollbars h="100%">
-            <ImageUploadButton value={bannerImg} setValue={bannerImg} />
+            <ImageUploadButton value={bannerImg} setValue={setBannerImg} blogId="HPV4URHOTKVKKRDQYJ57U2" />
             <br />
             <br />
             <Textarea
@@ -81,13 +90,14 @@ const CreateBlogPage = () => {
 
         {!toggelEditor && (
           <ScrollArea offsetScrollbars h="100%">
+            <Image width="100%" height={300} src={bannerImg} withPlaceholder radius={5} />
+            <br />
             <h1>{title}</h1>
             <Text color="dimmed">{subtle}</Text>
             <br />
-            {/* <Prism language="javascript">
-              {`const vi = "hi"`}
-            </Prism> */}
-            <div dangerouslySetInnerHTML={{ __html: bodyValue.content }}></div>
+            {/* <Prism language="javascript">{`const vi = "hi"`}</Prism> */}
+            {/* <div dangerouslySetInnerHTML={{ __html: bodyValue.content }}></div> */}
+            {reactBody}
           </ScrollArea>
         )}
       </Card>
