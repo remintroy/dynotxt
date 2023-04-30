@@ -37,7 +37,8 @@ export default function userRouter(express: typeof ExpressApp) {
     .put(
       mustLoginAsUser,
       makeExpressResponseCallback(controller.putUserUpdateBlog)
-    );
+    )
+    .get(makeExpressResponseCallback(controller.getUserBlogData));
 
   // Upload url for uploading banner to s3
   router

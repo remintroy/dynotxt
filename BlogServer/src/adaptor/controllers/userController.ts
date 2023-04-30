@@ -1,5 +1,6 @@
 import addNewBlog from "../../application/use-cases/add-blog";
 import createUploadUrl from "../../application/use-cases/create-upload-url";
+import getBlogData from "../../application/use-cases/get-blog";
 import updateBlog from "../../application/use-cases/update-blog";
 import { RequestWithUser } from "../../frameworks/webserver/express";
 import blogRepositoryInteraface from "../repositorys/blogRepositoryInteraface";
@@ -51,10 +52,23 @@ const userController = (
     return response;
   };
 
+  const getUserBlogData = async (req: RequestWithUser) => {
+    const { user } = req;
+    const blogId = req.params.id;
+    const response = await getBlogData(
+      blogRepository,
+      createError,
+      blogId,
+      user
+    );
+    return response;
+  };
+
   return {
     postUserNewBlog,
     getUserBlogUploadUrl,
     putUserUpdateBlog,
+    getUserBlogData,
   };
 };
 
