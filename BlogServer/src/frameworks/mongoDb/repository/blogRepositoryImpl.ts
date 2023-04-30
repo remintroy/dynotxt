@@ -55,6 +55,15 @@ const blogRepositoryImpl = () => {
     return response;
   };
 
+  const changeVisiblity  = async (blogId:string, visibility:"public"|"private")=>{
+    const response = await BlogModel.updateOne({blogId},{
+      $set:{
+        published:visibility=="public"
+      }
+    })
+    return response;
+  }
+
   return {
     getBlogById,
     addNewBlog,
@@ -62,6 +71,7 @@ const blogRepositoryImpl = () => {
     deleteBlogById,
     updateBodyIndex,
     updateAsNewBodyIndex,
+    changeVisiblity
   };
 };
 
