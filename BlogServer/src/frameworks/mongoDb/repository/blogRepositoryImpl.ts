@@ -16,7 +16,7 @@ const blogRepositoryImpl = () => {
     const response = await BlogModel.updateOne(
       { blogId },
       {
-        $set: { body: blogData },
+        $set: blogData,
       }
     );
     return response;
@@ -55,21 +55,6 @@ const blogRepositoryImpl = () => {
     return response;
   };
 
-  const changeVisiblity = async (
-    blogId: string,
-    visiblity: "public" | "private"
-  ) => {
-    const response = await BlogModel.updateOne(
-      { blogId },
-      {
-        $set: {
-          published: visiblity === "public",
-        },
-      }
-    );
-    return response;
-  };
-
   return {
     getBlogById,
     addNewBlog,
@@ -77,7 +62,6 @@ const blogRepositoryImpl = () => {
     deleteBlogById,
     updateBodyIndex,
     updateAsNewBodyIndex,
-    changeVisiblity,
   };
 };
 
