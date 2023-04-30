@@ -13,6 +13,8 @@ const blogRepositoryInteraface = (
     repository.updateBodyIndex(blogId, index, blogData);
   const updateAsNewBodyIndex = (blogId: string, blogData: []) =>
     repository.updateAsNewBodyIndex(blogId, blogData);
+  const changeVisiblity = (blogId: string, visiblity: "public" | "private") =>
+    repository.changeVisiblity(blogId, visiblity);
 
   return {
     getBlogById,
@@ -21,6 +23,7 @@ const blogRepositoryInteraface = (
     deleteBlogById,
     updateBodyIndex,
     updateAsNewBodyIndex,
+    changeVisiblity,
   };
 };
 

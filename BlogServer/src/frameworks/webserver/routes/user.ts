@@ -40,6 +40,10 @@ export default function userRouter(express: typeof ExpressApp) {
     )
     .get(makeExpressResponseCallback(controller.getUserBlogData));
 
+  router
+    .route("/blog/:id/publish")
+    .put(makeExpressResponseCallback(controller.putUserPublishBlog));
+
   // Upload url for uploading banner to s3
   router
     .route("/upload/:id")
