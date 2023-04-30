@@ -48,7 +48,9 @@
 
     .BottomBtn {
         position: absolute;
-        bottom: 10px;
+        bottom: 20px;
+        display: block;
+        width: calc(100% - 35px);
     }
 
 

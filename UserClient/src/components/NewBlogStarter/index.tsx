@@ -12,7 +12,7 @@ const NewBlogStarter = () => {
   const startNewBlog = async () => {
     try {
       const { data: { blogId, status } } = await blogBackend.post('/blog', {}, { headers: { Authorization: `Bearer ${user}` } });
-      navigate(`/blog/create/${blogId}`)
+      navigate(`/blog/edit/${blogId}`)
     } catch (error) {
       setStatus({ error: true, message: "Faild to create new blog" })
     }

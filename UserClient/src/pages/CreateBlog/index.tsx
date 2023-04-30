@@ -8,7 +8,7 @@ import { IconEdit, IconEye, IconFile, IconGlobe, IconInfoHexagon } from "@tabler
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
 import ImageUploadButton from "../../components/ImageUploadButton";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { blogBackend } from "../../configs/axios";
 import { notifications } from "@mantine/notifications";
 
@@ -204,14 +204,21 @@ const CreateBlogPage = () => {
           </ScrollArea>
         )}
       </Card>
-      <Stack className="BottomBtn" spacing={1} sx={{ marginBottom: 15, flexDirection: "row", gap: "10px" }}>
-        <Button variant="outline" leftIcon={statusOfPublishImage.loading ? <Loader size={"xs"} /> : <IconGlobe />} onClick={() => publishImage()}>
-          {statusOfPublishImage.loading ? "Publishing" : "Publish"}
-        </Button>
-        <Button variant="subtle" color="dark" leftIcon={statusOfSaveChanges.loading ? <Loader size={"xs"} /> : <IconFile />} onClick={() => uploadCurrentState()}>
-          {statusOfSaveChanges.loading ? "Saving changes" : "Save changes"}
-        </Button>
-      </Stack>
+      <div className="BottomBtn">
+        <Flex align="center" justify="space-between" >
+          <Stack spacing={1} sx={{ flexDirection: "row", gap: "10px" }}>
+            <Button variant="outline" leftIcon={statusOfPublishImage.loading ? <Loader size={"xs"} /> : <IconGlobe />} onClick={() => publishImage()}>
+              {statusOfPublishImage.loading ? "Publishing" : "Publish"}
+            </Button>
+            <Button variant="subtle" color="dark" leftIcon={statusOfSaveChanges.loading ? <Loader size={"xs"} /> : <IconFile />} onClick={() => uploadCurrentState()}>
+              {statusOfSaveChanges.loading ? "Saving changes" : "Save changes"}
+            </Button>
+          </Stack>
+          <Link className="link" to="/">
+            <Button variant="outline">Go to home</Button>
+          </Link>
+        </Flex>
+      </div>
     </Container>
   );
 };
