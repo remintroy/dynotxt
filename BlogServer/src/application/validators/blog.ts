@@ -31,7 +31,7 @@ const mustBeArray = (array: [], createError, name = "Value") => {
   throw createError(400, `${name} must be an array`);
 };
 
-export const blogValidator = (blogBody: Blog, createError) => {
+export const blogValidator = (blogBody: Blog, createError, noIds) => {
   let { title, subtitle, author, bannerImgURL, blogId, body } = blogBody;
 
   const config = getConfigs();
@@ -48,8 +48,10 @@ export const blogValidator = (blogBody: Blog, createError) => {
   author = mustBeAStirng(author, createError, "Author");
   blogId = mustBeAStirng(blogId, createError, "BlogId");
 
-  output.author = author;
-  output.blogId = blogId;
+  if (!noIds) {
+    output.author = author;
+    output.blogId = blogId;
+  }
 
   if (author.length !== authorLength) throw createError(400, "Invalid author");
   if (blogId.length !== blogIdLength) throw createError(400, "Invalid blogId");
@@ -75,7 +77,7 @@ export const blogValidator = (blogBody: Blog, createError) => {
   }
 
   if (body) {
-    body = mustBeArray(body, createError, "Body");
+    // body = mustBeArray(body, createError, "Body");
     //! IS vald boyd
     // TODO
     output.body = body;

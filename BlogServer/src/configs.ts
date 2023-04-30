@@ -29,7 +29,7 @@ const getConfigs = () => {
       blogIdLength: 22,
       authorLength: 28,
       title: {
-        minChar: 3,
+        minChar: 1,
         maxChar: 800,
       },
       subtitle: {
