@@ -1,6 +1,6 @@
-import blogRepositoryInteraface from "../../adaptor/repositorys/blogRepositoryInteraface";
-import blogServiceInterface from "../../adaptor/service";
-import { blogValidator } from "../validators/blog";
+import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
+import blogServiceInterface from "../../../adaptor/service";
+import { blogValidator } from "../../validators/blog";
 
 const createUploadUrl = async (
   blogRepository: ReturnType<typeof blogRepositoryInteraface>,

@@ -1,7 +1,7 @@
-import blogRepositoryInteraface from "../../adaptor/repositorys/blogRepositoryInteraface";
-import blogServiceInterface from "../../adaptor/service";
-import { Blog } from "../../entities/blog";
-import { blogValidator } from "../validators/blog";
+import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
+import blogServiceInterface from "../../../adaptor/service";
+import { Blog } from "../../../entities/blog";
+import { blogValidator } from "../../validators/blog";
 import createBlogId from "./create-blog-id";
 
 const addNewBlog = async (

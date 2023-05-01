@@ -26,12 +26,12 @@ const mustMaxChar = (
   throw createError(400, `${name} must be less than ${maxLen} characters`);
 };
 
-const mustBeArray = (array: [], createError, name = "Value") => {
-  if (Array.isArray(array)) return array;
-  throw createError(400, `${name} must be an array`);
-};
+// const mustBeArray = (array: [], createError, name = "Value") => {
+//   if (Array.isArray(array)) return array;
+//   throw createError(400, `${name} must be an array`);
+// };
 
-export const blogValidator = (blogBody: Blog, createError, noIds) => {
+export const blogValidator = (blogBody: Blog, createError, noIds?: boolean) => {
   let { title, subtitle, author, bannerImgURL, blogId, body } = blogBody;
 
   const config = getConfigs();

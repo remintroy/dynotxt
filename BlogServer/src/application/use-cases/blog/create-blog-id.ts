@@ -1,6 +1,6 @@
-import blogRepositoryInteraface from "../../adaptor/repositorys/blogRepositoryInteraface";
-import blogServiceInterface from "../../adaptor/service";
-import { Blog } from "../../entities/blog";
+import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
+import blogServiceInterface from "../../../adaptor/service";
+import { Blog } from "../../../entities/blog";
 
 const createBlogId = async (
   blogRepository: ReturnType<typeof blogRepositoryInteraface>,

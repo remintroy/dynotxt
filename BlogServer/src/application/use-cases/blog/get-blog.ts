@@ -1,5 +1,5 @@
-import blogRepositoryInteraface from "../../adaptor/repositorys/blogRepositoryInteraface";
-import { Blog } from "../../entities/blog";
+import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
+import { Blog } from "../../../entities/blog";
 
 const getBlogData = async (
   blogrepository: ReturnType<typeof blogRepositoryInteraface>,
@@ -24,9 +24,11 @@ const getBlogData = async (
   }
 
   const output: Blog = {
+    author: blogDataFromDb.author,
     title: blogDataFromDb.title,
     subtitle: blogDataFromDb.subtitle,
     bannerImgURL: blogDataFromDb.bannerImgURL,
+    createdAt: blogDataFromDb.createdAt,
     body: blogDataFromDb.body?.[0],
   };
 

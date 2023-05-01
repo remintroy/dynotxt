@@ -1,4 +1,4 @@
-import blogRepositoryInteraface from "../../adaptor/repositorys/blogRepositoryInteraface";
+import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 
 const publishBlog = async (
   blogrepository: ReturnType<typeof blogRepositoryInteraface>,
