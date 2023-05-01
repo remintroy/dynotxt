@@ -12,6 +12,7 @@ import getUserFromRefreshToken from "../../application/use-cases/user/userDataFr
 import otpRepositoryInterface from "../../application/repository/otpRepositoyInteraface";
 import verifyEmail from "../../application/use-cases/user/verifyEmail";
 import userVerificationStatus from "../../application/use-cases/user/userVerificationStatus";
+import getPublicUser from "../../application/use-cases/user/getPublicUser";
 
 export interface IRequest extends Request {
   user: IUser;
@@ -134,6 +135,12 @@ const userController = (
     return response;
   };
 
+  const getUserDataPublic = async (req: IRequest) => {
+    const { id: userId } = req.params;
+    const response = await getPublicUser(userRepository, createError, userId);
+    return response;
+  };
+
   return {
     userPostSignin,
     getUserRefresh,
@@ -142,6 +149,7 @@ const userController = (
     getUserData,
     postVerifyEmail,
     getUserEmailVerificationStatus,
+    getUserDataPublic,
   };
 };
 
