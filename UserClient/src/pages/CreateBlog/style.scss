@@ -29,6 +29,17 @@
         overflow-x: hidden;
         box-sizing: border-box;
 
+        .innerToSetWidth{
+            width: 100%;
+            overflow-x: hidden;
+            height: 100%;
+            padding-right: 5px;
+
+            .body{
+                width: 100%;
+            }
+        }
+
         .titleInput textarea {
             // padding: 0;
             overflow: hidden;
@@ -48,7 +59,9 @@
 
     .BottomBtn {
         position: absolute;
-        bottom: 10px;
+        bottom: 20px;
+        display: block;
+        width: calc(100% - 35px);
     }
 
 

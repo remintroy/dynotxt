@@ -12,7 +12,6 @@ const Editor = ({ value, setValue }: { value: any; setValue: any }) => {
     const fulValueOfEditor = editor.getContents();
     setEditorContent(fulValueOfEditor);
     const hash = SHA256(JSON.stringify(editorContent.content)).toString();
-    // console.log(hash);
     setValue({ content, value: fulValueOfEditor, hash });
   };
 

@@ -27,9 +27,9 @@ const getConfigs = () => {
     },
     blog: {
       blogIdLength: 22,
-      authorLength: 24,
+      authorLength: 28,
       title: {
-        minChar: 3,
+        minChar: 1,
         maxChar: 800,
       },
       subtitle: {
@@ -54,6 +54,7 @@ const getConfigs = () => {
       region: process.env.AWS_S3_REGION,
       version: "v4",
       bucketName: process.env.AWS_S3_BUCKET_NAME,
+      s3SignedExpires: 60 * 60 * 5,
     },
     email: {
       user: process.env.MAIL_USERID,

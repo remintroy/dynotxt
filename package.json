@@ -5,7 +5,7 @@
   "scripts": {
     "authserver": "cd AuthServer && npm start",
     "authserverBuild": "cd AuthServer && npm run build",
-    "blogserver": "cd ButhServer && npm start",
+    "blogserver": "cd BlogServer && npm start",
     "blogserverBuild": "cd BlogServer && npm run build",
     "userapp": "cd UserClient && npm run dev",
     "adminApp": "cd adminClient && npm run dev",

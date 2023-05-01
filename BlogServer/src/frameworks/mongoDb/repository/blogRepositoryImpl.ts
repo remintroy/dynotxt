@@ -12,11 +12,11 @@ const blogRepositoryImpl = () => {
     return response;
   };
 
-  const updateBlog = async (blogData: Blog) => {
+  const updateBlog = async (blogId: string, blogData: Blog) => {
     const response = await BlogModel.updateOne(
-      { blogId: blogData.blogId },
+      { blogId },
       {
-        $set: { body: blogData },
+        $set: blogData,
       }
     );
     return response;
@@ -27,11 +27,57 @@ const blogRepositoryImpl = () => {
     return response;
   };
 
+  const updateBodyIndex = async (
+    blogId: string,
+    index: number,
+    bodyData: []
+  ) => {
+    const response = await BlogModel.updateOne(
+      { blogId },
+      {
+        $set: {
+          [`body.${index}`]: bodyData,
+        },
+      }
+    );
+    return response;
+  };
+
+  const updateAsNewBodyIndex = async (blogId: string, bodyData: []) => {
+    const response = await BlogModel.updateOne(
+      { blogId },
+      {
+        $push: {
+          body: bodyData,
+        },
+      }
+    );
+    return response;
+  };
+
+  const changeVisiblity = async (
+    blogId: string,
+    visibility: "public" | "private"
+  ) => {
+    const response = await BlogModel.updateOne(
+      { blogId },
+      {
+        $set: {
+          published: visibility === "public",
+        },
+      }
+    );
+    return response;
+  };
+
   return {
     getBlogById,
     addNewBlog,
     updateBlog,
     deleteBlogById,
+    updateBodyIndex,
+    updateAsNewBodyIndex,
+    changeVisiblity,
   };
 };
 

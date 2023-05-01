@@ -57,6 +57,9 @@ export default function userRouter(express: typeof ExpressApp) {
     .route("/user_data")
     .get(makeExpressResponseCallback(controller.getUserData))
     .post(makeExpressResponseCallback(controller.postUserUpdate));
+  router
+    .route("/user/:id")
+    .get(makeExpressResponseCallback(controller.getUserDataPublic));
 
   return router;
 }

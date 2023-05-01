@@ -13,6 +13,12 @@ import CreateBlogPage from "./pages/CreateBlog";
 import VerifyEmailComponent from "./components/Auth/VerifyEmail";
 import SignIn from "./components/Auth/Sgnin";
 import SignUp from "./components/Auth/Signup";
+import { Notifications } from "@mantine/notifications";
+import NewBlogStarter from "./components/NewBlogStarter";
+import SettingsPage from "./pages/Settings";
+import AccoutnSettingsComponent from "./components/Settings/AccountSettings";
+import UserProfilePage from "./pages/UserProfile";
+import BlogViewPage from "./pages/BlogPage";
 
 const router = createBrowserRouter([
   {
@@ -24,10 +30,32 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
+      {
+        path: 'blog/:id',
+        element: <BlogViewPage />
+      },
+      {
+        path: 'profile/:id',
+        element: <UserProfilePage />
+      },
+      {
+        path: "settings",
+        element: <SettingsPage />,
+        children: [
+          {
+            path: 'account',
+            element: <AccoutnSettingsComponent />
+          }
+        ]
+      }
     ],
   },
   {
     path: "/blog/create",
+    element: <NewBlogStarter />,
+  },
+  {
+    path: "/blog/edit/:id",
     element: <CreateBlogPage />,
   },
   {
@@ -72,6 +100,7 @@ function App() {
     <div className="App">
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
         <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+          <Notifications />
           <RouterProvider router={router} />
         </MantineProvider>
       </ColorSchemeProvider>

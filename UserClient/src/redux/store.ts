@@ -5,12 +5,14 @@ import storage from "redux-persist/lib/storage";
 import userSlice from "./userSlice";
 import navBarSlice from "./navBarSlice";
 import configSlice from "./configSlice";
+import userDataSlice from "./userDataSlice";
 
 const store = configureStore({
   reducer: {
     user: persistReducer({ key: "user", storage }, userSlice),
     config: configSlice,
     navBar: navBarSlice,
+    userData: userDataSlice,
   },
 });
 
