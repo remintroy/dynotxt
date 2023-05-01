@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../../../redux/hooks";
 import { useState } from "react";
 
-const NavBarSubComponent = () => {
+const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
   const user = useAppSelector((state) => state.user.data);
   const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
@@ -28,10 +28,12 @@ const NavBarSubComponent = () => {
     <Navbar
       p="xs"
       width={{
-        sm: 300,
+        md: 300,
         lg: 300,
-        base: 100,
+        base: 0,
       }}
+      hiddenBreakpoint="md"
+      hidden={hidden}
     >
       <Navbar.Section mt="xs">
         <Box
@@ -56,7 +58,7 @@ const NavBarSubComponent = () => {
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
         <NavLink variant="light" icon={<IconHome />} label="Home" description="Home sweet home" />
         <NavLink variant="light" icon={<IconMessage />} label="Chats" description="2 new requests" />
-        <NavLink variant="light" label="Expore" description="New arrivals " icon={<IconCompass />} />
+        <NavLink variant="light" label="Explore" description="New arrivals " icon={<IconCompass />} />
       </Navbar.Section>
 
       <Navbar.Section>

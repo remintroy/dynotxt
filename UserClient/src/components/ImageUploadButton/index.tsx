@@ -44,6 +44,11 @@ const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValu
 
           setLoading(false);
           setUploaded(true);
+          notifications.show({
+            color: "green",
+            title: "Uploaded",
+            message: "Banner image is changed to new one"
+          })
         } catch (error: any) {
           notifications.show({
             color: "red",

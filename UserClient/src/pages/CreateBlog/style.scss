@@ -29,6 +29,17 @@
         overflow-x: hidden;
         box-sizing: border-box;
 
+        .innerToSetWidth{
+            width: 100%;
+            overflow-x: hidden;
+            height: 100%;
+            padding-right: 5px;
+
+            .body{
+                width: 100%;
+            }
+        }
+
         .titleInput textarea {
             // padding: 0;
             overflow: hidden;

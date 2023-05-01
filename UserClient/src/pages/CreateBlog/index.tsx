@@ -45,7 +45,7 @@ const CreateBlogPage = () => {
 
   const getBlogData = async () => {
     try {
-      const { data } = await blogBackend.get(`/blog/${blogId}`, { headers: { Authorization: `Bearer ${accessToken}` } });
+      const { data } = await blogBackend.get(`/blog/${blogId}/edit`, { headers: { Authorization: `Bearer ${accessToken}` } });
 
       if (data?.title) setTitle(data.title)
       if (data?.subtitle) setSubTitle(data.subtitle)
@@ -194,14 +194,16 @@ const CreateBlogPage = () => {
         )}
 
         {!toggelEditor && (
-          <ScrollArea offsetScrollbars h="100%">
+          <div className="innerToSetWidth">
             <Image width="100%" height={300} src={bannerImg} withPlaceholder radius={5} />
             <br />
             <h1>{title}</h1>
             <Text color="dimmed">{subtitle}</Text>
             <br />
-            {reactBody}
-          </ScrollArea>
+            <div className="body">
+              {reactBody}
+            </div>
+          </div>
         )}
       </Card>
       <div className="BottomBtn">
@@ -221,6 +223,7 @@ const CreateBlogPage = () => {
       </div>
     </Container>
   );
+
 };
 
 export default CreateBlogPage;
