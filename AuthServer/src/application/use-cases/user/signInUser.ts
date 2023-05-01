@@ -57,6 +57,8 @@ export default async function userSignin(
     }
   }
 
+  if (existingData?.disabled) throw createError(401, "You account is disabled");
+
   if (!existingData || !existingData.emailVerified) {
     const otp = await authService.createOtp();
     try {

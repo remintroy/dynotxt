@@ -34,6 +34,7 @@ export default async function verifyEmail(
   }
 
   if (!existingData) throw createError(400, "User not exist");
+  if (existingData.disabled) throw createError(401, "You account is disabled");
   if (existingData.emailVerified)
     throw createError(400, "Email already verified");
 
