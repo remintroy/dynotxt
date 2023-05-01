@@ -110,7 +110,7 @@ const CreateBlogPage = () => {
       console.log(data)
       notifications.show({
         color: 'green',
-        title: "Faild to fetch existing data",
+        title: "Blog published",
         message: "You blog is now public"
       })
       setStatusOfPublishImage((pre) => { return { ...pre, loading: false } });
