@@ -29,7 +29,7 @@ const Home = () => {
 
   return (
     <div className="Home">
-      <Box p={3}>
+      <Box p={4}>
         <Typography component="h1" variant="h3">Dashboard</Typography>
         <div>Name : {user?.name}</div>
         <div>Email : {user?.email}</div>

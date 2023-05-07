@@ -1,8 +1,9 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import "./style.scss";
 import {
   Avatar,
   Box,
+  Button,
   IconButton,
   List,
   ListItem,
@@ -15,11 +16,13 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import GroupIcon from "@mui/icons-material/Group";
+import ArticleIcon from "@mui/icons-material/Article";
 import { useContext } from "react";
 import ThemeContext from "../../context/ThemeContext";
 import styled from "@emotion/styled";
 import { Home } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
+import { useAppSelector } from "../../redux/hooks";
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -71,6 +74,9 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const NavBarMainComponent = () => {
   const { dark, toggleTheme } = useContext(ThemeContext);
   const theme: any = useTheme();
+  const user = useAppSelector((state) => state.user.data);
+  const location = useLocation();
+  const paths = location.pathname.split("/").filter((path) => path);
 
   return (
     <div
@@ -87,7 +93,12 @@ const NavBarMainComponent = () => {
               Manager Dashboard
             </Typography>
             <MaterialUISwitch checked={dark} onClick={() => toggleTheme()} />
-            <Avatar src="" sx={{ ml: 1 }} />
+            {user && <Avatar src="" sx={{ ml: 1 }} />}
+            {!user && (
+              <Link to="/auth/login" className="link">
+                <Button variant="outlined">Login</Button>
+              </Link>
+            )}
           </Toolbar>
         </Box>
       </div>
@@ -95,7 +106,7 @@ const NavBarMainComponent = () => {
         <List>
           <Link className="link" to="/">
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton selected={paths.length == 0}>
                 <ListItemIcon>
                   <Home />
                 </ListItemIcon>
@@ -105,11 +116,21 @@ const NavBarMainComponent = () => {
           </Link>
           <Link className="link" to="/users">
             <ListItem disablePadding>
-              <ListItemButton>
+              <ListItemButton selected={paths[0] == "users"}>
                 <ListItemIcon>
                   <GroupIcon />
                 </ListItemIcon>
                 <ListItemText primary="Users" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link className="link" to="/blogs">
+            <ListItem disablePadding>
+              <ListItemButton selected={paths[0] == "blogs"}>
+                <ListItemIcon>
+                  <ArticleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Blogs" />
               </ListItemButton>
             </ListItem>
           </Link>

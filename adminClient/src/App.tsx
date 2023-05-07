@@ -9,6 +9,7 @@ import ThemeContext from "./context/ThemeContext";
 import UsersManagementPage from "./pages/Users";
 import { useAppDispatch } from "./redux/hooks";
 import { fetchUserData } from "./redux/userSlice";
+import ManageBlogsPage from "./pages/Blogs";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
         path: "users",
         element: <UsersManagementPage />,
       },
+      {
+        path: "blogs",
+        element: <ManageBlogsPage />,
+      },
     ],
   },
   {
@@ -34,7 +39,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(true);
 
   const toggleTheme = () => {
     setDark((pre) => !pre);

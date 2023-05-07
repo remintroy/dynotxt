@@ -49,7 +49,7 @@ const ManageUsersBlockedUsersComponent = () => {
       val[index] = { ...val[index], loading: state };
       return { ...pre, docs: val };
     });
-  };
+  }; 
 
   const handleDisabledChange = async (e: any, index: number, data: any) => {
     try {
@@ -60,8 +60,8 @@ const ManageUsersBlockedUsersComponent = () => {
         {},
         { headers: { Authorization: `Bearer ${user?.accessToken}` } }
       );
-      await fetchUserDataList();
       setLoadingForUserListElement(index, false);
+      await fetchUserDataList();  
     } catch (error) {
       setLoadingForUserListElement(index, false);
     }
