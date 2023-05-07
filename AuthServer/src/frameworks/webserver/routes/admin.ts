@@ -62,6 +62,12 @@ export default function adminRoute(express: typeof ExpressApp) {
       mustLoginAsAdmin,
       makeExpressResponseCallback(controller.getAdminAllBlockedUsers)
     );
+  router
+    .route("/logout")
+    .get(
+      mustLoginAsAdmin,
+      makeExpressResponseCallback(controller.getAdminLogout)
+    );
 
   return router;
 }

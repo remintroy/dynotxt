@@ -21,11 +21,11 @@ export default async function refreshUser(
 
   const payload = authServices.getRefreshTokenPayload(refreshToken);
 
-  if (!payload?.uid) {
-    const user = await userRepository.getById(payload?.uid);
-    if (!user) throw createError(400, "Invalid users credentials");
-    if (user.disabled) throw createError(403, "User disabled");
-  }
+  // if (!payload?.uid) {
+  const user = await userRepository.getById(payload?.uid);
+  if (!user) throw createError(400, "Invalid users credentials");
+  if (user.disabled) throw createError(403, "User disabled");
+  // }
 
   const accessToken = await authServices.createAccessToken({
     uid: payload.uid,

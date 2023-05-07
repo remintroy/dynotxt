@@ -33,6 +33,8 @@ export default async function getUserFromRefreshToken(
     throw createError(500, "Faild to fetch nessory data from server", error);
   }
 
+  if (existingData.disabled) throw createError(401, "Your account is disabled");
+
   const accessToken = authService.createAccessToken({ uid: existingData.uid });
 
   return {

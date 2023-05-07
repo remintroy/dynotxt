@@ -32,7 +32,7 @@ const tokenRepositoryImpl = () => {
     optons?: object
   ) => {
     const response = await new TokensModel({
-      email,
+      uid: email,
       value: token,
       ...optons,
     }).save();

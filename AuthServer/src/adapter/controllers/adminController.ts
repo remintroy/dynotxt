@@ -11,6 +11,7 @@ import getAllUserforAdmin from "../../application/use-cases/admin/get-all-User";
 import disableUser from "../../application/use-cases/admin/disable-user";
 import enableUser from "../../application/use-cases/admin/enable-user";
 import getBlockedUsers from "../../application/use-cases/admin/get-blocked-users";
+import logoutAdmin from "../../application/use-cases/admin/logoutAdmin";
 
 export interface IRequest extends Request {
   admin: IAdminUser;
@@ -86,12 +87,26 @@ const adminController = (
     return response;
   };
 
+  const getAdminLogout = async (req: IRequest, res: Response) => {
+    const refreshToken = req.cookies.suRefreshToken;
+    const { email } = req.admin;
+    const response = await logoutAdmin(
+      tokenRepository,
+      createError,
+      refreshToken,
+      email
+    );
+    res.cookie("suRefreshToken", "");
+    return response;
+  };
+
   return {
     signInAdminUser,
     getAdminUserData,
     getAdminAllUserDataAsPage,
     putAdminChangeUserState,
     getAdminAllBlockedUsers,
+    getAdminLogout,
   };
 };
 
