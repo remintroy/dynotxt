@@ -1,24 +1,23 @@
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import AuthPage from "./pages/Auth";
-import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
-import { useHotkeys, useLocalStorage } from "@mantine/hooks";
-import { useEffect } from "react";
-import { useAppDispatch } from "./redux/hooks";
-import { fetchUserData } from "./redux/userSlice";
-import NavBarComponent from "./components/NavBar";
-import NothingFoundBackground from "./pages/Error";
-import HomePage from "./pages/Home";
-import CreateBlogPage from "./pages/CreateBlog";
-import VerifyEmailComponent from "./components/Auth/VerifyEmail";
-import SignIn from "./components/Auth/Sgnin";
-import SignUp from "./components/Auth/Signup";
+import AuthPage from "./pages/auth";
+import NavBarComponent from "./layout/navbar";
+import NothingFoundBackground from "./pages/error";
+import HomePage from "./pages/home";
+import CreateBlogPage from "./pages/blog/editBlog";
+import SignIn from "./pages/auth/login";
+import SignUp from "./pages/auth/signup";
 import { Notifications } from "@mantine/notifications";
 import NewBlogStarter from "./components/NewBlogStarter";
-import SettingsPage from "./pages/Settings";
+import SettingsPage from "./pages/settings";
 import AccoutnSettingsComponent from "./components/Settings/AccountSettings";
-import UserProfilePage from "./pages/UserProfile";
-import BlogViewPage from "./pages/BlogPage";
+import UserProfilePage from "./pages/profile";
+import BlogViewPage from "./pages/blog/viewBlog";
+import VerfiyEmailPage from "./pages/auth/verifyEmail";
+import { useGetUserDataQuery } from "./lib/api/authApi";
+import { useEffect } from "react";
+import { useAppDispatch } from "./lib/redux/hooks";
+import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
 
 const router = createBrowserRouter([
   {
@@ -31,33 +30,33 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: 'blog/:id',
-        element: <BlogViewPage />
+        path: "blog/:id",
+        element: <BlogViewPage />,
       },
-      {
-        path: 'profile/:id',
-        element: <UserProfilePage />
-      },
-      {
-        path: "settings",
-        element: <SettingsPage />,
-        children: [
-          {
-            path: 'account',
-            element: <AccoutnSettingsComponent />
-          }
-        ]
-      }
+      //     {
+      //       path: "profile/:id",
+      //       element: <UserProfilePage />,
+      //     },
+      //     {
+      //       path: "settings",
+      //       element: <SettingsPage />,
+      //       children: [
+      //         {
+      //           path: "account",
+      //           element: <AccoutnSettingsComponent />,
+      //         },
+      //       ],
+      //     },
     ],
   },
-  {
-    path: "/blog/create",
-    element: <NewBlogStarter />,
-  },
-  {
-    path: "/blog/edit/:id",
-    element: <CreateBlogPage />,
-  },
+  // {
+  //   path: "/blog/create",
+  //   element: <NewBlogStarter />,
+  // },
+  // {
+  //   path: "/blog/edit/:id",
+  //   element: <CreateBlogPage />,
+  // },
   {
     path: "/",
     element: <AuthPage />,
@@ -73,37 +72,33 @@ const router = createBrowserRouter([
       },
       {
         path: "/auth/verify-email/:uid",
-        element: <VerifyEmailComponent />,
+        element: <VerfiyEmailPage />,
       },
     ],
   },
 ]);
 
 function App() {
-  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: "mantine-color-scheme",
-    defaultValue: "light",
-    getInitialValueInEffect: true,
-  });
-
-  const toggleColorScheme = (value?: ColorScheme) => setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
-
-  useHotkeys([["mod+J", () => toggleColorScheme()]]);
-
+  const { data, isError, isLoading, isFetching } = useGetUserDataQuery({});
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchUserData());
-  }, []);
+    if (isError) {
+      dispatch(resetUserData());
+      dispatch(setUserStatus({ error: true }));
+    } else if (isFetching || isLoading) {
+      dispatch(resetUserData());
+      dispatch(setUserStatus({ loading: true }));
+    } else if (data) {
+      dispatch(resetUserData()); 
+      dispatch(setUser(data));
+    }
+  }, [data, isFetching, isLoading, isError]);
 
   return (
     <div className="App">
-      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
-          <Notifications />
-          <RouterProvider router={router} />
-        </MantineProvider>
-      </ColorSchemeProvider>
+      <Notifications />
+      <RouterProvider router={router} />
     </div>
   );
 }

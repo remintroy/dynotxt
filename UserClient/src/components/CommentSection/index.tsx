@@ -1,11 +1,10 @@
-import { ActionIcon, Avatar, Button, Flex, Grid, Input, Loader, Menu, Paper, Text } from "@mantine/core";
+import { ActionIcon, Avatar, Box, Button, Flex, Grid, Input, Loader, Menu, Paper, Text } from "@mantine/core";
 import "./style.scss";
-import { IconDotsVertical, IconMenu, IconSend, IconTrash } from "@tabler/icons-react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { IconDotsVertical, IconSend, IconTrash } from "@tabler/icons-react";
+import { useAppDispatch, useAppSelector } from "../../lib/redux/hooks";
 import { useEffect, useState } from "react";
-import { authBackend, blogBackend } from "../../configs/axios";
-import { notifications } from "@mantine/notifications";
-import { pushUser } from "../../redux/userDataSlice";
+import { authBackend, blogBackend } from "../../lib/axios";
+import { notifications } from "@mantine/notifications"; 
 
 const CommentSectionComponent = ({ blogId, userId }: { blogId: string | undefined; userId: string | undefined }) => {
   const user = useAppSelector((state) => state.user.data);
@@ -58,17 +57,7 @@ const CommentSectionComponent = ({ blogId, userId }: { blogId: string | undefine
     getCommentsDataFromServer();
   }, []);
 
-  const userList: any = useAppSelector((state) => state.userData.list);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    commentsData.map(async (comment: any) => {
-      if (!userList[comment?.uid]) {
-        const { data } = await authBackend.get(`/user/${comment.uid}`);
-        dispatch(pushUser({ [`${comment?.uid}`]: data }));
-      }
-    });
-  }, [commentsData]);
 
   const deleteComment = async (id: string) => {
     try {
@@ -93,12 +82,16 @@ const CommentSectionComponent = ({ blogId, userId }: { blogId: string | undefine
 
       {user && (
         <>
-          <Paper className="commentInput">
+          <Box className="commentInput">
             <Text fw="bold">Post your comment</Text>
             <Grid w="100%" mt="xs">
               <Grid.Col span={11}>
                 {" "}
-                <Input value={comment} onChange={(e) => setComment(e.target.value)} placeholder="Type your comments here" />
+                <Input
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Type your comments here"
+                />
               </Grid.Col>
               <Grid.Col span={1} display={"flex"} sx={{ alignItems: "center", justifyContent: "center" }}>
                 <Button onClick={() => postNewComment()} variant="light">
@@ -106,7 +99,7 @@ const CommentSectionComponent = ({ blogId, userId }: { blogId: string | undefine
                 </Button>
               </Grid.Col>
             </Grid>
-          </Paper>
+          </Box>
           <br />
         </>
       )}
@@ -135,7 +128,11 @@ const CommentSectionComponent = ({ blogId, userId }: { blogId: string | undefine
                       </Menu.Target>
                       <Menu.Dropdown>
                         <Menu.Label>Comments</Menu.Label>
-                        <Menu.Item onClick={() => deleteComment(comment?._id)} icon={<IconTrash size={14} />} color="red">
+                        <Menu.Item
+                          onClick={() => deleteComment(comment?._id)}
+                          icon={<IconTrash size={14} />}
+                          color="red"
+                        >
                           Delete
                         </Menu.Item>
                       </Menu.Dropdown>

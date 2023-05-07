@@ -2,8 +2,8 @@ import { Button, Loader } from "@mantine/core";
 import { IconCheck, IconRotateClockwise2, IconStatusChange, IconUpload } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { blogBackend } from "../../configs/axios";
-import { useAppSelector } from "../../redux/hooks";
+import { blogBackend } from "../../lib/axios";
+import { useAppSelector } from "../../lib/redux/hooks";
 import axios from "axios";
 
 const ImageUploadButton = ({ value, setValue, blogId }: { value: string; setValue: any; blogId: string | undefined }) => {
