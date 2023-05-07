@@ -4,6 +4,9 @@ dotenv.config();
 
 const getConfigs = () => {
   return {
+    morgan: {
+      logStyle: "dev",
+    },
     server: {
       name: "Dynotxt AuthServer",
       port: process.env.PORT || 5001,
@@ -21,7 +24,7 @@ const getConfigs = () => {
         accessSecret: process.env.ACCESS_TOKEN_SECRET,
         refreshSecret: process.env.REFRESH_TOKEN_SECRET,
         accessOptions: {
-          expiresIn: "20m",
+          expiresIn: "25m",
         },
         refreshOptions: {
           expiresIn: "365d",

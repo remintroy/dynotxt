@@ -37,5 +37,5 @@ export default async function refreshUser(
     // Faild case while updating the status
   }
 
-  return accessToken;
+  return { accessToken };
 }
