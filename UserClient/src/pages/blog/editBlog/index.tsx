@@ -1,6 +1,6 @@
 import "./style.scss";
 import { useEffect, useState } from "react";
-import Editor from "../../../components/Editor";
+import Editor from "../../../components/blog/editor";
 import { allowBottomNav } from "../../../lib/redux/navBarSlice";
 import { useAppDispatch, useAppSelector } from "../../../lib/redux/hooks";
 import {
@@ -25,7 +25,7 @@ import { Link, useParams } from "react-router-dom";
 import { blogBackend } from "../../../lib/axios";
 import { notifications } from "@mantine/notifications";
 
-const CreateBlogPage = () => {
+const EditBlogPage = () => {
   const dispatch = useAppDispatch();
   const { id: blogId } = useParams();
   const user = useAppSelector((state) => state.user.data);
@@ -279,4 +279,4 @@ const CreateBlogPage = () => {
   );
 };
 
-export default CreateBlogPage;
+export default EditBlogPage;

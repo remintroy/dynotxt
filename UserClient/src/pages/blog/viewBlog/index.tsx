@@ -1,10 +1,7 @@
 import "./style.scss";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { authBackend, blogBackend } from "../../../lib/axios";
-import { useAppSelector } from "../../../lib/redux/hooks";
 import { Avatar, Box, Button, Container, Flex, Image, Skeleton, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
@@ -14,17 +11,11 @@ import { useGetAuthorDataQuery } from "../../../lib/api/authApi";
 
 const BlogViewPage = () => {
   const { id: blogId } = useParams();
-  const {
-    data: blogData,
-    isLoading: isBlogLoading,
-    isError: isBlogError,
-    isFetching: isBlogFetching,
-  } = useGetBlogQuery({ blogId });
+  const { data: blogData } = useGetBlogQuery({ blogId });
 
   const {
     data: authorData,
     isLoading: isAuthorLoading,
-    isError: isAuthorError,
     isFetching: isAuthorFetching,
   } = useGetAuthorDataQuery(blogData?.author, { skip: !blogData });
 

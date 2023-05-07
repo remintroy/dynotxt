@@ -13,10 +13,10 @@ const baseQuery = fetchBaseQuery({
 
 const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => {
   let result = await baseQuery(args, apis, extraOptions);
-  if (result?.error?.status === 403) {
+  if (result?.error?.status === 401) {
     const refreshResponse: any = await baseQuery("/refresh", apis, extraOptions);
-    if (refreshResponse.data) {
-      apis.dispatch(refresh(refreshResponse.data?.accessToken));
+    if (refreshResponse?.data?.accessToken) {
+      apis.dispatch(refresh(refreshResponse?.data?.accessToken));
       result = await baseQuery(args, apis, extraOptions);
     } else {
       apis.dispatch(logout());

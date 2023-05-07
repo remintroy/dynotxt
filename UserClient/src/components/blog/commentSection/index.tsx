@@ -1,16 +1,23 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../lib/redux/hooks";
-import { useGetCommentsQuery, usePostNewCommentMutation } from "../../../lib/api/blogApi";
+import { useAppSelector } from "../../../lib/redux/hooks";
+import { useDeleteCommentMutation, useGetCommentsQuery, usePostNewCommentMutation } from "../../../lib/api/blogApi";
 import { ActionIcon, Avatar, Box, Button, Flex, Grid, Input, Loader, Menu, Paper, Text } from "@mantine/core";
 import { IconDotsVertical, IconSend } from "@tabler/icons-react";
 import { IconTrash } from "@tabler/icons-react";
 import { useGetUserDataWithUidQuery } from "../../../lib/api/authApi";
 
-const CommentComponent = ({ data, skip }: { data: any; skip?: boolean }) => {
+const CommentComponent = ({ data, skip, blogId }: { data: any; skip?: boolean; blogId: string | undefined }) => {
   const user = useAppSelector((state) => state.user.data);
   const { data: userData } = useGetUserDataWithUidQuery(data.uid, { skip });
 
+  const [deleteCommentApi] = useDeleteCommentMutation();
+
   const deleteComment = async (id: string) => {
+    try {
+      await deleteCommentApi({ blogId, commentId: id });
+    } catch (error) {
+      console.log(error);
+    }
     //   const { data } = await blogBackend.delete(`/comment/${blogId}/${id}`, {
   };
 
@@ -54,7 +61,7 @@ const CommentComponent = ({ data, skip }: { data: any; skip?: boolean }) => {
 };
 
 const CommentSectionComponent = ({ blogId, skip }: { blogId: string | undefined; skip?: boolean }) => {
-  const { data, refetch, isLoading, isFetching } = useGetCommentsQuery(blogId, { skip });
+  const { data, isLoading, isFetching } = useGetCommentsQuery(blogId, { skip });
   const [uploadNewComment] = usePostNewCommentMutation();
 
   const user = useAppSelector((state) => state.user.data);
@@ -67,7 +74,6 @@ const CommentSectionComponent = ({ blogId, skip }: { blogId: string | undefined;
         setUploadLoading(true);
         await uploadNewComment({ blogId, data: comment }).unwrap();
         setUploadLoading(false);
-        refetch();
         setComment("");
       }
     } catch (error) {
@@ -83,6 +89,7 @@ const CommentSectionComponent = ({ blogId, skip }: { blogId: string | undefined;
         <>
           <Box className="commentInput">
             <Text fw="bold">Post your comment</Text>
+            <Text color="dimmed">{data?.length ? data?.length : 0} comments</Text>
             <Grid w="100%" mt="xs">
               <Grid.Col span={11}>
                 {" "}
@@ -110,10 +117,10 @@ const CommentSectionComponent = ({ blogId, skip }: { blogId: string | undefined;
       )}
 
       {data
-        ?.slice(0, -1)
+        ?.slice(0)
         ?.reverse()
         .map((comment: any) => {
-          return <CommentComponent key={comment?._id} data={comment} skip={skip} />;
+          return <CommentComponent key={comment?._id} data={comment} skip={skip} blogId={blogId} />;
         })}
 
       <br />

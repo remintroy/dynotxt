@@ -4,11 +4,9 @@ import AuthPage from "./pages/auth";
 import NavBarComponent from "./layout/navbar";
 import NothingFoundBackground from "./pages/error";
 import HomePage from "./pages/home";
-import CreateBlogPage from "./pages/blog/editBlog";
 import SignIn from "./pages/auth/login";
 import SignUp from "./pages/auth/signup";
 import { Notifications } from "@mantine/notifications";
-import NewBlogStarter from "./components/NewBlogStarter";
 import SettingsPage from "./pages/settings";
 import AccoutnSettingsComponent from "./components/Settings/AccountSettings";
 import UserProfilePage from "./pages/profile";
@@ -18,6 +16,7 @@ import { useGetUserDataQuery } from "./lib/api/authApi";
 import { useEffect } from "react";
 import { useAppDispatch } from "./lib/redux/hooks";
 import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
+import EditBlogPage from "./pages/blog/editBlog";
 
 const router = createBrowserRouter([
   {
@@ -49,14 +48,10 @@ const router = createBrowserRouter([
       //     },
     ],
   },
-  // {
-  //   path: "/blog/create",
-  //   element: <NewBlogStarter />,
-  // },
-  // {
-  //   path: "/blog/edit/:id",
-  //   element: <CreateBlogPage />,
-  // },
+  {
+    path: "/blog/edit/:id",
+    element: <EditBlogPage />,
+  },
   {
     path: "/",
     element: <AuthPage />,
@@ -90,7 +85,7 @@ function App() {
       dispatch(resetUserData());
       dispatch(setUserStatus({ loading: true }));
     } else if (data) {
-      dispatch(resetUserData()); 
+      dispatch(resetUserData());
       dispatch(setUser(data));
     }
   }, [data, isFetching, isLoading, isError]);
