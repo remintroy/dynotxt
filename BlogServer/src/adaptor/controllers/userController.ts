@@ -138,6 +138,8 @@ const userController = (
     return response;
   };
 
+  const putUserLikeBlog = async (req: RequestWithUser) => {};
+
   return {
     postUserNewBlog,
     getUserBlogUploadUrl,
@@ -148,6 +150,7 @@ const userController = (
     putUserComment,
     getUserBlogComments,
     deleteUserBlogComment,
+    putUserLikeBlog,
   };
 };
 

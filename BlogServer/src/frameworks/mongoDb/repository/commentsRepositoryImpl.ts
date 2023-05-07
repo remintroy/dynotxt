@@ -13,7 +13,6 @@ const commentRepositoryImpl = () => {
 
   const addComment = async (commentData: Comment) => {
     const { blogId, newComment } = commentData;
-    console.log(commentData);
     const response = await CommentModel.updateOne(
       { blogId },
       {
