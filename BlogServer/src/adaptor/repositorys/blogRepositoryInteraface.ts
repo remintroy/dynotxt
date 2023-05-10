@@ -1,9 +1,7 @@
 import { Blog } from "../../entities/blog";
 import blogRepositoryImpl from "../../frameworks/mongoDb/repository/blogRepositoryImpl";
 
-const blogRepositoryInteraface = (
-  repository: ReturnType<typeof blogRepositoryImpl>
-) => {
+const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
   const getBlogById = (blogId: string) => repository.getBlogById(blogId);
   const addNewBlog = (data: Blog) => repository.addNewBlog(data);
   const updateBlog = (blogId: string, data: Blog) =>
@@ -15,6 +13,14 @@ const blogRepositoryInteraface = (
     repository.updateAsNewBodyIndex(blogId, blogData);
   const changeVisiblity = (blogId: string, visiblity: "public" | "private") =>
     repository.changeVisiblity(blogId, visiblity);
+  const getAllBlogsDisplayWithUidWithPrivate = (userId: string) =>
+    repository.getAllBlogsDisplayWithUidWithPrivate(userId);
+  const getAllBlogsDisplayWithUid = (userId: string) =>
+    repository.getAllBlogsDisplayWithUid(userId);
+  const recoverDeletedBlogById = (userId: string) =>
+    repository.recoverDeletedBlogById(userId);
+  const getAllDeletedBlogs = (userId: string) =>
+    repository.getAllDeletedBlogs(userId);
 
   return {
     getBlogById,
@@ -24,7 +30,12 @@ const blogRepositoryInteraface = (
     updateBodyIndex,
     updateAsNewBodyIndex,
     changeVisiblity,
+    getAllBlogsDisplayWithUidWithPrivate,
+    getAllBlogsDisplayWithUid,
+    recoverDeletedBlogById,
+    getAllDeletedBlogs,
   };
 };
 
+type blogRepositoryInteraface = ReturnType<typeof blogRepositoryInteraface>;
 export default blogRepositoryInteraface;

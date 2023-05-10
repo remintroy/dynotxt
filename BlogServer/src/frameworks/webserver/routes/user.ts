@@ -35,19 +35,36 @@ export default function userRouter(express: typeof ExpressApp) {
 
   router
     .route("/blog/:id")
+    .get(makeExpressResponseCallback(controller.getUserBlogData))
     .put(
       mustLoginAsUser,
       makeExpressResponseCallback(controller.putUserUpdateBlog)
     )
-    .get(makeExpressResponseCallback(controller.getUserBlogData));
+    .delete(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.deleteUserBlog)
+    );
 
   router
     .route("/blog/:id/edit")
-    .get(makeExpressResponseCallback(controller.getUserBlogDataForEdit));
+    .get(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.getUserBlogDataForEdit)
+    );
 
   router
     .route("/blog/:id/publish")
-    .put(makeExpressResponseCallback(controller.putUserPublishBlog));
+    .put(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.putUserPublishBlog)
+    );
+
+  router
+    .route("/blog/:id/unpublish")
+    .put(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.putUserUnpublishBlog)
+    );
 
   router
     .route("/upload/:id")
@@ -70,6 +87,10 @@ export default function userRouter(express: typeof ExpressApp) {
       mustLoginAsUser,
       makeExpressResponseCallback(controller.deleteUserBlogComment)
     );
+
+  router
+    .route("/user/:id")
+    .get(makeExpressResponseCallback(controller.getAllBlogsDisplay));
 
   return router;
 }

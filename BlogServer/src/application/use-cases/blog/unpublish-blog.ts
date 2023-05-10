@@ -1,6 +1,6 @@
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 
-const publishBlog = async (
+const unPublishBlog = async (
   blogrepository: blogRepositoryInteraface,
   createError,
   blogId: string,
@@ -18,10 +18,10 @@ const publishBlog = async (
     throw createError(400, "You dont have permission to publish blog");
 
   try {
-    return await blogrepository.changeVisiblity(blogId, "public");
+    return await blogrepository.changeVisiblity(blogId, "private");
   } catch (error) {
     throw createError(500, "Faild to publish blog");
   }
 };
 
-export default publishBlog;
+export default unPublishBlog;

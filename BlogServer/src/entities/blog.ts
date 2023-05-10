@@ -10,6 +10,7 @@ export interface Blog {
   bannerImgURL?: string;
   version?: number;
   body?: [];
+  deleted?: boolean;
 }
 
 export class Blog {
@@ -25,6 +26,7 @@ export class Blog {
     this.bannerImgURL = blogData.bannerImgURL;
     this.body = blogData.body;
     this.version = blogData.version;
+    this.deleted = blogData.deleted;
   }
 }
 
