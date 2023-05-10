@@ -21,8 +21,9 @@ const getPublicUser = async (
   const output: IUser = {};
 
   output.privateAccount = userData.privateAccount;
-  output.name = userData.name;
+  output.name = userData?.name ?? userData.email.split("@")[0];
   output.photoURL = userData.photoURL;
+  output.uid = userData.uid;
 
   return output;
 };
