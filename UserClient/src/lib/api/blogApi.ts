@@ -4,9 +4,20 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://server.dynotxt.com/blog/api/v1",
   credentials: "include",
-  prepareHeaders(headers, api: any) {
+  prepareHeaders: async (headers, api: any) => {
     const token = api.getState().user.accessToken;
     if (token) headers.set("Authorization", `Bearer ${token}`);
+    else {
+      try {
+        const response: any = await fetch("https://server.dynotxt.com/auth/api/v1/user_data", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        headers.set("Authorization", `Bearer ${data?.accessToken}`);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     return headers;
   },
 });
@@ -28,7 +39,7 @@ const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => 
 const blogApiSlice = createApi({
   reducerPath: "blogapi",
   baseQuery: baseQueryWithRefetch,
-  tagTypes: ["comments"],
+  tagTypes: ["comments", "blogDisplay"],
   endpoints: (builder) => ({
     getBlog: builder.query({
       query: ({ blogId }) => `/blog/${blogId}`,
@@ -58,6 +69,48 @@ const blogApiSlice = createApi({
       }),
       invalidatesTags: ["comments"],
     }),
+    getImageUploadUrl: builder.mutation({
+      query: (blogId) => `/upload/${blogId}`,
+    }),
+    putBlogImageUrl: builder.mutation({
+      query: ({ blogId, bannerImgURL }) => ({
+        url: `/blog/${blogId}`,
+        method: "PUT",
+        body: { bannerImgURL },
+      }),
+    }),
+    putCurrentState: builder.mutation({
+      query: ({ blogId, data }) => ({
+        url: `/blog/${blogId}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    putPublishBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}/publish`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["blogDisplay"],
+    }),
+    putUnPublishBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}/unpublish`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["blogDisplay"],
+    }),
+    getBlogDataDisplay: builder.query({
+      query: (uid) => `/user/${uid}`,
+      providesTags: ["blogDisplay"],
+    }),
+    deleteBlogWithBlogId: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["blogDisplay"],
+    }),
   }),
 });
 
@@ -71,4 +124,11 @@ export const {
   useDeleteCommentMutation,
   useGetCommentsQuery,
   usePostNewCommentMutation,
+  useGetImageUploadUrlMutation,
+  usePutBlogImageUrlMutation,
+  usePutCurrentStateMutation,
+  usePutPublishBlogMutation,
+  useGetBlogDataDisplayQuery,
+  usePutUnPublishBlogMutation,
+  useDeleteBlogWithBlogIdMutation,
 } = blogApiSlice;

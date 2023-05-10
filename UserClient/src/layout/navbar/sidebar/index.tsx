@@ -68,18 +68,20 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
 
       <Navbar.Section>
         {(user || loading) && (
-          <UserButton
-            email={user?.email || "test@example.com"}
-            image={user?.photoURL as string}
-            name={user?.name as string}
-            icon={
-              <Tooltip label="Go to account settings" withArrow color="gray">
-                <Link className="link" to="/settings/account">
-                  <IconSettings />
-                </Link>
-              </Tooltip>
-            }
-          />
+          <Link className="link" to={`/profile/${user?.uid}`}>
+            <UserButton
+              email={user?.email || "test@example.com"}
+              image={user?.photoURL as string}
+              name={user?.name as string}
+              // icon={
+              //   <Tooltip label="Go to account settings" withArrow color="gray">
+              //     <Link className="link" to="/settings/account">
+              //       <IconSettings />
+              //     </Link>
+              //   </Tooltip>
+              // }
+            />
+          </Link>
         )}
         {!user && !loading && (
           <Tooltip label="Wait. Who are you ?" color="gray" withArrow>

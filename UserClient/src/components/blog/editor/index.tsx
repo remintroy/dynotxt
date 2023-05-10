@@ -6,7 +6,7 @@ import "react-quill/dist/quill.bubble.css"; // import the styles
 import "react-quill/dist/quill.snow.css"; // import the styles
 
 const Editor = ({ value, setValue }: { value: any; setValue: any }) => {
-  const [editorContent, setEditorContent] = useState(value ? value.value : "");
+  const [editorContent, setEditorContent] = useState(value?.value ?? "");
 
   const handleEditorChange = (content: any, delta: any, source: any, editor: any) => {
     const fulValueOfEditor = editor.getContents();

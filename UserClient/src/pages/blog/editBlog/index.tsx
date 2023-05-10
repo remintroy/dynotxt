@@ -20,33 +20,36 @@ import {
 import { IconEdit, IconEye, IconFile, IconGlobe, IconInfoHexagon } from "@tabler/icons-react";
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
-import ImageUploadButton from "../../../components/ImageUploadButton";
 import { Link, useParams } from "react-router-dom";
-import { blogBackend } from "../../../lib/axios";
 import { notifications } from "@mantine/notifications";
+import ImageUploadButtonComponent from "../../../components/blog/imageUploadButton";
+import { useGetBlogQuery, usePutCurrentStateMutation, usePutPublishBlogMutation } from "../../../lib/api/blogApi";
 
 const EditBlogPage = () => {
-  const dispatch = useAppDispatch();
-  const { id: blogId } = useParams();
-  const user = useAppSelector((state) => state.user.data);
-
-  useEffect(() => {
-    dispatch(allowBottomNav(false));
-    return () => {
-      dispatch(allowBottomNav(true));
-    };
-  }, []);
-
-  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
   const [title, setTitle] = useState("");
   const [subtitle, setSubTitle] = useState("");
   const [bodyValue, setBodyValue] = useState({ content: "", value: {}, hash: "" });
   const [toggelEditor, setToggleEditor] = useState(true);
   const [bannerImg, setBannerImg] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loadingForBlogData, setLoadingForBlogData] = useState(true);
+  const [loadingForSaveChanges, setLoadingForSaveChanges] = useState(false);
+  const [loadingForPublish, setLoadingForPublish] = useState(false);
+  const user = useAppSelector((state) => state.user.data);
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
+  const dispatch = useAppDispatch();
+  const [putCurrentState] = usePutCurrentStateMutation();
+  const [putPublishBlog] = usePutPublishBlogMutation();
 
+  const { id: blogId } = useParams();
+  const {
+    data: blogData,
+    isLoading: isBlogDataLoading,
+    isFetching: isBlogDataFetching,
+    isError: isBlogDataError,
+  } = useGetBlogQuery({ blogId }, { skip: !user });
+
+  // convert html to react components and inject Prism component
   const reactBody = parse(bodyValue.content, {
     replace: (domNode: any) => {
       if (domNode.name === "pre" && domNode.children?.[0]?.data) {
@@ -55,121 +58,72 @@ const EditBlogPage = () => {
     },
   });
 
-  const getBlogData = async () => {
-    setErrorMessage("");
-    setIsError(false);
-    setIsLoading(true);
-    try {
-      const { data } = await blogBackend.get(`/blog/${blogId}/edit`, {
-        headers: { Authorization: `Bearer ${user?.accessToken}` },
-      });
+  useEffect(() => {
+    // load all data to currespinding states if exist
+    if (blogData?.title) setTitle(blogData.title);
+    if (blogData?.subtitle) setSubTitle(blogData.subtitle);
+    if (blogData?.bannerImgURL) setBannerImg(blogData.bannerImgURL);
+    if (blogData?.body) setBodyValue((pre) => ({ ...pre, value: blogData.body }));
 
-      if (data?.title) setTitle(data.title);
-      if (data?.subtitle) setSubTitle(data.subtitle);
-      if (data?.bannerImgURL) setBannerImg(data.bannerImgURL);
-      if (data?.body)
-        setBodyValue((pre) => {
-          return { ...pre, value: data.body };
-        });
+    // set loading state with response loading and fetching state from rtk query
+    setLoadingForBlogData((isBlogDataFetching || isBlogDataLoading) == true);
+    //...
+  }, [blogData, isBlogDataFetching, isBlogDataLoading]);
 
-      setIsLoading(false);
-    } catch (error: any) {
-      const msg = error.response.data.error
-        ? error.response.data.error
-        : "Careful while submitting there is a chance of data lose";
-      setErrorMessage(msg);
-      setIsError(true);
-      setIsLoading(false);
-      console.log(error);
-    }
-  };
-
-  const [statusOfSaveChanges, setStatusOfSaveChanges] = useState({ loading: false });
-
+  // uploading current state to server
   const uploadCurrentState = async () => {
+    setLoadingForSaveChanges(true);
     try {
-      setStatusOfSaveChanges((pre) => {
-        return { ...pre, loading: true };
-      });
       const dataToSend = {
         title,
         subtitle,
         body: bodyValue.value,
       };
-      const { data } = await blogBackend.put(`/blog/${blogId}`, dataToSend, {
-        headers: { Authorization: `Bearer ${user?.accessToken}` },
-      });
+      await putCurrentState({ blogId, data: dataToSend }).unwrap();
       notifications.show({
         color: "green",
         title: "Blog data saved",
         message: "Your current state is saved. You can safely close the browser window now",
       });
-      setStatusOfSaveChanges((pre) => {
-        return { ...pre, loading: false };
-      });
+      setLoadingForSaveChanges(false);
+      //...
     } catch (error: any) {
-      // faild to fetch
+      // error handling
       notifications.show({
         color: "red",
         title: "Faild to fetch existing data",
-        message: error.response.data.error
-          ? error.response.data.error
-          : "Careful while submitting there is a chance of data lose",
+        message: error?.data?.error ?? "Careful while submitting there is a chance of data lose",
       });
-      setStatusOfSaveChanges((pre) => {
-        return { ...pre, loading: false };
-      });
-      console.log(error);
+      setLoadingForSaveChanges(false);
     }
   };
 
-  useEffect(() => {
-    {
-      user && getBlogData();
-    }
-    if (!user) {
-      const Time = setTimeout(() => {
-        getBlogData();
-      }, 5000);
-
-      return () => {
-        clearTimeout(Time);
-      };
-    }
-  }, [user]);
-
-  const [statusOfPublishImage, setStatusOfPublishImage] = useState({ loading: false });
-
-  const publishImage = async () => {
+  const publishBlog = async () => {
+    setLoadingForPublish(true);
     try {
-      setStatusOfPublishImage((pre) => {
-        return { ...pre, loading: true };
-      });
-      const { data } = await blogBackend.put(
-        `/blog/${blogId}/publish`,
-        {},
-        { headers: { Authorization: `Bearer ${user?.accessToken}` } }
-      );
-      console.log(data);
+      await putPublishBlog(blogId).unwrap();
       notifications.show({
         color: "green",
         title: "Blog published",
         message: "You blog is now public",
       });
-      setStatusOfPublishImage((pre) => {
-        return { ...pre, loading: false };
-      });
+      setLoadingForPublish(false);
     } catch (error: any) {
       notifications.show({
         color: "red",
         title: "Faild to fetch existing data",
-        message: error.response.data.error ? error.response.data.error : "Failed to publish blog",
+        message: error?.data?.error ?? "Failed to publish blog",
       });
-      setStatusOfPublishImage((pre) => {
-        return { ...pre, loading: false };
-      });
+      setLoadingForPublish(false);
     }
   };
+
+  useEffect(() => {
+    dispatch(allowBottomNav(false));
+    return () => {
+      dispatch(allowBottomNav(true));
+    };
+  }, []);
 
   return (
     <Container className={`CreateBlog ${thisIsPc ? "" : "mb"}`}>
@@ -189,8 +143,8 @@ const EditBlogPage = () => {
         </div>
       </div>
       <Card withBorder className="inputsContainer">
-        {isLoading && <div>{<LoadingOverlay visible={isLoading} />}</div>}
-        {isError && (
+        {loadingForBlogData && <div>{<LoadingOverlay visible={loadingForBlogData} />}</div>}
+        {isBlogDataError && (
           <div>
             <Overlay blur={15} center sx={{ flexDirection: "column" }}>
               <>
@@ -199,14 +153,14 @@ const EditBlogPage = () => {
                   <Text size={"xl"}> &nbsp; Error </Text>
                 </Flex>
                 <br />
-                <Text>{errorMessage ? errorMessage : "Oops some thing went wrong"}</Text>
+                <Text>{errorMessage ?? "Oops some thing went wrong"}</Text>
               </>
             </Overlay>
           </div>
         )}
-        {toggelEditor && !isError && !isLoading && (
+        {toggelEditor && !isBlogDataError && !loadingForBlogData && (
           <ScrollArea offsetScrollbars h="100%">
-            <ImageUploadButton value={bannerImg} setValue={setBannerImg} blogId={blogId} />
+            <ImageUploadButtonComponent value={bannerImg} setValue={setBannerImg} blogId={blogId} />
             <br />
             <br />
             <Textarea
@@ -254,25 +208,27 @@ const EditBlogPage = () => {
       <div className="BottomBtn">
         <Flex align="center" justify="space-between">
           <Stack spacing={1} sx={{ flexDirection: "row", gap: "10px" }}>
+            {!blogData?.published && (
+              <Button
+                variant="outline"
+                leftIcon={loadingForPublish ? <Loader size={"xs"} /> : <IconGlobe />}
+                onClick={() => publishBlog()}
+              >
+                {loadingForPublish ? "Publishing" : "Publish"}
+              </Button>
+            )}
             <Button
-              variant="outline"
-              leftIcon={statusOfPublishImage.loading ? <Loader size={"xs"} /> : <IconGlobe />}
-              onClick={() => publishImage()}
-            >
-              {statusOfPublishImage.loading ? "Publishing" : "Publish"}
-            </Button>
-            <Button
-              variant="subtle"
-              color="dark"
-              leftIcon={statusOfSaveChanges.loading ? <Loader size={"xs"} /> : <IconFile />}
+              variant={blogData?.published ? "outline" : "subtle"}
+              color={blogData?.published ? "blue" : "dark"}
+              leftIcon={loadingForSaveChanges ? <Loader size={"xs"} /> : <IconFile />}
               onClick={() => uploadCurrentState()}
             >
-              {statusOfSaveChanges.loading ? "Saving changes" : "Save changes"}
+              {loadingForSaveChanges ? "Saving changes" : "Save changes"}
             </Button>
           </Stack>
-          <Link className="link" to="/">
+          {/* <Link className="link" to="/">
             <Button variant="outline">Go to home</Button>
-          </Link>
+          </Link> */}
         </Flex>
       </div>
     </Container>

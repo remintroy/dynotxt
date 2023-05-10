@@ -1,6 +1,6 @@
 import "./style.scss";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Avatar, Box, Button, Container, Flex, Image, Skeleton, Text } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
@@ -28,7 +28,7 @@ const BlogViewPage = () => {
         replace: (domNode: any) => {
           if (domNode.name === "pre" && domNode.children?.[0]?.data) {
             return (
-              <Prism language="javascript" sx={{ marginTop: "20px" }}>
+              <Prism language="javascript" sx={{ maring: 0, padding: 0, marginTop: "20px", overflow: "hidden" }}>
                 {domNode.children?.[0]?.data}
               </Prism>
             );
@@ -37,7 +37,7 @@ const BlogViewPage = () => {
       });
       setBlogDataToShow(reactBody);
     }
-  }, [blogData]);
+  }, [blogData]); 
 
   return (
     <Container className="BlogViewPage">
@@ -51,12 +51,16 @@ const BlogViewPage = () => {
             {isAuthorLoading || isAuthorFetching ? (
               <Skeleton radius={"xl"} w={40} h={40} />
             ) : (
-              <Avatar radius={"xl"} src={authorData?.photoURL} />
+              <Link className="link" to={`/profile/${authorData?.uid}`}>
+                <Avatar radius={"xl"} src={authorData?.photoURL} />
+              </Link>
             )}
-            <div>
-              {isAuthorLoading || isAuthorFetching ? <Skeleton w={150} h={20} /> : <Text>{authorData?.name}</Text>}
-              {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
-            </div>
+            <Link className="link" to={`/profile/${authorData?.uid}`}>
+              <div>
+                {isAuthorLoading || isAuthorFetching ? <Skeleton w={150} h={20} /> : <Text>{authorData?.name}</Text>}
+                {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
+              </div>
+            </Link>
           </Flex>
           {isAuthorLoading || isAuthorFetching ? (
             <Skeleton w={100} h={40} />
