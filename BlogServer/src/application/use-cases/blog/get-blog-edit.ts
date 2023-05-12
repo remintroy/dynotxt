@@ -2,10 +2,10 @@ import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositor
 import { Blog } from "../../../entities/blog";
 
 const getBlogDataToEdit = async (
-  blogrepository: ReturnType<typeof blogRepositoryInteraface>,
+  blogrepository: blogRepositoryInteraface,
   createError,
-  blogId,
-  user
+  blogId: string,
+  user: string
 ) => {
   if (!blogId) throw createError(400, "Blog id is required to get blog data");
 
@@ -28,6 +28,7 @@ const getBlogDataToEdit = async (
     subtitle: blogDataFromDb.subtitle,
     bannerImgURL: blogDataFromDb.bannerImgURL,
     createdAt: blogDataFromDb.createdAt,
+    published: blogDataFromDb.published,
     body: blogDataFromDb.body?.[0],
   };
 

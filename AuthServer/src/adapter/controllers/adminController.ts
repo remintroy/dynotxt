@@ -6,14 +6,21 @@ import validatorInteraface from "../../application/services/validatorInteraface"
 import signinAdmin from "../../application/use-cases/admin/signInAdmin";
 import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
 import getAdminFromRefreshToken from "../../application/use-cases/admin/adminUserDataFromRefreshToken";
+import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
+import getAllUserforAdmin from "../../application/use-cases/admin/get-all-User";
+import disableUser from "../../application/use-cases/admin/disable-user";
+import enableUser from "../../application/use-cases/admin/enable-user";
+import getBlockedUsers from "../../application/use-cases/admin/get-blocked-users";
+import logoutAdmin from "../../application/use-cases/admin/logoutAdmin";
 
 export interface IRequest extends Request {
-  user: IAdminUser;
+  admin: IAdminUser;
 }
 
 const adminController = (
   adminRepository: ReturnType<typeof adminUserRepositoryImpl>,
   tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
+  userRepository: ReturnType<typeof userRepositoryInteraface>,
   authService: ReturnType<typeof authServiceInterface>,
   validator: ReturnType<typeof validatorInteraface>,
   createError
@@ -55,9 +62,51 @@ const adminController = (
     return response;
   };
 
+  const getAdminAllUserDataAsPage = async (req: IRequest) => {
+    const pageNo = req.query.page;
+    const response = await getAllUserforAdmin(
+      userRepository,
+      createError,
+      pageNo
+    );
+    return response;
+  };
+
+  const putAdminChangeUserState = async (req: IRequest) => {
+    const { action, uid } = req.params;
+    const response =
+      action === "enable"
+        ? await enableUser(userRepository, createError, uid)
+        : await disableUser(userRepository, createError, uid);
+    return response;
+  };
+
+  const getAdminAllBlockedUsers = async (req: IRequest) => {
+    const pageNo = req.query.page;
+    const response = await getBlockedUsers(userRepository, createError, pageNo);
+    return response;
+  };
+
+  const getAdminLogout = async (req: IRequest, res: Response) => {
+    const refreshToken = req.cookies.suRefreshToken;
+    const { email } = req.admin;
+    const response = await logoutAdmin(
+      tokenRepository,
+      createError,
+      refreshToken,
+      email
+    );
+    res.cookie("suRefreshToken", "");
+    return response;
+  };
+
   return {
     signInAdminUser,
     getAdminUserData,
+    getAdminAllUserDataAsPage,
+    putAdminChangeUserState,
+    getAdminAllBlockedUsers,
+    getAdminLogout,
   };
 };
 

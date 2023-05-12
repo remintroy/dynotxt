@@ -1,4 +1,3 @@
-import "./style.css";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -14,6 +13,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { authBackend } from "../../configs/axios";
 import { setUser } from "../../redux/userSlice";
+import { useTheme } from "@emotion/react";
 
 function Copyright(props: any) {
   return (
@@ -29,6 +29,7 @@ function Copyright(props: any) {
 }
 
 export default function SignIn() {
+  const theme: any = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [statusDisp, setStatusDisp] = useState({ show: false, message: "", error: false });
@@ -62,69 +63,86 @@ export default function SignIn() {
   };
 
   return (
-    <Container className="Login" component="main" maxWidth="xs" style={{ color: "white" }}>
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5" style={{ marginTop: "10px" }}>
-          Sign in to Dynotxt Admin Dashboard
-        </Typography>
+    <div
+      style={{
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    >
+      <Container className="Login" component="main" maxWidth="xs">
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5" style={{ marginTop: "10px" }}>
+            Sign in to Dynotxt Admin Dashboard
+          </Typography>
 
-        <Box sx={{ mt: 3 }}>
-          {statusDisp?.show && (
-            <Alert className="disp" color="info" variant="outlined" severity={`${statusDisp?.error ? "error" : "success"}`}>
-              {statusDisp?.message}
-            </Alert>
-          )}
-          <TextField
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            margin="normal"
-            required
-            fullWidth
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-          />
-          <TextField
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-          />
-          <Button
-            onClick={() => loginUser("email")}
-            fullWidth
-            variant="contained"
-            style={{ padding: "10px 0" }}
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Login
-          </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
+          <Box sx={{ mt: 3 }}>
+            {statusDisp?.show && (
+              <Alert
+                className="disp"
+                color="info"
+                variant="outlined"
+                severity={`${statusDisp?.error ? "error" : "success"}`}
+              >
+                {statusDisp?.message}
+              </Alert>
+            )}
+            <TextField
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              margin="normal"
+              required
+              fullWidth
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <TextField
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+            />
+            <Button
+              onClick={() => loginUser("email")}
+              fullWidth
+              variant="contained"
+              style={{ padding: "10px 0" }}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Login
+            </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-      <Copyright sx={{ mt: 8, mb: 4 }} />
-    </Container>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </div>
   );
 }

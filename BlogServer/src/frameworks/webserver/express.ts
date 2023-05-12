@@ -17,7 +17,7 @@ export default function expressConfig(
 ) {
   const config = configs();
 
-  app.use(logger("dev"));
+  app.use(logger(config.morgan.logStyle));
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(
     bodyParser.urlencoded({

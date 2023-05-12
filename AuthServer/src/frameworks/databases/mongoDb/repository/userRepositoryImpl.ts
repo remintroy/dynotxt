@@ -20,11 +20,23 @@ const userRepositoryImpl = () => {
     return response;
   };
 
+  const getByPageNo = async (page: number) => {
+    const response = await UserModel.paginate({}, { page, limit: 20 });
+    return response;
+  };
+
+  const getByCustomQueryWithPageNo = async (query: IUser, page: number) => {
+    const response = await UserModel.paginate(query, { page, limit: 20 });
+    return response;
+  };
   return {
     add,
     update,
     getById,
+    getByPageNo,
+    getByCustomQueryWithPageNo,
   };
 };
 
+type userRepositoryImpl = ReturnType<typeof userRepositoryImpl>;
 export default userRepositoryImpl;

@@ -1,10 +1,10 @@
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 
 const publishBlog = async (
-  blogrepository: ReturnType<typeof blogRepositoryInteraface>,
+  blogrepository: blogRepositoryInteraface,
   createError,
-  blogId,
-  user
+  blogId: string,
+  user: string
 ) => {
   if (!blogId) throw createError(400, "Blog id is required to publish blog");
   if (!user) throw createError(400, "Userid is required to publish blog");

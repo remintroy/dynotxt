@@ -12,7 +12,7 @@ export default async function getAdminFromRefreshToken(
   createError,
   refreshToken
 ) {
-  if (!refreshToken) throw createError(400, "Refresh token is required");
+  if (!refreshToken) throw createError(401, "Refresh token is required");
 
   // Check with validator
   await validator.isValidJwt(refreshToken);

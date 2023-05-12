@@ -1,9 +1,7 @@
 import { IToken } from "../../frameworks/databases/mongoDb/models/tokens.schema";
 import tokenRepositoryImpl from "../../frameworks/databases/mongoDb/repository/tockensRepositoryImpl";
 
-const tokenRepositoryInteraface = (
-  respository: ReturnType<typeof tokenRepositoryImpl>
-) => {
+const tokenRepositoryInteraface = (respository: tokenRepositoryImpl) => {
   const add = (uid: string, token: string, options?: object) =>
     respository.add(uid, token, options);
 
@@ -25,4 +23,5 @@ const tokenRepositoryInteraface = (
   };
 };
 
+type tokenRepositoryInteraface = ReturnType<typeof tokenRepositoryInteraface>;
 export default tokenRepositoryInteraface;

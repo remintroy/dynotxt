@@ -1,0 +1,134 @@
+import { logout, refresh } from "../redux/userSlice";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: "https://server.dynotxt.com/blog/api/v1",
+  credentials: "include",
+  prepareHeaders: async (headers, api: any) => {
+    const token = api.getState().user.accessToken;
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+    else {
+      try {
+        const response: any = await fetch("https://server.dynotxt.com/auth/api/v1/user_data", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        headers.set("Authorization", `Bearer ${data?.accessToken}`);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    return headers;
+  },
+});
+
+const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => {
+  let result = await baseQuery(args, apis, extraOptions);
+  if (result?.error?.status === 401) {
+    const refreshResponse: any = await baseQuery("https://server.dynotxt.com/auth/api/v1/refresh", apis, extraOptions);
+    if (refreshResponse?.data?.accessToken) {
+      apis.dispatch(refresh(refreshResponse?.data?.accessToken));
+      result = await baseQuery(args, apis, extraOptions);
+    } else {
+      apis.dispatch(logout());
+    }
+  }
+  return result;
+};
+
+const blogApiSlice = createApi({
+  reducerPath: "blogapi",
+  baseQuery: baseQueryWithRefetch,
+  tagTypes: ["comments", "blogDisplay"],
+  endpoints: (builder) => ({
+    getBlog: builder.query({
+      query: ({ blogId }) => `/blog/${blogId}`,
+    }),
+    createNewBlog: builder.mutation({
+      query: () => ({
+        url: "/blog",
+        method: "POST",
+      }),
+    }),
+    getComments: builder.query({
+      query: (blogId) => `/comment/${blogId}`,
+      providesTags: ["comments"],
+    }),
+    postNewComment: builder.mutation({
+      query: ({ blogId, data }) => ({
+        url: `/comment/${blogId}`,
+        method: "PUT",
+        body: { message: data },
+      }),
+      invalidatesTags: ["comments"],
+    }),
+    deleteComment: builder.mutation({
+      query: ({ blogId, commentId }) => ({
+        url: `/comment/${blogId}/${commentId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["comments"],
+    }),
+    getImageUploadUrl: builder.mutation({
+      query: (blogId) => `/upload/${blogId}`,
+    }),
+    putBlogImageUrl: builder.mutation({
+      query: ({ blogId, bannerImgURL }) => ({
+        url: `/blog/${blogId}`,
+        method: "PUT",
+        body: { bannerImgURL },
+      }),
+    }),
+    putCurrentState: builder.mutation({
+      query: ({ blogId, data }) => ({
+        url: `/blog/${blogId}`,
+        method: "PUT",
+        body: data,
+      }),
+    }),
+    putPublishBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}/publish`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["blogDisplay"],
+    }),
+    putUnPublishBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}/unpublish`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["blogDisplay"],
+    }),
+    getBlogDataDisplay: builder.query({
+      query: (uid) => `/user/${uid}`,
+      providesTags: ["blogDisplay"],
+    }),
+    deleteBlogWithBlogId: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["blogDisplay"],
+    }),
+  }),
+});
+
+export const blogApiEndpoints = blogApiSlice.endpoints;
+export const blogApiReducer = blogApiSlice.reducer;
+export const blogApiReducerPath = blogApiSlice.reducerPath;
+export const blogApiMiddleware = blogApiSlice.middleware;
+export const {
+  useCreateNewBlogMutation,
+  useGetBlogQuery,
+  useDeleteCommentMutation,
+  useGetCommentsQuery,
+  usePostNewCommentMutation,
+  useGetImageUploadUrlMutation,
+  usePutBlogImageUrlMutation,
+  usePutCurrentStateMutation,
+  usePutPublishBlogMutation,
+  useGetBlogDataDisplayQuery,
+  usePutUnPublishBlogMutation,
+  useDeleteBlogWithBlogIdMutation,
+} = blogApiSlice;

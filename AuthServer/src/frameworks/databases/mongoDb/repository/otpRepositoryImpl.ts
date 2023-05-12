@@ -36,4 +36,5 @@ const otpRepositoryImpl = () => {
   };
 };
 
+type otpRepositoryImpl = ReturnType<typeof otpRepositoryImpl>;
 export default otpRepositoryImpl;

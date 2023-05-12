@@ -1,27 +1,34 @@
 import { Request, Response } from "express";
-import userSignin from "../../application/use-cases/user/signInUser";
+import { IUser } from "../../entities/user.normal";
 import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
 import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
 import authServiceInterface from "../../application/services/authServices";
-import refreshUser from "../../application/use-cases/user/refreshAccessToken";
-import validatorInteraface from "../../application/services/validatorInteraface";
-import { IUser } from "../../entities/user.normal";
-import userUpdate from "../../application/use-cases/user/updateUser";
-import userLogout from "../../application/use-cases/user/logoutUser";
-import getUserFromRefreshToken from "../../application/use-cases/user/userDataFromRefreshToken";
 import otpRepositoryInterface from "../../application/repository/otpRepositoyInteraface";
-import verifyEmail from "../../application/use-cases/user/verifyEmail";
-import userVerificationStatus from "../../application/use-cases/user/userVerificationStatus";
-import getPublicUser from "../../application/use-cases/user/getPublicUser";
+import validatorInteraface from "../../application/services/validatorInteraface";
+import getUserFromRefreshToken from "../../application/use-cases/user/user-data-from-refresh-token";
+import userVerificationStatus from "../../application/use-cases/user/user-verification-status";
+import userSignin from "../../application/use-cases/user/signin-user";
+import refreshUser from "../../application/use-cases/user/refresh-access-token";
+import userUpdate from "../../application/use-cases/user/update-user";
+import userLogout from "../../application/use-cases/user/logout-user";
+import verifyEmail from "../../application/use-cases/user/verify-email";
+import getPublicUser from "../../application/use-cases/user/get-public-user-data";
+import caseGetFullDetailsOfSingleUser from "../../application/use-cases/user/get-user-full-details";
+import updatePublicUserData from "../../application/use-cases/user/update-user-public-details";
+import updatePersonalUserData from "../../application/use-cases/user/update-user-personal-details";
+import caseAddNewFollow from "../../application/use-cases/user/follow-user";
+import followsRepositoryInterface from "../../application/repository/followsRepositoryInterface";
+import caseGetFollowingStatus from "../../application/use-cases/user/get-following-status";
 
 export interface IRequest extends Request {
   user: IUser;
 }
 
 const userController = (
-  userRepository: ReturnType<typeof userRepositoryInteraface>,
-  tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
-  otpRepository: ReturnType<typeof otpRepositoryInterface>,
+  userRepository: userRepositoryInteraface,
+  tokenRepository: tokenRepositoryInteraface,
+  otpRepository: otpRepositoryInterface,
+  followsRepository: followsRepositoryInterface,
   authService: ReturnType<typeof authServiceInterface>,
   validator: ReturnType<typeof validatorInteraface>,
   createError,
@@ -52,7 +59,7 @@ const userController = (
     return response;
   };
 
-  const getUserRefresh = async (req: IRequest) => {
+  const getNewAccessTokenFromRefreshToken = async (req: IRequest) => {
     const { refreshToken } = req.cookies;
     const response = await refreshUser(
       tokenRepository,
@@ -65,10 +72,34 @@ const userController = (
     return response;
   };
 
-  const postUserUpdate = async (req: IRequest) => {
+  const putCurrentUserData = async (req: IRequest) => {
     const uid = req.user?.uid;
     const data = req.body;
     const response = await userUpdate(userRepository, createError, data, uid);
+    return response;
+  };
+
+  const putUpdatePublicUserData = async (req: IRequest) => {
+    const uid = req.user?.uid;
+    const data = req.body;
+    const response = await updatePublicUserData(
+      userRepository,
+      createError,
+      data,
+      uid
+    );
+    return response;
+  };
+
+  const putUpdatePersionalUserData = async (req: IRequest) => {
+    const uid = req.user?.uid;
+    const data = req.body;
+    const response = await updatePersonalUserData(
+      userRepository,
+      createError,
+      data,
+      uid
+    );
     return response;
   };
 
@@ -85,7 +116,7 @@ const userController = (
     return response;
   };
 
-  const getUserData = async (req: IRequest) => {
+  const getInitialUserDataFromRefreshToken = async (req: IRequest) => {
     const { refreshToken } = req.cookies;
     const response = await getUserFromRefreshToken(
       userRepository,
@@ -98,7 +129,7 @@ const userController = (
     return response;
   };
 
-  const postVerifyEmail = async (req: IRequest, res: Response) => {
+  const postVerifyEmailWithOtp = async (req: IRequest, res: Response) => {
     const { uid } = req.params;
     const { otp } = req.body;
     const response = await verifyEmail(
@@ -137,19 +168,60 @@ const userController = (
 
   const getUserDataPublic = async (req: IRequest) => {
     const { id: userId } = req.params;
-    const response = await getPublicUser(userRepository, createError, userId);
+    const response = await getPublicUser(
+      userRepository,
+      followsRepository,
+      createError,
+      userId
+    );
+    return response;
+  };
+
+  const getDataForCurrentUserDashboard = async (req: IRequest) => {
+    const { user } = req;
+    const response = await caseGetFullDetailsOfSingleUser(createError, user);
+    return response;
+  };
+
+  const postFollowNewUser = async (req: IRequest) => {
+    const { uid: uidToFollow } = req.params;
+    const { user } = req;
+    const response = await caseAddNewFollow(
+      followsRepository,
+      userRepository,
+      createError,
+      user,
+      uidToFollow
+    );
+    return response;
+  };
+
+  const getFollowingDataWithSingleUser = async (req: IRequest) => {
+    const { user } = req;
+    const { uid: uidToCheck } = req.params;
+    const response = await caseGetFollowingStatus(
+      followsRepository,
+      createError,
+      user,
+      uidToCheck
+    );
     return response;
   };
 
   return {
     userPostSignin,
-    getUserRefresh,
-    postUserUpdate,
+    getNewAccessTokenFromRefreshToken,
+    putCurrentUserData,
     getUserLogout,
-    getUserData,
-    postVerifyEmail,
+    getInitialUserDataFromRefreshToken,
+    postVerifyEmailWithOtp,
     getUserEmailVerificationStatus,
     getUserDataPublic,
+    getDataForCurrentUserDashboard,
+    putUpdatePersionalUserData,
+    putUpdatePublicUserData,
+    postFollowNewUser,
+    getFollowingDataWithSingleUser,
   };
 };
 

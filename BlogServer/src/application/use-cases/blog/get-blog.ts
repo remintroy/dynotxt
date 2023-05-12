@@ -29,6 +29,7 @@ const getBlogData = async (
     subtitle: blogDataFromDb.subtitle,
     bannerImgURL: blogDataFromDb.bannerImgURL,
     createdAt: blogDataFromDb.createdAt,
+    published: blogDataFromDb.published,
     body: blogDataFromDb.body?.[0],
   };
 

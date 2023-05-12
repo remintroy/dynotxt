@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { fetchUserData, setUser } from "../../redux/userSlice";
-import { Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { authBackend } from "../../configs/axios";
 import { Link } from "react-router-dom";
+import "./style.scss";
 
 const Home = () => {
   const user = useAppSelector((state) => state.user.data);
@@ -28,18 +29,21 @@ const Home = () => {
 
   return (
     <div className="Home">
-      <div>Name : {user?.name}</div>
-      <div>Email : {user?.email}</div>
-      {user && (
-        <Button variant="outlined" onClick={() => logoutUser()}>
-          Logout
-        </Button>
-      )}
-      {!user && (
-        <Link to={"/auth/login"}>
-          <Button variant="outlined">Login</Button>
-        </Link>
-      )}
+      <Box p={4}>
+        <Typography component="h1" variant="h3">Dashboard</Typography>
+        <div>Name : {user?.name}</div>
+        <div>Email : {user?.email}</div>
+        {user && (
+          <Button variant="outlined" onClick={() => logoutUser()}>
+            Logout
+          </Button>
+        )}
+        {!user && (
+          <Link to={"/auth/login"}>
+            <Button variant="outlined">Login</Button>
+          </Link>
+        )}
+      </Box>
     </div>
   );
 };

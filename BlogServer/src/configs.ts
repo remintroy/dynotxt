@@ -4,6 +4,9 @@ dotenv.config();
 
 const getConfigs = () => {
   return {
+    morgan: {
+      logStyle: "dev",
+    },
     server: {
       name: "Dynotxt BlogServer",
       port: process.env.PORT || 5003,

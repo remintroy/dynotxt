@@ -21,6 +21,10 @@ export const BlogSchema = new Schema({
     type: Number,
     default: 0,
   },
+  deleted: {
+    type: Boolean,
+    default: false,
+  },
   bannerImgURL: String,
   version: { type: Number, default: 0 },
   body: [],

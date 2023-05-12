@@ -1,8 +1,11 @@
 import addNewBlog from "../../application/use-cases/blog/add-blog";
 import createUploadUrl from "../../application/use-cases/blog/create-upload-url";
+import caseDeleteBlog from "../../application/use-cases/blog/delete-blog";
+import caseGetAllBlogs from "../../application/use-cases/blog/get-all-blogs";
 import getBlogData from "../../application/use-cases/blog/get-blog";
 import getBlogDataToEdit from "../../application/use-cases/blog/get-blog-edit";
 import publishBlog from "../../application/use-cases/blog/publish-blog";
+import unPublishBlog from "../../application/use-cases/blog/unpublish-blog";
 import updateBlog from "../../application/use-cases/blog/update-blog";
 import addComment from "../../application/use-cases/comments/add-comment";
 import deleteComment from "../../application/use-cases/comments/delele-comment";
@@ -138,6 +141,44 @@ const userController = (
     return response;
   };
 
+  const getAllBlogsDisplay = async (req: RequestWithUser) => {
+    const { user } = req;
+    const userId = req.params.id;
+    const response = await caseGetAllBlogs(
+      blogRepository,
+      createError,
+      user,
+      userId
+    );
+    return response;
+  };
+
+  const putUserUnpublishBlog = async (req: RequestWithUser) => {
+    const { user } = req;
+    const blogId = req.params.id;
+    const response = await unPublishBlog(
+      blogRepository,
+      createError,
+      blogId,
+      user
+    );
+    return response;
+  };
+
+  const deleteUserBlog = async (req: RequestWithUser) => {
+    const { user } = req;
+    const blogId = req.params.id;
+    const response = await caseDeleteBlog(
+      blogRepository,
+      createError,
+      user,
+      blogId
+    );
+    return response;
+  };
+
+  const putUserLikeBlog = async (req: RequestWithUser) => {};
+
   return {
     postUserNewBlog,
     getUserBlogUploadUrl,
@@ -148,6 +189,10 @@ const userController = (
     putUserComment,
     getUserBlogComments,
     deleteUserBlogComment,
+    putUserLikeBlog,
+    getAllBlogsDisplay,
+    putUserUnpublishBlog,
+    deleteUserBlog,
   };
 };
 
