@@ -10,10 +10,11 @@ const Editor = ({ value, setValue }: { value: any; setValue: any }) => {
 
   const handleEditorChange = (content: any, delta: any, source: any, editor: any) => {
     const fulValueOfEditor = editor.getContents();
-    setEditorContent(fulValueOfEditor);
+    setEditorContent(fulValueOfEditor); 
     const hash = SHA256(JSON.stringify(editorContent.content)).toString();
     setValue({ content, value: fulValueOfEditor, hash });
   };
+ 
 
   const modules = {
     toolbar: [

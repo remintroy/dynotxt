@@ -28,6 +28,7 @@ const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => 
 const userApiSlice = createApi({
   reducerPath: "authapi",
   baseQuery: baseQueryWithRefetch,
+  tagTypes: ["userData", "allUserData", "singleFollow", "userDataPublic"],
   endpoints: (builder) => ({
     signin: builder.mutation({
       query: ({ idToken }) => ({
@@ -37,9 +38,11 @@ const userApiSlice = createApi({
           idToken,
         },
       }),
+      invalidatesTags: ["userData", "allUserData"],
     }),
     getUserData: builder.query({
       query: () => "/user_data",
+      providesTags: ["userData"],
     }),
     getVerificationStatus: builder.query({
       query: ({ uid }) => `/verify_email/${uid}`,
@@ -61,6 +64,38 @@ const userApiSlice = createApi({
     }),
     getUserDataWithUid: builder.query({
       query: (uid) => `/user/${uid}`,
+      providesTags: ["userDataPublic"],
+    }),
+    getFullUserData: builder.query({
+      query: () => `/profile/details`,
+      providesTags: ["allUserData"],
+    }),
+    putUserData: builder.mutation({
+      query: (data) => ({
+        url: "/user_data",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["userData", "allUserData"],
+    }),
+    putUserPersionalData: builder.mutation({
+      query: (data) => ({
+        url: "/user_data/persional",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["userData", "allUserData"],
+    }),
+    postFollowUser: builder.mutation({
+      query: (uid) => ({
+        url: `/follows/${uid}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["singleFollow", "userDataPublic"],
+    }),
+    getFollowUser: builder.query({
+      query: (uid) => `/follows/${uid}`,
+      providesTags: ["singleFollow"],
     }),
   }),
 });
@@ -76,4 +111,9 @@ export const {
   useGetVerificationStatusQuery,
   useVefifyEmailWithOtpMutation,
   useGetUserDataWithUidQuery,
+  useGetFullUserDataQuery,
+  usePutUserDataMutation,
+  usePutUserPersionalDataMutation,
+  usePostFollowUserMutation,
+  useGetFollowUserQuery,
 } = userApiSlice;

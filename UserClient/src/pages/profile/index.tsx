@@ -1,109 +1,15 @@
-import { ActionIcon, Avatar, Badge, Button, Card, Chip, Flex, Grid, Image, Menu, Tabs, Text } from "@mantine/core";
-import { Link, useParams } from "react-router-dom";
+import { Avatar, Box, Button, Card, Chip, Flex, Grid, Tabs, Text } from "@mantine/core";
+import { useParams } from "react-router-dom";
 import { useGetUserDataWithUidQuery } from "../../lib/api/authApi";
-import {
-  useDeleteBlogWithBlogIdMutation,
-  useGetBlogDataDisplayQuery,
-  usePutPublishBlogMutation,
-  usePutUnPublishBlogMutation,
-} from "../../lib/api/blogApi";
-import { IconDotsVertical, IconGlobe, IconLock, IconPhoto, IconTrash, IconWorld } from "@tabler/icons-react";
+import { useGetBlogDataDisplayQuery } from "../../lib/api/blogApi";
+import { IconLock, IconPhoto, IconWorld } from "@tabler/icons-react";
 import { IconSettings } from "@tabler/icons-react";
 import { useAppSelector } from "../../lib/redux/hooks";
-
-const BlogCard = ({ blog, userId }: { blog: any; userId: string | undefined }) => {
-  const user = useAppSelector((state) => state.user.data);
-
-  const [makePublicApi] = usePutPublishBlogMutation();
-  const [makePrivateApi] = usePutUnPublishBlogMutation();
-  const [deleteBlogApi] = useDeleteBlogWithBlogIdMutation();
-
-  const makePublic = async () => {
-    try {
-      const response = await makePublicApi(blog?.blogId);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const makePrivate = async () => {
-    try {
-      const response = await makePrivateApi(blog?.blogId);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteBlog = async () => {
-    try {
-      const response = await deleteBlogApi(blog?.blogId);
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  return (
-    <Grid.Col span={4}>
-      <Card h={"100%"} padding="lg" radius="md" withBorder>
-        <Card.Section>
-          <Image src={blog?.bannerImgURL} withPlaceholder height={230} alt={`Image for ${blog?.title}`} />
-        </Card.Section>
-        <div style={{ marginTop: 15 }}>
-          {user?.uid == userId && (
-            <Flex justify={"space-between"}>
-              <Badge color={blog?.published ? "blue" : "red"}>{blog?.published ? "public" : "private"}</Badge>
-              <Menu>
-                <Menu.Target>
-                  <ActionIcon>
-                    <IconDotsVertical size={"20px"} />
-                  </ActionIcon>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Label>Actions</Menu.Label>
-                  {!blog?.published && (
-                    <Menu.Item onClick={() => makePublic()} icon={<IconWorld size={14} />}>
-                      Make Public
-                    </Menu.Item>
-                  )}
-                  {blog?.published && (
-                    <Menu.Item onClick={() => makePrivate()} icon={<IconLock size={14} />}>
-                      Make Private
-                    </Menu.Item>
-                  )}
-                  <Menu.Item onClick={() => deleteBlog()} color="red" icon={<IconTrash size={14} />}>
-                    Delete
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            </Flex>
-          )}
-          <Text mt={10} size={"lg"} fw={"bold"} lineClamp={1}>
-            {blog?.title}
-          </Text>
-          <Text mt={10} lineClamp={2}>
-            {blog?.subtitle}
-          </Text>
-          <p>{blog.description}</p>
-          {user?.uid == userId && (
-            <>
-              <Link className="link" to={`/blog/edit/${blog?.blogId}`}>
-                <Button fullWidth>Edit</Button>
-              </Link>
-            </>
-          )}
-          <Link className="link" to={`/blog/${blog?.blogId}`}>
-            <Button fullWidth mt={10}>
-              View
-            </Button>
-          </Link>
-        </div>
-      </Card>
-    </Grid.Col>
-  );
-};
+import BlogCardComponent from "../../components/profile/blogs/blogCard";
+import SettingsComponent from "../../components/profile/settings";
+import { useEffect, useState } from "react";
+import BlogCardSkeltonComponent from "../../components/profile/blogs/blogCardSkelton";
+import FollowButtonComponent from "../../components/profile/followButton";
 
 const UserProfilePage = () => {
   const { id: userId } = useParams();
@@ -118,46 +24,53 @@ const UserProfilePage = () => {
     data: blogData,
     isLoading: isBlogDataLoading,
     isFetching: isBlogDataFetching,
-    isError: isBlogDataError,
   } = useGetBlogDataDisplayQuery(userId, { skip: !userData });
 
   const user = useAppSelector((state) => state.user.data);
 
-  const AllBLogs = () => {
+  const [allBlogs, setAllBlogs] = useState([]);
+  const [publicBlogs, setPublicBlogs] = useState([]);
+  const [privateBlogs, setPrivateBlogs] = useState([]);
+  const [userDataLoading, setUserDataLoading] = useState(true);
+  const [blogLoading, setBlogLoading] = useState(true);
+
+  useEffect(() => {
+    if (isUserDataLoading || isUserDataFetching) setUserDataLoading(true);
+    else setUserDataLoading(false);
+  }, [isUserDataLoading, isUserDataFetching]);
+
+  useEffect(() => {
+    if (blogData) {
+      setAllBlogs(blogData);
+      setPublicBlogs(blogData.filter((blog: any) => blog?.published == true));
+      setPrivateBlogs(blogData.filter((blog: any) => blog?.published == false));
+    }
+    if (isBlogDataLoading) {
+      setBlogLoading(true);
+    } else {
+      setBlogLoading(false);
+    }
+  }, [blogData, isBlogDataLoading, isBlogDataFetching]);
+
+  const BlogsList = ({ data }: { data: any[] }) => {
+    const skeltonData = Array(5).fill("");
+
+    if (blogLoading) {
+      return (
+        <Grid>
+          {skeltonData?.map((blog: any, index) => {
+            return <BlogCardSkeltonComponent key={index} />;
+          })}
+        </Grid>
+      );
+    }
+
     return (
       <Grid>
-        {blogData?.map((blog: any) => {
-          return <BlogCard key={blog?.blogId} blog={blog} userId={userId} />;
+        {data?.map((blog: any) => {
+          return <BlogCardComponent key={blog?.blogId} blog={blog} userId={userId} />;
         })}
-        {(blogData?.length === 0 || !blogData) && <h3 style={{ padding: 10 }}>Looks like there is no blogs yet</h3>}
-      </Grid>
-    );
-  };
-
-  const PublicBlogs = () => {
-    const blogsArray = blogData?.filter((blog: any) => blog?.published == true) ?? [];
-
-    return (
-      <Grid>
-        {blogsArray.map((blog: any) => {
-          return <BlogCard key={blog?.blogId} blog={blog} userId={userId} />;
-        })}
-        {(blogsArray?.length === 0 || !blogData) && <h3 style={{ padding: 10 }}>Ooh!. There is nothing public here</h3>}
-      </Grid>
-    );
-  };
-
-  const PrivateBlogs = () => {
-    const blogsArray = blogData?.filter((blog: any) => blog?.published == false) ?? [];
-
-    return (
-      <Grid>
-        {blogsArray.map((blog: any) => {
-          return <BlogCard key={blog?.blogId} blog={blog} userId={userId} />;
-        })}
-        {(blogsArray?.length === 0 || !blogData) && (
-          <h3 style={{ padding: 10 }}>Yay.. There is nothing private here</h3>
-        )}
+        {(data?.length === 0 || !blogData) && <h3 style={{ padding: 10 }}>Yay.. There is nothing private here</h3>}
       </Grid>
     );
   };
@@ -170,7 +83,7 @@ const UserProfilePage = () => {
           <div>
             <Flex mb={10} align={"center"} gap={20}>
               <h1 style={{ margin: 0, padding: 0 }}>{userData?.name}</h1>
-              {user?.uid != userId && <Button variant="outline">Follow</Button>}
+              {user && user?.uid != userId && <FollowButtonComponent userId={userData?.uid} />}
             </Flex>
             <Flex gap={10}>
               <Chip checked={false}>{blogData?.length ?? 0} Blogs</Chip>
@@ -179,6 +92,11 @@ const UserProfilePage = () => {
             </Flex>
           </div>
         </Flex>
+        <Text my={20}>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum distinctio voluptatibus hic provident ratione.
+          Saepe recusandae dicta a aspernatur maxime veritatis expedita magni, dolor molestias culpa, facere
+          exercitationem ducimus voluptas.
+        </Text>
       </div>
 
       <Tabs defaultValue="all-blogs">
@@ -204,19 +122,19 @@ const UserProfilePage = () => {
         </Tabs.List>
 
         <Tabs.Panel value="all-blogs" pt="xs">
-          <AllBLogs />
+          <BlogsList data={allBlogs} />
         </Tabs.Panel>
 
         <Tabs.Panel value="public" pt="xs">
-          <PublicBlogs />
+          <BlogsList data={publicBlogs} />
         </Tabs.Panel>
 
         <Tabs.Panel value="private" pt="xs">
-          <PrivateBlogs />
+          <BlogsList data={privateBlogs} />
         </Tabs.Panel>
 
         <Tabs.Panel value="settings" pt="xs">
-          Settings tab content
+          <SettingsComponent />
         </Tabs.Panel>
       </Tabs>
     </div>

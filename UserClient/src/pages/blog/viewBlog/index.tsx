@@ -8,8 +8,10 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import CommentSectionComponent from "../../../components/blog/commentSection";
 import { useGetBlogQuery } from "../../../lib/api/blogApi";
 import { useGetAuthorDataQuery } from "../../../lib/api/authApi";
+import { useAppSelector } from "../../../lib/redux/hooks";
 
 const BlogViewPage = () => {
+  const user = useAppSelector((state) => state.user.data);
   const { id: blogId } = useParams();
   const { data: blogData } = useGetBlogQuery({ blogId });
 
@@ -37,7 +39,7 @@ const BlogViewPage = () => {
       });
       setBlogDataToShow(reactBody);
     }
-  }, [blogData]); 
+  }, [blogData]);
 
   return (
     <Container className="BlogViewPage">
@@ -65,9 +67,13 @@ const BlogViewPage = () => {
           {isAuthorLoading || isAuthorFetching ? (
             <Skeleton w={100} h={40} />
           ) : (
-            <Button variant="outline" color="indigo">
-              Follow
-            </Button>
+            <>
+              {user && (
+                <Button variant="outline" color="indigo">
+                  Follow
+                </Button>
+              )}
+            </>
           )}
         </Flex>
       </Box>

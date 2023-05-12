@@ -1,4 +1,3 @@
-import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import AuthPage from "./pages/auth";
 import NavBarComponent from "./layout/navbar";
@@ -7,8 +6,6 @@ import HomePage from "./pages/home";
 import SignIn from "./pages/auth/login";
 import SignUp from "./pages/auth/signup";
 import { Notifications } from "@mantine/notifications";
-import SettingsPage from "./pages/settings";
-import AccoutnSettingsComponent from "./components/Settings/AccountSettings";
 import UserProfilePage from "./pages/profile";
 import BlogViewPage from "./pages/blog/viewBlog";
 import VerfiyEmailPage from "./pages/auth/verifyEmail";
