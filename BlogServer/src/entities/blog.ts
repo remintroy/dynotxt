@@ -9,7 +9,7 @@ export interface Blog {
   views?: number;
   bannerImgURL?: string;
   version?: number;
-  body?: [];
+  body?: [any];
   deleted?: boolean;
 }
 
