@@ -15,7 +15,7 @@ import userRepositoryImpl from "../../databases/mongoDb/repository/userRepositor
 import adminAuthMiddleware from "../middleware/adminAuthMiddleware";
 import mustLoginAsAdmin from "../middleware/mustLoginAsAdmin";
 
-export default function adminRoute(express: typeof ExpressApp) {
+export default function v1AdminRoute(express: typeof ExpressApp) {
   const router = express.Router();
 
   const adminRepository = adminUserRepositoryInteraface(

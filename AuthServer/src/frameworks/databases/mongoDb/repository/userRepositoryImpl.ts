@@ -38,4 +38,5 @@ const userRepositoryImpl = () => {
   };
 };
 
+type userRepositoryImpl = ReturnType<typeof userRepositoryImpl>;
 export default userRepositoryImpl;

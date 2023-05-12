@@ -16,8 +16,11 @@ import {
 } from "../../../application/services/commonServices";
 import otpRepositoryInterface from "../../../application/repository/otpRepositoyInteraface";
 import otpRepositoryImpl from "../../databases/mongoDb/repository/otpRepositoryImpl";
+import mustLoginAsUser from "../middleware/mustLoginAsUser";
+import followsRepositoryInterface from "../../../application/repository/followsRepositoryInterface";
+import followsRepositoryImpl from "../../databases/mongoDb/repository/followsRepositoryImpl";
 
-export default function userRouter(express: typeof ExpressApp) {
+export default function v1UserRouter(express: typeof ExpressApp) {
   const router = express.Router();
 
   const utils = utilService;
@@ -25,6 +28,7 @@ export default function userRouter(express: typeof ExpressApp) {
   const validator = validatorInteraface(validatorImpl());
   const userRepository = userRepositoryInteraface(userRepositoryImpl());
   const tokenRepository = tokenRepositoryInteraface(tokenRepositoryImpl());
+  const followsRepository = followsRepositoryInterface(followsRepositoryImpl());
   const authService = authServiceInterface(authServiceImpl());
   const otpRepository = otpRepositoryInterface(otpRepositoryImpl());
 
@@ -32,6 +36,7 @@ export default function userRouter(express: typeof ExpressApp) {
     userRepository,
     tokenRepository,
     otpRepository,
+    followsRepository,
     authService,
     validator,
     utils.createError,
@@ -41,25 +46,47 @@ export default function userRouter(express: typeof ExpressApp) {
   router.use(authMiddleware);
 
   router
-    .route("/verify_email/:uid")
-    .get(makeExpressResponseCallback(controller.getUserEmailVerificationStatus))
-    .post(makeExpressResponseCallback(controller.postVerifyEmail));
+    .route("/verify/:uid/email")
+    .post(makeExpressResponseCallback(controller.postVerifyEmailWithOtp));
+
   router
-    .route("/logout")
-    .get(makeExpressResponseCallback(controller.getUserLogout));
+    .route("/user/logout")
+    .get(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.getUserLogout)
+    );
+
   router
-    .route("/refresh")
-    .get(makeExpressResponseCallback(controller.getUserRefresh));
-  router
-    .route("/signin")
+    .route("/user/signin")
     .post(makeExpressResponseCallback(controller.userPostSignin));
+
   router
-    .route("/user_data")
-    .get(makeExpressResponseCallback(controller.getUserData))
-    .post(makeExpressResponseCallback(controller.postUserUpdate));
+    .route("/user/refresh")
+    .get(
+      makeExpressResponseCallback(controller.getNewAccessTokenFromRefreshToken)
+    );
+
   router
-    .route("/user/:id")
+    .route("/user/initial")
+    .get(
+      makeExpressResponseCallback(controller.getInitialUserDataFromRefreshToken)
+    );
+
+  router
+    .route("/user/data/:uid")
     .get(makeExpressResponseCallback(controller.getUserDataPublic));
+
+  router
+    // user data for dashboard - settings
+    .route("/user/data/profile")
+    .get(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.getDataForCurrentUserDashboard)
+    )
+    .put(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.putCurrentUserData)
+    );
 
   return router;
 }

@@ -2,7 +2,7 @@ import { IAdminUser } from "../../frameworks/databases/mongoDb/models/admin.sche
 import adminUserRepositoryImpl from "../../frameworks/databases/mongoDb/repository/adminRepositoryImpl";
 
 const adminUserRepositoryInteraface = (
-  respository: ReturnType<typeof adminUserRepositoryImpl>
+  respository: adminUserRepositoryImpl
 ) => {
   const add = (data: IAdminUser) => respository.add(data);
   const update = (email: string, data: IAdminUser) =>
@@ -16,4 +16,7 @@ const adminUserRepositoryInteraface = (
   };
 };
 
+type adminUserRepositoryInteraface = ReturnType<
+  typeof adminUserRepositoryInteraface
+>;
 export default adminUserRepositoryInteraface;

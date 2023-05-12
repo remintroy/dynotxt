@@ -22,6 +22,8 @@ export interface IUser {
   phoneVerified?: boolean;
   emailVerified?: boolean;
   hash?: string;
+  following?: number;
+  followers?: number;
 }
 
 function createNormalUser({

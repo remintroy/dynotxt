@@ -70,6 +70,9 @@ const getConfigs = () => {
       REDIRECT_TO_HOME: "BTHOME",
       VERIFIED: "VERIFIED",
       NOT_VERIFIED: "NVERIFIED",
+      FOLLOWED: "FOLLOWED",
+      FOLLOW_REQUESTED: "FOLLOWREQ",
+      NOT_FOLLOWING: "NOTFOLLOWING",
     },
   };
 };

@@ -48,4 +48,5 @@ const tokenRepositoryImpl = () => {
   };
 };
 
+type tokenRepositoryImpl = ReturnType<typeof tokenRepositoryImpl>
 export default tokenRepositoryImpl;

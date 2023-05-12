@@ -27,4 +27,5 @@ const adminUserRepositoryImpl = () => {
   };
 };
 
+type adminUserRepositoryImpl = ReturnType<typeof adminUserRepositoryImpl>;
 export default adminUserRepositoryImpl;

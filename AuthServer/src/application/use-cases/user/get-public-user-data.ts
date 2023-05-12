@@ -1,8 +1,10 @@
 import { IUser } from "../../../entities/user.normal";
+import followsRepositoryInterface from "../../repository/followsRepositoryInterface";
 import userRepositoryInteraface from "../../repository/userRepositoryInteraface";
 
 const getPublicUser = async (
-  userRepository: ReturnType<typeof userRepositoryInteraface>,
+  userRepository: userRepositoryInteraface,
+  followsRepository: followsRepositoryInterface,
   createError,
   userId: string
 ) => {
@@ -18,12 +20,21 @@ const getPublicUser = async (
   }
   if (!userData) throw createError(400, "User with this not exits");
 
+  let followData: { following: number; followers: number };
+  try {
+    followData = await followsRepository.getFollowingAndFollowsCount(userId);
+  } catch (error) {
+    throw createError(400, error.message);
+  }
+
   const output: IUser = {};
 
   output.privateAccount = userData.privateAccount;
   output.name = userData?.name ?? userData.email.split("@")[0];
   output.photoURL = userData.photoURL;
   output.uid = userData.uid;
+  output.following = followData.following;
+  output.followers = followData.followers;
 
   return output;
 };
