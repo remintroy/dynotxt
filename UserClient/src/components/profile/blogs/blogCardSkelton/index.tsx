@@ -1,11 +1,11 @@
-import { Badge, Card, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
+import { Badge, Box, Card, Flex, Grid, Skeleton, Text } from "@mantine/core";
 
 const BlogCardSkeltonComponent = () => {
   return (
     <Grid.Col span={4}>
-      <Card h={"100%"} w="100%" padding="lg" radius="md" withBorder>
+      <Box h={"100%"} w="100%">
         <Card.Section>
-          <Image src={""} withPlaceholder height={230} />
+          <Skeleton height={230} />
         </Card.Section>
         <div style={{ marginTop: 15 }}>
           <Flex justify={"space-between"}>
@@ -15,15 +15,14 @@ const BlogCardSkeltonComponent = () => {
             <Skeleton w={"100%"} h={20} />
           </Text>
           <Text mt={10} lineClamp={2}>
-            <Skeleton w={"70%"} h={10} />
+            <Skeleton w={"80%"} h={10} />
           </Text>
           <div>
-            <Skeleton w={"70%"} h={10} />
+            <Skeleton mt={5} w={"70%"} h={10} />
           </div>
-          <br />
-          <Skeleton w={"100%"} h={40} />
+          <Skeleton mt={20} w={"100%"} h={40} />
         </div>
-      </Card>
+      </Box>
     </Grid.Col>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useGetFullUserDataQuery } from "../../../../lib/api/authApi";
-import { Avatar, Box, Button, Divider, Flex, Input, Loader, Select, Text } from "@mantine/core";
+import { Avatar, Box, Button, Divider, Flex, Grid, Input, Loader, Select, Text } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
 
 const UserPublicProfileDataManagerComponent = () => {
@@ -48,7 +48,7 @@ const UserPublicProfileDataManagerComponent = () => {
               </Flex>
             </Dropzone>
             <br />
-            <Button variant="light">Save new profile image</Button>
+            <Button variant="default">Save new profile image</Button>
           </Box>
           <br />
           <br />
@@ -61,7 +61,7 @@ const UserPublicProfileDataManagerComponent = () => {
               <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" />
             </Input.Wrapper>
             <div>
-              <Button variant="light">Save Public details</Button>
+              <Button variant="default">Save Public details</Button>
             </div>
           </Flex>
           <br />
@@ -70,12 +70,23 @@ const UserPublicProfileDataManagerComponent = () => {
           </Text>
           <Divider my="sm" />
           <Flex direction={"column"} gap={15} w={"100%"} my={20}>
-            <Input.Wrapper label="Phone">
-              <Input value={phone} type="number" onChange={(e) => setPhone(e.target.value)} placeholder="Phone number" />
-            </Input.Wrapper>
-            <Input.Wrapper label="Date of birth">
-              <Input type="date" placeholder="Date of birth" />
-            </Input.Wrapper>
+            <Grid>
+              <Grid.Col span={6}>
+                <Input.Wrapper label="Phone">
+                  <Input
+                    value={phone}
+                    type="number"
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Phone number"
+                  />
+                </Input.Wrapper>
+              </Grid.Col>
+              <Grid.Col span={6}>
+                <Input.Wrapper label="Date of birth">
+                  <Input type="date" placeholder="Date of birth" />
+                </Input.Wrapper>
+              </Grid.Col>
+            </Grid>
             <Select
               label="Gender"
               placeholder="Gender"
@@ -87,7 +98,7 @@ const UserPublicProfileDataManagerComponent = () => {
               data={["male", "female", "other"]}
             />
             <div>
-              <Button variant="light">Save Persional details</Button>
+              <Button variant="default">Save Persional details</Button>
             </div>
           </Flex>
         </Box>

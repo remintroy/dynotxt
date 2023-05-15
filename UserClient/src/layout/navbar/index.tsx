@@ -12,11 +12,8 @@ const NavBarComponent = () => {
       // padding="xl"
       header={<HeaderComponent navOpen={showNav} setNavOpen={setShowNav} />}
       navbar={<NavBarSubComponent hidden={!showNav} />}
-      styles={(theme) => ({
-        main: { backgroundColor: theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.colors.gray[0] },
-      })}
     >
-      <div className="AppContainerComponent">
+      <div className="AppContainerComponent" id="AppContainerComponent">
         <Outlet />
         <div className="dummy"></div>
       </div>

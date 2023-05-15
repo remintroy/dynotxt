@@ -44,7 +44,7 @@ const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: 
               opened={opened}
               onClick={() => setOpened((o: any) => !o)}
               size="sm"
-              color={theme.colors.gray[6]}
+              color={theme.colors.gray[7]}
               mr="xl"
             />
           </MediaQuery>

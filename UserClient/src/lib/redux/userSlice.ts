@@ -10,6 +10,7 @@ export interface UserState {
     lastLogin: string;
     photoURL: string;
     dob: string;
+    bio: string;
     gender: string;
     privateAccount: boolean;
   } | null;

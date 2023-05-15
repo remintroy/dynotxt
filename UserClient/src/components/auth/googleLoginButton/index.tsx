@@ -29,11 +29,22 @@ const GoogleLoginButtonComponent = ({ setStatus }: { setStatus?: any }) => {
       const responseFromFirebase = await signInWithPopup(authConfig, new GoogleAuthProvider());
       const { user } = responseFromFirebase;
       const idToken = await user.getIdToken();
-      const response = await signIn({ idToken }).unwrap();
-      dispatch(logout());
-      dispatch(setUser(response));
-      if (setStatus) setStatus({ show: true, message: "Login success", error: false });
-      navigate("/");
+      try {
+        const response = await signIn({ idToken }).unwrap();
+        dispatch(logout());
+        dispatch(setUser(response));
+        if (setStatus) setStatus({ show: true, message: "Login success", error: false });
+        navigate("/");
+      } catch (error: any) {
+        //
+        if (error?.status == 403 && error?.data?.action === "VRFYMIL") navigate(`/auth/verify-email/${user.uid}`);
+        const errorObj = {
+          code: error?.response?.data?.error
+            ? `authServer/${error.response.data.error?.split(" ")?.join("-")}`
+            : "Failed to login your plz try after some time",
+        };
+        throw errorObj;
+      }
     } catch (error: any) {
       const message = error?.code
         ? error?.code.split("/").pop().split("-").join(" ")
