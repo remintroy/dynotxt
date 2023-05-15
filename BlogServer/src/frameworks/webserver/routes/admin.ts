@@ -23,7 +23,13 @@ export default function adminRoute(express: typeof ExpressApp) {
   router.route("/blog/flagged").get(mustLoginAsAdmin, makeExpressResponseCallback(controller.getAllFlaggedBlogs));
   router
     .route("/blog/flagged/:id")
+    .put(mustLoginAsAdmin, makeExpressResponseCallback(controller.putDisableFlaggedBlog))
     .delete(mustLoginAsAdmin, makeExpressResponseCallback(controller.deleteAllFlagsForSigleBlog));
+  router
+    .route("/blog/flagged/:id/enable")
+    .put(mustLoginAsAdmin, makeExpressResponseCallback(controller.putEnableFlaggedBlog));
+
+  router.route("/blog/disabled/").get(mustLoginAsAdmin, makeExpressResponseCallback(controller.getAllDisabledBlogs));
 
   return router;
 }

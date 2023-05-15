@@ -1,13 +1,21 @@
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 import { Blog } from "../../../entities/blog";
 
-const getBlogData = async (blogrepository: ReturnType<typeof blogRepositoryInteraface>, createError, blogId, user) => {
+const getBlogData = async (
+  blogrepository: ReturnType<typeof blogRepositoryInteraface>,
+  createError: any,
+  blogId: string,
+  user: string
+) => {
   if (!blogId) throw createError(400, "Blog id is required to get blog data");
 
-  const blogDataFromDb = await blogrepository.getBlogById(blogId);
+  let blogDataFromDb = await blogrepository.getBlogById(blogId);
 
   if (!blogDataFromDb) {
-    throw createError(400, "Cannot retreive blog data, As blog not exist or it may be deleted");
+    blogDataFromDb = await blogrepository.getBlogByIdPrivate(blogId, user).catch((err) => {
+      throw createError(500, "Something went wrong", err.message);
+    });
+    if (!blogDataFromDb) throw createError(400, "Not found, blog may not exist or it may be deleted");
   }
 
   if (!blogDataFromDb.published) {
@@ -22,6 +30,7 @@ const getBlogData = async (blogrepository: ReturnType<typeof blogRepositoryInter
     createdAt: blogDataFromDb.createdAt,
     published: blogDataFromDb.published,
     body: blogDataFromDb.body?.[0],
+    disabled: blogDataFromDb.disabled,
   };
 
   return output;

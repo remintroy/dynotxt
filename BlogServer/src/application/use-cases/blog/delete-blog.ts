@@ -7,21 +7,19 @@ const caseDeleteBlog = async (
   currentUserId: string,
   blogId: string
 ) => {
-  if (!currentUserId)
-    throw createError(400, "Authenticated user id is required");
+  if (!currentUserId) throw createError(400, "Authenticated user id is required");
   if (!blogId) throw createError(400, "Blog id is required to delete blog");
 
   let existingBlogData: Blog;
   try {
-    existingBlogData = await blogRepository.getBlogById(blogId);
+    existingBlogData = await blogRepository.getBlogByIdPrivate(blogId, currentUserId);
   } catch (error) {
     throw createError(400, "Faild to fetch nessory data");
   }
 
   if (!existingBlogData) throw createError(400, "Blog not found");
 
-  if (existingBlogData.author !== currentUserId)
-    throw createError(403, "You dont have permission to delete this blog");
+  if (existingBlogData.author !== currentUserId) throw createError(403, "You dont have permission to delete this blog");
 
   if (existingBlogData.deleted) throw createError(400, "Blog already deleted");
 
