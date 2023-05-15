@@ -9,6 +9,10 @@ const flagsRepositoryImpl = () => {
     return await FlagsModel.deleteOne({ blogId, _id: flagId });
   };
 
+  const removeAllFlagForSingBlog = async (blogId: string) => {
+    return await FlagsModel.deleteMany({ blogId });
+  };
+
   const updateFLagStatus = async (blogId: string, flagId: string, status: string) => {
     return await FlagsModel.updateOne(
       { blogId, _id: flagId },
@@ -18,10 +22,63 @@ const flagsRepositoryImpl = () => {
     );
   };
 
+  const getAllFlaggedBLogs = async () => {
+    return await FlagsModel.aggregate([
+      {
+        $group: {
+          _id: "$blogId",
+          flags: {
+            $push: {
+              uid: "$userId",
+              reason: "$reason",
+              createdAt: "$createdAt",
+            },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: "blogs",
+          localField: "_id",
+          foreignField: "blogId",
+          as: "blog",
+          pipeline: [
+            {
+              $project: {
+                _id: 0,
+                title: 1,
+                subtitle: 1,
+                author: 1,
+                createdAt: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $sort: { "flags.createdAt": -1 },
+      },
+      {
+        $project: {
+          blogId: "$_id",
+          flags: "$flags",
+          count: "$count",
+          blog: {
+            $arrayElemAt: ["$blog", 0],
+          },
+          _id: 0,
+        },
+      },
+    ]);
+  };
+
   return {
     addNewFlag,
     removeFlag,
     updateFLagStatus,
+    getAllFlaggedBLogs,
+    removeAllFlagForSingBlog,
   };
 };
 
