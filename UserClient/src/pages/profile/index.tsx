@@ -10,8 +10,6 @@ import SettingsComponent from "../../components/profile/settings";
 import { useEffect, useState } from "react";
 import BlogCardSkeltonComponent from "../../components/profile/blogs/blogCardSkelton";
 import FollowButtonComponent from "../../components/profile/followButton";
-import NoDataImage from "../../assets/no-data.png";
-import BannerImage from "../../assets/banner-img.png";
 
 const UserProfilePage = () => {
   const { id: userId } = useParams();
@@ -19,7 +17,6 @@ const UserProfilePage = () => {
     data: userData,
     isLoading: isUserDataLoading,
     isFetching: isUserDataFetching,
-    isError: isUserDataError,
   } = useGetUserDataWithUidQuery(userId);
 
   const {
@@ -29,6 +26,10 @@ const UserProfilePage = () => {
   } = useGetBlogDataDisplayQuery(userId, { skip: !userData });
 
   const user = useAppSelector((state) => state.user.data);
+
+  useEffect(() => {
+    document.getElementsByTagName("html")[0].scrollTop = 0;
+  }, [userId]);
 
   const [allBlogs, setAllBlogs] = useState([]);
   const [publicBlogs, setPublicBlogs] = useState([]);

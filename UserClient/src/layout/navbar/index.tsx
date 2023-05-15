@@ -1,4 +1,4 @@
-import { AppShell } from "@mantine/core";
+import { AppShell, Container } from "@mantine/core";
 import HeaderComponent from "./header";
 import { Outlet } from "react-router-dom";
 import NavBarSubComponent from "./sidebar";
@@ -9,14 +9,16 @@ const NavBarComponent = () => {
 
   return (
     <AppShell
-      // padding="xl"
+      padding="sm"
       header={<HeaderComponent navOpen={showNav} setNavOpen={setShowNav} />}
-      navbar={<NavBarSubComponent hidden={!showNav} />}
+      // navbar={<NavBarSubComponent hidden={!showNav} />}
     >
-      <div className="AppContainerComponent" id="AppContainerComponent">
-        <Outlet />
+      <>
+        <Container size="xl">
+          <Outlet />
+        </Container>
         <div className="dummy"></div>
-      </div>
+      </>
     </AppShell>
   );
 };
