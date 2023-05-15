@@ -40,6 +40,10 @@ const userApiSlice = createApi({
       }),
       invalidatesTags: ["userData", "allUserData"],
     }),
+    logOut: builder.mutation({
+      query: () => "/logout",
+      invalidatesTags: ["userData", "allUserData"],
+    }),
     getUserData: builder.query({
       query: () => "/user_data",
       providesTags: ["userData"],
@@ -97,6 +101,13 @@ const userApiSlice = createApi({
       query: (uid) => `/follows/${uid}`,
       providesTags: ["singleFollow"],
     }),
+    deleteFollowUser: builder.mutation({
+      query: (uid) => ({
+        url: `/follows/${uid}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["singleFollow", "userDataPublic"],
+    }),
   }),
 });
 
@@ -116,4 +127,6 @@ export const {
   usePutUserPersionalDataMutation,
   usePostFollowUserMutation,
   useGetFollowUserQuery,
+  useDeleteFollowUserMutation,
+  useLogOutMutation
 } = userApiSlice;

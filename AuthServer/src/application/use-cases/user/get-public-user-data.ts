@@ -35,6 +35,7 @@ const getPublicUser = async (
   output.uid = userData.uid;
   output.following = followData.following;
   output.followers = followData.followers;
+  output.bio = userData?.bio ?? `Hey there... its me ${output.name} 😎`;
 
   return output;
 };

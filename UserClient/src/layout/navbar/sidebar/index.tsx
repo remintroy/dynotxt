@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { UserButton } from "../userButton";
 import { IconCompass, IconHome, IconLogin, IconMoonStars, IconSettings, IconSun } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppSelector } from "../../../lib/redux/hooks";
 
 const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
@@ -22,6 +22,9 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
   const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
+
+  const location = useLocation();
+  const path = location.pathname.split("/").filter((e) => e);
 
   return (
     <Navbar
@@ -61,9 +64,17 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
       </Navbar.Section>
 
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <NavLink variant="light" icon={<IconHome />} label="Home" description="Home sweet home" />
+        <Link to="/" className="link">
+          <NavLink
+            variant="light"
+            icon={<IconHome />}
+            active={path.length == 0}
+            label="Home"
+            description="Home sweet home"
+          />
+        </Link>
         {/* <NavLink variant="light" icon={<IconMessage />} label="Chats" description="2 new requests" /> */}
-        <NavLink variant="light" label="Explore" description="New arrivals " icon={<IconCompass />} />
+        {/* <NavLink variant="light" label="Explore" description="New arrivals " icon={<IconCompass />} /> */}
       </Navbar.Section>
 
       <Navbar.Section>
@@ -73,18 +84,11 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
               email={user?.email || "test@example.com"}
               image={user?.photoURL as string}
               name={user?.name as string}
-              // icon={
-              //   <Tooltip label="Go to account settings" withArrow color="gray">
-              //     <Link className="link" to="/settings/account">
-              //       <IconSettings />
-              //     </Link>
-              //   </Tooltip>
-              // }
             />
           </Link>
         )}
         {!user && !loading && (
-          <Tooltip label="Wait. Who are you ?" color="gray" withArrow>
+          <Tooltip label="Got to login page" color="gray" withArrow>
             <Link to="/auth/signin" className="link">
               <Button variant="outline" fullWidth h="50px">
                 <IconLogin className="txtInLink" size="20px" /> Login

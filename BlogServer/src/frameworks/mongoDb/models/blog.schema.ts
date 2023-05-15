@@ -1,6 +1,10 @@
 import { Schema } from "mongoose";
 
 export const BlogSchema = new Schema({
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: new Date(),

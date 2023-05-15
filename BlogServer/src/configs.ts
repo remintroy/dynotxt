@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-
 dotenv.config();
 
 const getConfigs = () => {
@@ -63,7 +62,11 @@ const getConfigs = () => {
       user: process.env.MAIL_USERID,
       pass: process.env.MAIL_APP_PASSWORD,
     },
-    actions: {},
+    actions: {
+      NOTHING: "NTHNG",
+      LIKED: "LIKED",
+      DISLIKED: "DISLIKED",
+    },
   };
 };
 

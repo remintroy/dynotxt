@@ -1,26 +1,19 @@
-import { Blog } from "../../entities/blog";
 import blogRepositoryImpl from "../../frameworks/mongoDb/repository/blogRepositoryImpl";
 
 const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
-  const getBlogById = (blogId: string) => repository.getBlogById(blogId);
-  const addNewBlog = (data: Blog) => repository.addNewBlog(data);
-  const updateBlog = (blogId: string, data: Blog) =>
-    repository.updateBlog(blogId, data);
-  const deleteBlogById = (blogId: string) => repository.deleteBlogById(blogId);
-  const updateBodyIndex = (blogId: string, index: number, blogData: []) =>
-    repository.updateBodyIndex(blogId, index, blogData);
-  const updateAsNewBodyIndex = (blogId: string, blogData: []) =>
-    repository.updateAsNewBodyIndex(blogId, blogData);
-  const changeVisiblity = (blogId: string, visiblity: "public" | "private") =>
-    repository.changeVisiblity(blogId, visiblity);
-  const getAllBlogsDisplayWithUidWithPrivate = (userId: string) =>
-    repository.getAllBlogsDisplayWithUidWithPrivate(userId);
-  const getAllBlogsDisplayWithUid = (userId: string) =>
-    repository.getAllBlogsDisplayWithUid(userId);
-  const recoverDeletedBlogById = (userId: string) =>
-    repository.recoverDeletedBlogById(userId);
-  const getAllDeletedBlogs = (userId: string) =>
-    repository.getAllDeletedBlogs(userId);
+  const getBlogById = repository.getBlogById;
+  const addNewBlog = repository.addNewBlog;
+  const updateBlog = repository.updateBlog;
+  const deleteBlogById = repository.deleteBlogById;
+  const updateBodyIndex = repository.updateBodyIndex;
+  const updateAsNewBodyIndex = repository.updateAsNewBodyIndex;
+  const changeVisiblity = repository.changeVisiblity;
+  const getAllBlogsDisplayWithUidWithPrivate = repository.getAllBlogsDisplayWithUidWithPrivate;
+  const getAllBlogsDisplayWithUid = repository.getAllBlogsDisplayWithUid;
+  const recoverDeletedBlogById = repository.recoverDeletedBlogById;
+  const getAllDeletedBlogs = repository.getAllDeletedBlogs;
+  const getDeleteBlog = repository.getDeleteBlog;
+  const getAllPublicBlogs = repository.getAllPublicBlogs;
 
   return {
     getBlogById,
@@ -34,6 +27,8 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
     getAllBlogsDisplayWithUid,
     recoverDeletedBlogById,
     getAllDeletedBlogs,
+    getDeleteBlog,
+    getAllPublicBlogs,
   };
 };
 

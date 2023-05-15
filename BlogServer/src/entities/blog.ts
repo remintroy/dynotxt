@@ -11,6 +11,7 @@ export interface Blog {
   version?: number;
   body?: [any];
   deleted?: boolean;
+  disabled?: boolean;
 }
 
 export class Blog {
@@ -27,6 +28,7 @@ export class Blog {
     this.body = blogData.body;
     this.version = blogData.version;
     this.deleted = blogData.deleted;
+    this.disabled = blogData.disabled;
   }
 }
 

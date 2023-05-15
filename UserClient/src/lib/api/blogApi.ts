@@ -39,7 +39,7 @@ const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => 
 const blogApiSlice = createApi({
   reducerPath: "blogapi",
   baseQuery: baseQueryWithRefetch,
-  tagTypes: ["comments", "blogDisplay"],
+  tagTypes: ["comments", "blogDisplay", "deletedBlogs", "home", "reactionStatus"],
   endpoints: (builder) => ({
     getBlog: builder.query({
       query: ({ blogId }) => `/blog/${blogId}`,
@@ -98,7 +98,7 @@ const blogApiSlice = createApi({
         url: `/blog/${blogId}/unpublish`,
         method: "PUT",
       }),
-      invalidatesTags: ["blogDisplay"],
+      invalidatesTags: ["blogDisplay", "home"],
     }),
     getBlogDataDisplay: builder.query({
       query: (uid) => `/user/${uid}`,
@@ -109,7 +109,61 @@ const blogApiSlice = createApi({
         url: `/blog/${blogId}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["blogDisplay"],
+      invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
+    }),
+    getAllTrashedBlogs: builder.query({
+      query: () => `/trash`,
+      providesTags: ["deletedBlogs"],
+    }),
+    putRecoverTrashedBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/trash/${blogId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["deletedBlogs", "blogDisplay"],
+    }),
+    getBlogsForHome: builder.query({
+      query: () => `/public/all`,
+      providesTags: ["home"],
+    }),
+    getBlogReactionStatus: builder.query({
+      query: (blogId) => `/like/${blogId}`,
+      providesTags: ["reactionStatus"],
+    }),
+    postBlogLike: builder.mutation({
+      query: (blogId) => ({
+        url: `/like/${blogId}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["reactionStatus"],
+    }),
+    postBlogDislike: builder.mutation({
+      query: (blogId) => ({
+        url: `/dislike/${blogId}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["reactionStatus"],
+    }),
+    deleteBlogLike: builder.mutation({
+      query: (blogId) => ({
+        url: `/like/${blogId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["reactionStatus"],
+    }),
+    deleteBlogDislike: builder.mutation({
+      query: (blogId) => ({
+        url: `/dislike/${blogId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["reactionStatus"],
+    }),
+    postBlogReport: builder.mutation({
+      query: ({ blogId, message }) => ({
+        url: `/report/${blogId}`,
+        method: "POST",
+        body: { message },
+      }),
     }),
   }),
 });
@@ -131,4 +185,13 @@ export const {
   useGetBlogDataDisplayQuery,
   usePutUnPublishBlogMutation,
   useDeleteBlogWithBlogIdMutation,
+  useGetAllTrashedBlogsQuery,
+  usePutRecoverTrashedBlogMutation,
+  useGetBlogsForHomeQuery,
+  usePostBlogLikeMutation,
+  usePostBlogDislikeMutation,
+  useDeleteBlogLikeMutation,
+  useDeleteBlogDislikeMutation,
+  useGetBlogReactionStatusQuery,
+  usePostBlogReportMutation,
 } = blogApiSlice;

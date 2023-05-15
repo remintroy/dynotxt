@@ -3,6 +3,7 @@ import { Schema } from "mongoose";
 export interface IUser {
   userName: string;
   name: string;
+  bio: string;
   email: string;
   uid: string;
   provider: string;
@@ -29,6 +30,7 @@ export const userSchema = new Schema({
   name: String,
   email: String,
   uid: String,
+  bio: String,
   provider: String,
   img: String,
   photoURL: String,

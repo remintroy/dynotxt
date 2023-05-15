@@ -60,10 +60,22 @@ const followsRepositoryImpl = () => {
     return output;
   };
 
+  const deleteFollowersForSingleConnection = async (
+    followingUserId: string,
+    followerUserId: string
+  ) => {
+    const response = await FollowsModel.deleteOne({
+      follower: followerUserId,
+      following: followingUserId,
+    });
+    return response;
+  };
+
   return {
     addFollowerToUserWithUid,
     getFollowingDataWithSingleUser,
     getFollowingAndFollowsCount,
+    deleteFollowersForSingleConnection,
   };
 };
 

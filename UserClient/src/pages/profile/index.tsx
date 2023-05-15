@@ -1,15 +1,17 @@
-import { Avatar, Box, Button, Card, Chip, Flex, Grid, Tabs, Text } from "@mantine/core";
+import { Avatar, Box, Button, Card, Chip, Flex, Grid, Image, Tabs, Text } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import { useGetUserDataWithUidQuery } from "../../lib/api/authApi";
 import { useGetBlogDataDisplayQuery } from "../../lib/api/blogApi";
 import { IconLock, IconPhoto, IconWorld } from "@tabler/icons-react";
 import { IconSettings } from "@tabler/icons-react";
 import { useAppSelector } from "../../lib/redux/hooks";
-import BlogCardComponent from "../../components/profile/blogs/blogCard";
+import BlogCardComponent from "../../components/profile/blogs/blogCardSettings";
 import SettingsComponent from "../../components/profile/settings";
 import { useEffect, useState } from "react";
 import BlogCardSkeltonComponent from "../../components/profile/blogs/blogCardSkelton";
 import FollowButtonComponent from "../../components/profile/followButton";
+import NoDataImage from "../../assets/no-data.png";
+import BannerImage from "../../assets/banner-img.png";
 
 const UserProfilePage = () => {
   const { id: userId } = useParams();
@@ -33,10 +35,15 @@ const UserProfilePage = () => {
   const [privateBlogs, setPrivateBlogs] = useState([]);
   const [userDataLoading, setUserDataLoading] = useState(true);
   const [blogLoading, setBlogLoading] = useState(true);
+  const [tabsValue, setTabsValue] = useState<string | null>("all-blogs");
+
+  useEffect(() => {
+    setTabsValue("all-blogs");
+  }, [userId, user]);
 
   useEffect(() => {
     if (isUserDataLoading || isUserDataFetching) setUserDataLoading(true);
-    else setUserDataLoading(false);
+    else setUserDataLoading(true);
   }, [isUserDataLoading, isUserDataFetching]);
 
   useEffect(() => {
@@ -66,11 +73,21 @@ const UserProfilePage = () => {
     }
 
     return (
-      <Grid>
+      <Grid gutter={"lg"}>
         {data?.map((blog: any) => {
           return <BlogCardComponent key={blog?.blogId} blog={blog} userId={userId} />;
         })}
-        {(data?.length === 0 || !blogData) && <h3 style={{ padding: 10 }}>Yay.. There is nothing private here</h3>}
+        {(data?.length === 0 || !blogData) && (
+          <Flex
+            style={{ padding: 30 }}
+            justify={"center"}
+            align={"center"}
+            direction={"column"}
+            sx={{ position: "relative", width: "100%" }}
+          >
+            <h1>No blogs here</h1>
+          </Flex>
+        )}
       </Grid>
     );
   };
@@ -79,7 +96,7 @@ const UserProfilePage = () => {
     <div style={{ padding: "25px" }}>
       <div className="porfileCont">
         <Flex gap={"30px"} align={"center"} my={20}>
-          <Avatar size={"xl"} radius={"xl"} src={userData?.photoURL} />
+          <Avatar size={"xl"} radius={"lg"} src={userData?.photoURL} />
           <div>
             <Flex mb={10} align={"center"} gap={20}>
               <h1 style={{ margin: 0, padding: 0 }}>{userData?.name}</h1>
@@ -92,15 +109,11 @@ const UserProfilePage = () => {
             </Flex>
           </div>
         </Flex>
-        <Text my={20}>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illum distinctio voluptatibus hic provident ratione.
-          Saepe recusandae dicta a aspernatur maxime veritatis expedita magni, dolor molestias culpa, facere
-          exercitationem ducimus voluptas.
-        </Text>
+        <Text my={20}>{userData?.bio}</Text>
       </div>
 
-      <Tabs defaultValue="all-blogs">
-        <Tabs.List>
+      <Tabs value={tabsValue} onTabChange={setTabsValue}>
+        <Tabs.List mb={15}>
           <Tabs.Tab value="all-blogs" icon={<IconPhoto size="20px" />}>
             All Blogs
           </Tabs.Tab>

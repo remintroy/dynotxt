@@ -3,6 +3,8 @@ import { useGetVerificationStatusQuery, useVefifyEmailWithOtpMutation } from "..
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { IconInfoCircle, IconRecordMail } from "@tabler/icons-react";
+import { useAppDispatch } from "../../../lib/redux/hooks";
+import { setUser } from "../../../lib/redux/userSlice";
 
 const VerfiyEmailPage = () => {
   const { uid } = useParams();
@@ -12,11 +14,13 @@ const VerfiyEmailPage = () => {
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [verifyEmailWithOtp] = useVefifyEmailWithOtpMutation();
+  const dispatch = useAppDispatch();
 
   const submitOtp = async () => {
     //
     try {
       const response = await verifyEmailWithOtp({ uid, otp }).unwrap();
+      dispatch(setUser(response));
       navigate("/");
     } catch (error: any) {
       const message = error?.data?.error ? error.data.error : "Error while verifying email";

@@ -14,6 +14,8 @@ import { useEffect } from "react";
 import { useAppDispatch } from "./lib/redux/hooks";
 import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
 import EditBlogPage from "./pages/blog/editBlog";
+import { Box } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
 
 const router = createBrowserRouter([
   {
@@ -33,16 +35,6 @@ const router = createBrowserRouter([
         path: "profile/:id",
         element: <UserProfilePage />,
       },
-      //     {
-      //       path: "settings",
-      //       element: <SettingsPage />,
-      //       children: [
-      //         {
-      //           path: "account",
-      //           element: <AccoutnSettingsComponent />,
-      //         },
-      //       ],
-      //     },
     ],
   },
   {
@@ -88,10 +80,12 @@ function App() {
   }, [data, isFetching, isLoading, isError]);
 
   return (
-    <div className="App">
-      <Notifications />
-      <RouterProvider router={router} />
-    </div>
+    <Box className="App">
+      <ModalsProvider>
+        <Notifications />
+        <RouterProvider router={router} />
+      </ModalsProvider>
+    </Box>
   );
 }
 

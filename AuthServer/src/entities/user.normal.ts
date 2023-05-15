@@ -4,6 +4,7 @@ import validatorInteraface from "../application/services/validatorInteraface";
 
 export interface IUser {
   uid?: string;
+  bio?: string;
   name?: string;
   email?: string;
   phone?: string;
@@ -74,6 +75,7 @@ function createNormalUser({
       data.emailVerified = userValidatedData[15];
       data.hash = userValidatedData[16];
       data.provider = userValidatedData[17];
+      data.bio = data.bio;
 
       const makePublicAccount = () => {
         this.privateAccount = false;
