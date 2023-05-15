@@ -12,10 +12,7 @@ const getBlogDataToEdit = async (
   const blogDataFromDb = await blogrepository.getBlogById(blogId);
 
   if (!blogDataFromDb) {
-    throw createError(
-      400,
-      "Cannot retreive blog data, As blog data is not exist"
-    );
+    throw createError(400, "Cannot retreive blog data, As blog not exist or it may be deleted");
   }
 
   if (blogDataFromDb.author !== user) {

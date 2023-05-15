@@ -10,8 +10,6 @@ const caseGetAllBlogs = async (
   //
   if (!userId) throw createError(400, "Blog id is required");
 
-  console.log(userId, currentUserId)
-
   let blogsDataFromDb: Blog[];
   try {
     blogsDataFromDb =

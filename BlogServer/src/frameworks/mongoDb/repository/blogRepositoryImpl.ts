@@ -27,7 +27,7 @@ const blogRepositoryImpl = () => {
     const response = await BlogModel.updateOne(
       { blogId, deleted: false },
       {
-        $set: { deleted: true },
+        $set: { deleted: true, updatedAt: new Date() },
       }
     );
     return response;
@@ -37,14 +37,26 @@ const blogRepositoryImpl = () => {
     const response = await BlogModel.updateOne(
       { blogId, deleted: true },
       {
-        $set: { deleted: false },
+        $set: { deleted: false, updatedAt: new Date() },
       }
     );
     return response;
   };
 
-  const getAllDeletedBlogs = async (blogId: string) => {
-    const response = await BlogModel.find({ blogId, deleted: true });
+  const getDeleteBlog = async (userId: string, blogId: string) => {
+    const response = await BlogModel.findOne({
+      author: userId,
+      blogId,
+      deleted: true,
+    });
+    return response;
+  };
+
+  const getAllDeletedBlogs = async (userId: string) => {
+    const response = await BlogModel.find({
+      author: userId,
+      deleted: true,
+    }).sort({ updatedAt: -1 });
     return response;
   };
 
@@ -149,6 +161,11 @@ const blogRepositoryImpl = () => {
     return response;
   };
 
+  const getAllPublicBlogs = async () => {
+    const response = await BlogModel.find({ deleted: false, published: true });
+    return response;
+  };
+
   return {
     getBlogById,
     addNewBlog,
@@ -161,6 +178,8 @@ const blogRepositoryImpl = () => {
     getAllBlogsDisplayWithUid,
     recoverDeletedBlogById,
     getAllDeletedBlogs,
+    getDeleteBlog,
+    getAllPublicBlogs,
   };
 };
 
