@@ -4,7 +4,7 @@ import userRepositoryInteraface from "../../repository/userRepositoryInteraface"
 
 export default async function userVerificationStatus(
   userRepository: ReturnType<typeof userRepositoryInteraface>,
-  createError,
+  createError:any,
   typeofVerification: string,
   userId: string
 ) {

@@ -21,12 +21,22 @@ const followsRepositoryInterface = (repository: followsRepositoryImpl) => {
   const getFollowingAndFollowsCount = (currentUserId: string) =>
     repository.getFollowingAndFollowsCount(currentUserId);
 
+  const deleteFollowersForSingleConnection = async (
+    followingUserId: string,
+    followerUserId: string
+  ) =>
+    repository.deleteFollowersForSingleConnection(
+      followingUserId,
+      followerUserId
+    );
+
   return {
     addFollowerToUserWithUid,
     getFollowingDataWithSingleUser,
     getFollowingAndFollowsCount,
+    deleteFollowersForSingleConnection,
   };
 };
 
-type followsRepositoryInterface = ReturnType<typeof followsRepositoryImpl>;
+type followsRepositoryInterface = ReturnType<typeof followsRepositoryInterface>;
 export default followsRepositoryInterface;

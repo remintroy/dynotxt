@@ -93,6 +93,10 @@ export default function v1UserRouter(express: typeof ExpressApp) {
     .get(
       mustLoginAsUser,
       makeExpressResponseCallback(controller.getFollowingDataWithSingleUser)
+    )
+    .delete(
+      mustLoginAsUser,
+      makeExpressResponseCallback(controller.deleteUnfollowUser)
     );
 
   return router;

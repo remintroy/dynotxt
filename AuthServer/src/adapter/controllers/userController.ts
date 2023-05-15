@@ -19,6 +19,7 @@ import updatePersonalUserData from "../../application/use-cases/user/update-user
 import caseAddNewFollow from "../../application/use-cases/user/follow-user";
 import followsRepositoryInterface from "../../application/repository/followsRepositoryInterface";
 import caseGetFollowingStatus from "../../application/use-cases/user/get-following-status";
+import caseUnfollowUser from "../../application/use-cases/user/unfollow-user";
 
 export interface IRequest extends Request {
   user: IUser;
@@ -208,6 +209,18 @@ const userController = (
     return response;
   };
 
+  const deleteUnfollowUser = async (req: IRequest) => {
+    const { user } = req;
+    const { uid: userIdToUnfollow } = req.params;
+    const response = await caseUnfollowUser(
+      followsRepository,
+      createError,
+      user,
+      userIdToUnfollow
+    );
+    return response;
+  };
+
   return {
     userPostSignin,
     getNewAccessTokenFromRefreshToken,
@@ -222,6 +235,7 @@ const userController = (
     putUpdatePublicUserData,
     postFollowNewUser,
     getFollowingDataWithSingleUser,
+    deleteUnfollowUser,
   };
 };
 
