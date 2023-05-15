@@ -5,13 +5,14 @@ import authServiceInterface from "../../application/services/authServices";
 import validatorInteraface from "../../application/services/validatorInteraface";
 import signinAdmin from "../../application/use-cases/admin/signInAdmin";
 import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
-import getAdminFromRefreshToken from "../../application/use-cases/admin/adminUserDataFromRefreshToken";
+import getAdminFromRefreshToken from "../../application/use-cases/admin/admin-user-data-from-refresh-token";
 import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
 import getAllUserforAdmin from "../../application/use-cases/admin/get-all-User";
 import disableUser from "../../application/use-cases/admin/disable-user";
 import enableUser from "../../application/use-cases/admin/enable-user";
 import getBlockedUsers from "../../application/use-cases/admin/get-blocked-users";
 import logoutAdmin from "../../application/use-cases/admin/logoutAdmin";
+import refreshAdmin from "../../application/use-cases/admin/refresh-access-token";
 
 export interface IRequest extends Request {
   admin: IAdminUser;
@@ -100,6 +101,19 @@ const adminController = (
     return response;
   };
 
+  const getNewAccessTokenFromRefreshToken = async (req: IRequest) => {
+    const { suRefreshToken } = req.cookies;
+    const response = await refreshAdmin(
+      tokenRepository,
+      adminRepository,
+      authService,
+      validator,
+      createError,
+      suRefreshToken
+    );
+    return response;
+  };
+
   return {
     signInAdminUser,
     getAdminUserData,
@@ -107,6 +121,7 @@ const adminController = (
     putAdminChangeUserState,
     getAdminAllBlockedUsers,
     getAdminLogout,
+    getNewAccessTokenFromRefreshToken,
   };
 };
 

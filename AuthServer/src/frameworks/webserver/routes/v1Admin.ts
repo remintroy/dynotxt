@@ -45,6 +45,11 @@ export default function v1AdminRoute(express: typeof ExpressApp) {
     .route("/user_data")
     .get(makeExpressResponseCallback(controller.getAdminUserData));
   router
+    .route("/refresh")
+    .get(
+      makeExpressResponseCallback(controller.getNewAccessTokenFromRefreshToken)
+    );
+  router
     .route("/client")
     .get(
       mustLoginAsAdmin,

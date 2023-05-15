@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Burger,
   Button,
@@ -14,7 +15,7 @@ import {
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 import { useAppSelector } from "../../../lib/redux/hooks";
 import { useCreateNewBlogMutation } from "../../../lib/api/blogApi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: boolean; setNavOpen: any }) => {
   const theme = useMantineTheme();
@@ -48,9 +49,11 @@ const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: 
               mr="xl"
             />
           </MediaQuery>
-          <Text fw={700} fz="md" tt="uppercase">
-            Dynotxt
-          </Text>
+          <Link className="link" to="/">
+            <Text fw={700} fz="md" tt="uppercase">
+              Dynotxt
+            </Text>
+          </Link>
         </div>
         <div className="right" style={{ display: "flex", alignItems: "center" }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -79,6 +82,17 @@ const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: 
             <MediaQuery largerThan="md" styles={{ display: "none" }}>
               <IconSearch size={"25px"} />
             </MediaQuery>
+            {user && (
+              <Link to={`/profile/${user.uid}`}>
+                <Avatar src={user.photoURL} radius={"xl"} />
+              </Link>
+            )}
+
+            {!user && (
+              <Link to="/auth/signin">
+                <Button variant="outline">Login</Button>
+              </Link>
+            )}
           </Box>
         </div>
       </div>
