@@ -1,16 +1,12 @@
-import { Avatar, Box, Button, Card, Divider, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
-import { useAppSelector } from "../../../../lib/redux/hooks";
+import { Avatar, Box, Card, Divider, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { useGetUserDataWithUidQuery } from "../../../../lib/api/authApi";
 
 const BlogCardNormalComponent = ({ blog, userId, span }: { blog: any; span?: number; userId: string | undefined }) => {
-  const user = useAppSelector((state) => state.user.data);
   const { data: userData, isLoading: isUserDataLoading } = useGetUserDataWithUidQuery(userId, { skip: !userId });
 
-  console.log(userData);
-
   return (
-    <Grid.Col span={6}>
+    <Grid.Col span={span ?? 6}>
       {/* p="lg" radius="md" withBorder */}
       <Box h={"100%"}>
         <Card.Section>
@@ -61,7 +57,7 @@ const BlogCardNormalComponent = ({ blog, userId, span }: { blog: any; span?: num
             </Grid.Col>
           </Grid>
         </Card.Section>
-        <Divider mt={20}/>
+        <Divider mt={20} />
       </Box>
     </Grid.Col>
   );

@@ -13,6 +13,14 @@ const flagsRepositoryImpl = () => {
     return await FlagsModel.deleteMany({ blogId });
   };
 
+  const updateStatusFlagsForSingleBlogAsDisabled = async (blogId: string) => {
+    return await FlagsModel.updateMany({ blogId }, { $set: { status: "disabled" } });
+  };
+
+  const updateStatusFlagsForSingleBlogAsEnabled = async (blogId: string) => {
+    return await FlagsModel.updateMany({ blogId }, { $set: { status: "enabled" } });
+  };
+
   const updateFLagStatus = async (blogId: string, flagId: string, status: string) => {
     return await FlagsModel.updateOne(
       { blogId, _id: flagId },
@@ -45,6 +53,11 @@ const flagsRepositoryImpl = () => {
           as: "blog",
           pipeline: [
             {
+              $match: {
+                disabled: false,
+              },
+            },
+            {
               $project: {
                 _id: 0,
                 title: 1,
@@ -70,7 +83,14 @@ const flagsRepositoryImpl = () => {
           _id: 0,
         },
       },
+      {
+        $match: { blog: { $exists: true, $ne: null } },
+      },
     ]);
+  };
+
+  const getFlagsForSingleBlog = async (blogId: string) => {
+    return await FlagsModel.find({ blogId });
   };
 
   return {
@@ -79,6 +99,9 @@ const flagsRepositoryImpl = () => {
     updateFLagStatus,
     getAllFlaggedBLogs,
     removeAllFlagForSingBlog,
+    getFlagsForSingleBlog,
+    updateStatusFlagsForSingleBlogAsDisabled,
+    updateStatusFlagsForSingleBlogAsEnabled,
   };
 };
 

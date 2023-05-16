@@ -6,12 +6,18 @@ const flagsRepositoryInterface = (repository: flagsRepositoryImpl) => {
   const updateFLagStatus = repository.updateFLagStatus;
   const getAllFlaggedBLogs = repository.getAllFlaggedBLogs;
   const removeAllFlagForSingBlog = repository.removeAllFlagForSingBlog;
+  const getFlagsForSingleBlog = repository.getFlagsForSingleBlog;
+  const updateStatusFlagsForSingleBlogAsDisabled = repository.updateStatusFlagsForSingleBlogAsDisabled;
+  const updateStatusFlagsForSingleBlogAsEnabled = repository.updateStatusFlagsForSingleBlogAsEnabled;
   return {
     addNewFlag,
     removeFlag,
     updateFLagStatus,
     getAllFlaggedBLogs,
     removeAllFlagForSingBlog,
+    getFlagsForSingleBlog,
+    updateStatusFlagsForSingleBlogAsDisabled,
+    updateStatusFlagsForSingleBlogAsEnabled,
   };
 };
 

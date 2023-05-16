@@ -3,70 +3,66 @@ import BlogModel from "../models/blog";
 
 const blogRepositoryImpl = () => {
   const getBlogById = async (blogId: string) => {
-    const response = await BlogModel.findOne({ blogId });
-    if (response?.deleted) return null;
-    return response;
+    return await BlogModel.findOne({ blogId, deleted: false, disabled: false });
+  };
+
+  const getBlogByIdPrivate = async (blogId: string, authorId: string) => {
+    return await BlogModel.findOne({ blogId, author: authorId });
+  };
+
+  const getBlogByIdAdmin = async (blogId: string) => {
+    return await BlogModel.findOne({ blogId });
   };
 
   const addNewBlog = async (blogData: Blog) => {
-    const response = await new BlogModel(blogData).save();
-    return response;
+    return await new BlogModel(blogData).save();
   };
 
   const updateBlog = async (blogId: string, blogData: Blog) => {
-    const response = await BlogModel.updateOne(
-      { blogId, deleted: false },
+    return await BlogModel.updateOne(
+      { blogId, deleted: false, disabled: false },
       {
         $set: { updatedAt: new Date(), ...blogData },
       }
     );
-    return response;
   };
 
   const deleteBlogById = async (blogId: string) => {
-    const response = await BlogModel.updateOne(
+    return await BlogModel.updateOne(
       { blogId, deleted: false },
       {
         $set: { deleted: true, updatedAt: new Date() },
       }
     );
-    return response;
   };
 
   const recoverDeletedBlogById = async (blogId: string) => {
-    const response = await BlogModel.updateOne(
+    return await BlogModel.updateOne(
       { blogId, deleted: true },
       {
         $set: { deleted: false, updatedAt: new Date() },
       }
     );
-    return response;
   };
 
   const getDeleteBlog = async (userId: string, blogId: string) => {
-    const response = await BlogModel.findOne({
+    return await BlogModel.findOne({
       author: userId,
       blogId,
       deleted: true,
     });
-    return response;
   };
 
   const getAllDeletedBlogs = async (userId: string) => {
-    const response = await BlogModel.find({
+    return await BlogModel.find({
       author: userId,
       deleted: true,
     }).sort({ updatedAt: -1 });
-    return response;
   };
 
-  const updateBodyIndex = async (
-    blogId: string,
-    index: number,
-    bodyData: []
-  ) => {
-    const response = await BlogModel.updateOne(
-      { blogId, deleted: false },
+  const updateBodyIndex = async (blogId: string, index: number, bodyData: []) => {
+    return await BlogModel.updateOne(
+      { blogId, deleted: false, disabled: false },
       {
         $set: {
           updatedAt: new Date(),
@@ -74,12 +70,11 @@ const blogRepositoryImpl = () => {
         },
       }
     );
-    return response;
   };
 
   const updateAsNewBodyIndex = async (blogId: string, bodyData: []) => {
-    const response = await BlogModel.updateOne(
-      { blogId, deleted: false },
+    return await BlogModel.updateOne(
+      { blogId, deleted: false, disabled: false },
       {
         $push: {
           updatedAt: new Date(),
@@ -87,15 +82,11 @@ const blogRepositoryImpl = () => {
         },
       }
     );
-    return response;
   };
 
-  const changeVisiblity = async (
-    blogId: string,
-    visibility: "public" | "private"
-  ) => {
-    const response = await BlogModel.updateOne(
-      { blogId, deleted: false },
+  const changeVisiblity = async (blogId: string, visibility: "public" | "private") => {
+    return await BlogModel.updateOne(
+      { blogId, deleted: false, disabled: false },
       {
         $set: {
           updatedAt: new Date(),
@@ -103,11 +94,10 @@ const blogRepositoryImpl = () => {
         },
       }
     );
-    return response;
   };
 
   const getAllBlogsDisplayWithUidWithPrivate = async (userId: string) => {
-    const response = await BlogModel.aggregate([
+    return await BlogModel.aggregate([
       {
         $match: {
           author: userId,
@@ -117,6 +107,7 @@ const blogRepositoryImpl = () => {
       {
         $group: {
           _id: "$blogId",
+          disabled: { $first: "$disabled" },
           blogId: { $first: "$blogId" },
           title: { $first: "$title" },
           subtitle: { $first: "$subtitle" },
@@ -130,16 +121,16 @@ const blogRepositoryImpl = () => {
         $sort: { updatedAt: -1 },
       },
     ]);
-    return response;
   };
 
   const getAllBlogsDisplayWithUid = async (userId: string) => {
-    const response = await BlogModel.aggregate([
+    return await BlogModel.aggregate([
       {
         $match: {
           author: userId,
           published: true,
           deleted: false,
+          disabled: false,
         },
       },
       {
@@ -158,16 +149,45 @@ const blogRepositoryImpl = () => {
         $sort: { updatedAt: -1 },
       },
     ]);
-    return response;
+  };
+
+  const adminGetAllDisabledBlogs = async () => {
+    return await BlogModel.aggregate([
+      {
+        $match: {
+          disabled: true,
+        },
+      },
+      {
+        $lookup: {
+          from: "flags",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "flags",
+          pipeline: [
+            {
+              $project: {
+                createdAt: 1,
+                blogId: 1,
+                reason: 1,
+                status: 1,
+                userId: 1,
+              },
+            },
+          ],
+        },
+      },
+    ]);
   };
 
   const getAllPublicBlogs = async () => {
-    const response = await BlogModel.find({ deleted: false, published: true });
-    return response;
+    return await BlogModel.find({ deleted: false, published: true, disabled: false });
   };
 
   return {
     getBlogById,
+    getBlogByIdPrivate,
+    getBlogByIdAdmin,
     addNewBlog,
     updateBlog,
     deleteBlogById,
@@ -179,6 +199,7 @@ const blogRepositoryImpl = () => {
     recoverDeletedBlogById,
     getAllDeletedBlogs,
     getDeleteBlog,
+    adminGetAllDisabledBlogs,
     getAllPublicBlogs,
   };
 };

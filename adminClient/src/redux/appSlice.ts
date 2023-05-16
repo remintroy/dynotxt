@@ -1,3 +1,0 @@
-const initailState = {
-    data.theme = ""
-}

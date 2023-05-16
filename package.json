@@ -8,7 +8,7 @@
     "blogserver": "cd BlogServer && npm start",
     "blogserverBuild": "cd BlogServer && npm run build",
     "userapp": "cd UserClient && npm run dev",
-    "adminApp": "cd adminClient && npm run dev",
+    "adminApp": "cd AdminClient && npm run dev",
     "backend": "concurrently \"npm run authserver\" \"npm run blogserver\"",
     "client": "concurrently \"npm run userapp\" \"npm run adminApp\"",
     "build": "concurrently \"npm run authserverBuild\" \"npm run blogserverBuild\""

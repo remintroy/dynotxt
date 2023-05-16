@@ -2,6 +2,7 @@ import blogRepositoryImpl from "../../frameworks/mongoDb/repository/blogReposito
 
 const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
   const getBlogById = repository.getBlogById;
+  const getBlogByIdPrivate = repository.getBlogByIdPrivate;
   const addNewBlog = repository.addNewBlog;
   const updateBlog = repository.updateBlog;
   const deleteBlogById = repository.deleteBlogById;
@@ -14,9 +15,13 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
   const getAllDeletedBlogs = repository.getAllDeletedBlogs;
   const getDeleteBlog = repository.getDeleteBlog;
   const getAllPublicBlogs = repository.getAllPublicBlogs;
+  const adminGetAllDisabledBlogs = repository.adminGetAllDisabledBlogs;
+  const getBlogByIdAdmin = repository.getBlogByIdAdmin;
 
   return {
     getBlogById,
+    getBlogByIdPrivate,
+    getBlogByIdAdmin,
     addNewBlog,
     updateBlog,
     deleteBlogById,
@@ -28,6 +33,7 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
     recoverDeletedBlogById,
     getAllDeletedBlogs,
     getDeleteBlog,
+    adminGetAllDisabledBlogs,
     getAllPublicBlogs,
   };
 };
