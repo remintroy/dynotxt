@@ -13,8 +13,17 @@ import {
 import { useAppSelector } from "../../../../lib/redux/hooks";
 import { useState } from "react";
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 
-const BlogCardWithSettingsComponent = ({ blog, userId, span }: { blog: any; span?: number; userId: string | undefined }) => {
+const BlogCardWithSettingsComponent = ({
+  blog,
+  userId,
+  span,
+}: {
+  blog: any;
+  span?: number;
+  userId: string | undefined;
+}) => {
   const user = useAppSelector((state) => state.user.data);
 
   const [makePublicApi] = usePutPublishBlogMutation();
@@ -77,9 +86,15 @@ const BlogCardWithSettingsComponent = ({ blog, userId, span }: { blog: any; span
     try {
       const response = await apiCallFuntion(blog?.blogId).unwrap();
       setRecoveringLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       setRecoveringLoading(false);
-      console.log(error);
+      notifications.show({
+        color: "red",
+        title: "Oops something went wrong",
+        message: error?.data?.error
+          ? error?.data?.error
+          : "There was an error diring updating blog visiblity. Consier trying agter sometime",
+      });
     }
   };
 
@@ -93,8 +108,8 @@ const BlogCardWithSettingsComponent = ({ blog, userId, span }: { blog: any; span
         <div style={{ marginTop: 15 }}>
           {user?.uid == userId && (
             <Flex justify={"space-between"}>
-              <Badge color={blog?.published && !blog?.deleted ? "blue" : "red"}>
-                {blog?.deleted ? "Deleted" : blog?.published ? "public" : "private"}
+              <Badge color={blog?.published && !blog?.deleted && !blog?.disabled ? "blue" : "red"}>
+                {blog?.disabled ? "! Disabled" : blog?.deleted ? "Deleted" : blog?.published ? "public" : "private"}
               </Badge>
               {!blog?.deleted && (
                 <Menu>

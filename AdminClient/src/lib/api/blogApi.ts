@@ -43,18 +43,27 @@ const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => 
 const blogSlice = createApi({
   baseQuery: baseQueryWithRefetch,
   reducerPath: "blogapi",
-  tagTypes: ["flaggedBlogs"],
+  tagTypes: ["flaggedBlogs", "disabledBlogs"],
   endpoints: (builder) => ({
     getFlaggedBlogs: builder.query({
       query: () => `/blog/flagged`,
       providesTags: ["flaggedBlogs"],
     }),
     deleteFlaggesForSingleBlog: builder.mutation({
-      query: (blogId) => ({
-        url: `/blog/flagged/${blogId}`,
-        method: "DELETE",
-      }),
+      query: (blogId) => ({ url: `/blog/flagged/${blogId}`, method: "DELETE" }),
       invalidatesTags: ["flaggedBlogs"],
+    }),
+    putDisableBlog: builder.mutation({
+      query: (blogId) => ({ url: `/blog/flagged/${blogId}`, method: "PUT" }),
+      invalidatesTags: ["flaggedBlogs", "disabledBlogs"],
+    }),
+    putEnableBlog: builder.mutation({
+      query: (blogId) => ({ url: `/blog/flagged/${blogId}/enable`, method: "PUT" }),
+      invalidatesTags: ["flaggedBlogs", "disabledBlogs"],
+    }),
+    getAllDisabledBlogs: builder.query({
+      query: () => `/blog/disabled/`,
+      providesTags: ["disabledBlogs"],
     }),
   }),
 });
@@ -63,4 +72,10 @@ export const blogApiEndpoints = blogSlice.endpoints;
 export const blogApiReducer = blogSlice.reducer;
 export const blogApiReducerPath = blogSlice.reducerPath;
 export const blogApiMiddleware = blogSlice.middleware;
-export const { useGetFlaggedBlogsQuery, useDeleteFlaggesForSingleBlogMutation } = blogSlice;
+export const {
+  useGetFlaggedBlogsQuery,
+  usePutDisableBlogMutation,
+  usePutEnableBlogMutation,
+  useDeleteFlaggesForSingleBlogMutation,
+  useGetAllDisabledBlogsQuery,
+} = blogSlice;

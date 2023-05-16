@@ -1,7 +1,11 @@
 import { Alert, Box, Button, Card, Chip, CircularProgress, Modal, Paper, Typography } from "@mui/material";
-import { useDeleteFlaggesForSingleBlogMutation, useGetFlaggedBlogsQuery } from "../../../lib/api/blogApi";
+import {
+  useDeleteFlaggesForSingleBlogMutation,
+  useGetFlaggedBlogsQuery,
+  usePutDisableBlogMutation,
+} from "../../../lib/api/blogApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
-import { Delete, Launch, WarningRounded } from "@mui/icons-material";
+import { Delete, DisabledByDefault, Launch, WarningRounded } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
 import { useContext, useState } from "react";
 import ThemeContext from "../../../context/ThemeContext";
@@ -18,14 +22,27 @@ const ManageBlogsReportedBlogsComponent = () => {
     const [openAction, setOpenAction] = useState(false);
     const [deleteFlagsForSingleBlogApi] = useDeleteFlaggesForSingleBlogMutation();
     const [deleteFlagsLoading, setDeleteFlagsLoading] = useState(false);
+    const [disableBlogApi] = usePutDisableBlogMutation();
+    const [disableBlogLoading, setDisableBlogLoading] = useState(false);
 
     const handleDeleteFlags = async () => {
       try {
         setDeleteFlagsLoading(true);
-        await deleteFlagsForSingleBlogApi(report.blogId);
+        await deleteFlagsForSingleBlogApi(report.blogId).unwrap();
         setDeleteFlagsLoading(false);
       } catch (error) {
         setDeleteFlagsLoading(false);
+        console.log(error);
+      }
+    };
+
+    const handleDisableBlog = async () => {
+      try {
+        setDisableBlogLoading(true);
+        await disableBlogApi(report.blogId).unwrap();
+        setDisableBlogLoading(false);
+      } catch (error) {
+        setDisableBlogLoading(false);
         console.log(error);
       }
     };
@@ -87,7 +104,15 @@ const ManageBlogsReportedBlogsComponent = () => {
                     </Alert>
 
                     <Box sx={{ mt: 2, display: "flex", gap: 2 }}>
-                      <Button variant="contained">Disable Blog</Button>
+                      <Button
+                        variant="contained"
+                        startIcon={
+                          disableBlogLoading ? <CircularProgress color="info" size={"20px"} /> : <DisabledByDefault />
+                        }
+                        onClick={() => handleDisableBlog()}
+                      >
+                        Disable Blog
+                      </Button>
                       <Button
                         startIcon={deleteFlagsLoading ? <CircularProgress size={"20px"} /> : <Delete />}
                         onClick={() => handleDeleteFlags()}
@@ -118,6 +143,11 @@ const ManageBlogsReportedBlogsComponent = () => {
       {data?.map((report: any) => {
         return <ReportListComponent key={report?.blogId} report={report} />;
       })}
+      {data?.length < 1 && (
+        <>
+          <h2>Great. There is no blog reports</h2>
+        </>
+      )}
     </div>
   );
 };
