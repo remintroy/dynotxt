@@ -19,7 +19,8 @@ const BlogActionButtonComponent = ({ blogId }: { blogId?: string }) => {
   const [removeDislikeApi] = useDeleteBlogDislikeMutation();
 
   const changeStatus = async (statusApi: any) => {
-    nprogress.set(80);
+    nprogress.start();
+    nprogress.set(5)
     await statusApi(blogId);
     nprogress.complete();
   };
