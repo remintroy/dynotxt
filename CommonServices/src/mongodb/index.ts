@@ -7,8 +7,11 @@ export default class GetMongo {
 
   constructor(mongoose: any, serverConfigs: any) {
     this.mongoose = mongoose;
+
     const serverConfigsObj = serverConfigs();
+
     this.serverConfigs = serverConfigsObj;
+
     const connectToMongodb = this.connectToMongodb;
 
     // setting up event handlers and listeners
@@ -37,7 +40,7 @@ export default class GetMongo {
             serverConfigsObj?.mongo?.reconnectInterval / 1000
           }s...`
         );
-        setTimeout(() => connectToMongodb(), serverConfigsObj?.mongo?.reconnectInterval);
+        setTimeout(() => connectToMongodb(mongoose), serverConfigsObj?.mongo?.reconnectInterval);
       }
     }
   }
@@ -45,8 +48,9 @@ export default class GetMongo {
   /**
    * Connect mongose to mongodb
    */
-  connectToMongodb() {
-    this.mongoose
+  connectToMongodb(mongoose?: any) {
+    const mong = this.mongoose ?? mongoose;
+    mong
       .connect(this.serverConfigs?.mongo?.url)
       .then(
         () => {},
