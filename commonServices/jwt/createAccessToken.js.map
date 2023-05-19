@@ -1,1 +1,0 @@
-{"version":3,"file":"createAccessToken.js","sourceRoot":"","sources":["../src/jwt/createAccessToken.ts"],"names":[],"mappings":";;AAAA,SAAwB,uBAAuB,CAAC,GAAQ,EAAE,MAAc,EAAE,OAAyC;IACjH,IAAI,CAAC,OAAO;QAAE,OAAO,GAAG,EAAE,CAAC;IAC3B,OAAO,SAAS,iBAAiB,CAAC,OAAe;QAC/C,OAAO,GAAG,CAAC,IAAI,CAAC,OAAO,EAAE,MAAM,EAAE,OAAO,CAAC,CAAC;IAC5C,CAAC,CAAC;AACJ,CAAC;AALD,0CAKC"}

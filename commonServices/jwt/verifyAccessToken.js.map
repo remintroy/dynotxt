@@ -1,1 +1,0 @@
-{"version":3,"file":"verifyAccessToken.js","sourceRoot":"","sources":["../src/jwt/verifyAccessToken.ts"],"names":[],"mappings":";;AAAA,SAAwB,uBAAuB,CAAC,EAAE,GAAG,EAAE,MAAM,EAAE;IAC7D,OAAO,SAAS,iBAAiB,CAAC,KAAa;QAC7C,OAAO,GAAG,CAAC,MAAM,CAAC,KAAK,EAAE,MAAM,CAAC,CAAC;IACnC,CAAC,CAAC;AACJ,CAAC;AAJD,0CAIC"}
