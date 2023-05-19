@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { AdminUser } from "../../frameworks/databases/mongoDb/models/admin.schema";
 import adminUserRepositoryImpl from "../../frameworks/databases/mongoDb/repository/adminRepositoryImpl";
 import authServiceInterface from "../../application/services/authServices";
 import validatorInteraface from "../../application/services/validatorInteraface";
@@ -17,7 +16,7 @@ import GetUtils from "dynotxt-common-services/build/utils";
 import GetJwt from "dynotxt-common-services/build/jwt";
 
 export interface IRequest extends Request {
-  admin: AdminUser;
+  admin: string;
 }
 
 const adminController = (
@@ -77,7 +76,7 @@ const adminController = (
 
   const getAdminLogout = async (req: IRequest, res: Response) => {
     const refreshToken = req.cookies?.suRefreshToken;
-    const { email } = req.admin;
+    const email = req.admin;
     res.cookie("suRefreshToken", "");
     return await logoutAdmin(tokenRepository, utilsService, refreshToken, email);
   };

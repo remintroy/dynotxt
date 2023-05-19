@@ -1,6 +1,5 @@
 import GetUtils from "dynotxt-common-services/build/utils";
-import getConfigs from "../../../configs";
-import { User } from "../../../entities/user.normal";
+import getConfigs from "../../../configs"; 
 import followsRepositoryInterface from "../../repository/followsRepositoryInterface";
 
 const config = getConfigs();
@@ -8,14 +7,14 @@ const config = getConfigs();
 const caseGetFollowingStatus = async (
   followsRepository: followsRepositoryInterface,
   utilsService: GetUtils,
-  currentUser: User,
+  currentUserId: string,
   userIdToCkeck: string
 ) => {
   if (!userIdToCkeck) throw utilsService.createError(400, "UserId is required to check following status");
-  if (!currentUser) throw utilsService.createError(400, "UserId is required to check following status");
+  if (!currentUserId) throw utilsService.createError(400, "UserId is required to check following status");
 
   const followDataFromDb = await followsRepository
-    .getFollowingDataWithSingleUser(userIdToCkeck, currentUser.uid)
+    .getFollowingDataWithSingleUser(userIdToCkeck, currentUserId)
     .catch(utilsService.throwInternalError("Faild to check following status"));
 
   const output = { status: "" };

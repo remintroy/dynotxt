@@ -1,6 +1,5 @@
 import GetUtils from "dynotxt-common-services/build/utils";
 import getConfigs from "../../../configs";
-import { User } from "../../../entities/user.normal";
 import followsRepositoryInterface from "../../repository/followsRepositoryInterface";
 import userRepositoryInteraface from "../../repository/userRepositoryInteraface";
 
@@ -10,15 +9,15 @@ const caseAddNewFollow = async (
   followsRepository: followsRepositoryInterface,
   userRepository: userRepositoryInteraface,
   utilsService: GetUtils,
-  currentUser: User,
+  currentUserId: string,
   userIdToFollow: string
 ) => {
   if (!userIdToFollow) throw utilsService.createError(400, "User is required to follow user");
-  if (currentUser.uid === userIdToFollow) throw utilsService.createError(400, "You cannot follow yourself");
+  if (currentUserId == userIdToFollow) throw utilsService.createError(400, "You cannot follow yourself");
 
   const userDataToFollowFromDb = await userRepository.getById(userIdToFollow).catch(utilsService.throwInternalError());
   const followDataFromDb = await followsRepository
-    .getFollowingDataWithSingleUser(userIdToFollow, currentUser?.uid)
+    .getFollowingDataWithSingleUser(userIdToFollow, currentUserId)
     .catch(utilsService.throwInternalError());
 
   if (!userDataToFollowFromDb) throw utilsService.createError(400, "The user you are tying to follow not exist");
@@ -26,12 +25,12 @@ const caseAddNewFollow = async (
   if (!followDataFromDb) {
     if (userDataToFollowFromDb?.privateAccount) {
       await followsRepository
-        .addFollowerToUserWithUid(currentUser.uid, userIdToFollow, false)
+        .addFollowerToUserWithUid(currentUserId, userIdToFollow, false)
         .catch(utilsService.throwInternalError());
       return { status: config.actions.FOLLOW_REQUESTED };
     }
     await followsRepository
-      .addFollowerToUserWithUid(currentUser.uid, userIdToFollow, true)
+      .addFollowerToUserWithUid(currentUserId, userIdToFollow, true)
       .catch(utilsService.throwInternalError());
     return { status: config.actions.FOLLOWED };
   }

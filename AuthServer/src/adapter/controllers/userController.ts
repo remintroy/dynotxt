@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { User } from "../../entities/user.normal";
 import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
 import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
 import authServiceInterface from "../../application/services/authServices";
@@ -25,7 +24,7 @@ import GetUtils from "dynotxt-common-services/build/utils";
 import GetEmail from "dynotxt-common-services/build/email";
 
 export interface IRequest extends Request {
-  user: User;
+  user: string;
 }
 
 const userController = (
@@ -69,25 +68,25 @@ const userController = (
   };
 
   const putCurrentUserData = async (req: IRequest) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const data = req.body;
     return await userUpdate(userRepository, utilsService, data, uid);
   };
 
   const putUpdatePublicUserData = async (req: IRequest) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const data = req.body;
     return await updatePublicUserData(userRepository, utilsService, data, uid);
   };
 
   const putUpdatePersionalUserData = async (req: IRequest) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const data = req.body;
     return await updatePersonalUserData(userRepository, utilsService, data, uid);
   };
 
   const getUserLogout = async (req: IRequest, res: Response) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const { refreshToken } = req.cookies;
     res.cookie("refreshToken", "");
     return await userLogout(tokenRepository, utilsService, refreshToken, uid);
@@ -135,7 +134,7 @@ const userController = (
 
   const getDataForCurrentUserDashboard = async (req: IRequest) => {
     const { user } = req;
-    return await caseGetFullDetailsOfSingleUser(utilsService, user);
+    return await caseGetFullDetailsOfSingleUser(userRepository, utilsService, user);
   };
 
   const postFollowNewUser = async (req: IRequest) => {
