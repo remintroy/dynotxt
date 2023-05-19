@@ -1,12 +1,12 @@
-import { IUser } from "../../../../entities/user.normal";
+import { User } from "../../../../entities/user.normal";
 import UserModel from "../models/user";
 
 const userRepositoryImpl = () => {
-  const add = async (user: IUser) => {
+  const add = async (user: User) => {
     const response = new UserModel(user).save();
     return response;
   };
-  const update = async (uid: string, data: IUser) => {
+  const update = async (uid: string, data: User) => {
     const response = await UserModel.updateOne(
       { uid },
       {
@@ -25,7 +25,7 @@ const userRepositoryImpl = () => {
     return response;
   };
 
-  const getByCustomQueryWithPageNo = async (query: IUser, page: number) => {
+  const getByCustomQueryWithPageNo = async (query: User, page: number) => {
     const response = await UserModel.paginate(query, { page, limit: 20 });
     return response;
   };

@@ -1,33 +1,24 @@
-import { IUser } from "../../../entities/user.normal";
+import GetUtils from "dynotxt-common-services/build/utils";
+import { User } from "../../../entities/user.normal";
 import followsRepositoryInterface from "../../repository/followsRepositoryInterface";
 import userRepositoryInteraface from "../../repository/userRepositoryInteraface";
+import caseUserPublicVisibiltyCheck from "./user-public-visiblity-checks";
 
 const getPublicUser = async (
   userRepository: userRepositoryInteraface,
   followsRepository: followsRepositoryInterface,
-  createError,
+  utilsService: GetUtils,
   userId: string
 ) => {
-  if (!userId)
-    throw createError(400, "User id is required to get user information");
+  if (!userId) throw utilsService.createError(400, "User id is required to get user information");
 
-  let userData: IUser;
+  const userData = await caseUserPublicVisibiltyCheck(userRepository, utilsService, userId);
 
-  try {
-    userData = await userRepository.getById(userId);
-  } catch (error) {
-    throw createError(500, "Faild to fetch user information");
-  }
-  if (!userData) throw createError(400, "User with this not exits");
+  const followData = await followsRepository
+    .getFollowingAndFollowsCount(userId)
+    .catch(utilsService.throwInternalError());
 
-  let followData: { following: number; followers: number };
-  try {
-    followData = await followsRepository.getFollowingAndFollowsCount(userId);
-  } catch (error) {
-    throw createError(400, error.message);
-  }
-
-  const output: IUser = {};
+  const output: User = {};
 
   output.privateAccount = userData.privateAccount;
   output.name = userData?.name ?? userData.email.split("@")[0];

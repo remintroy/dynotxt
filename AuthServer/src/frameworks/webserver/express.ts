@@ -6,12 +6,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import getConfigs from "../../configs";
 
-export default function expressConfig(
-  app: Express,
-  configs: typeof getConfigs
-) {
+export default function expressConfig(app: Express, configs: typeof getConfigs) {
   const config = configs();
-
   app.use(logger(config.morgan.logStyle));
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(
@@ -23,6 +19,4 @@ export default function expressConfig(
   );
   app.use(cookieParser());
   app.use(cors(config.cors));
-
-  // other configurations
 }

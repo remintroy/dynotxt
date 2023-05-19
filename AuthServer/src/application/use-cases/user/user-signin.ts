@@ -4,37 +4,33 @@ import userRepositoryInteraface from "../../repository/userRepositoryInteraface"
 import authServiceInterface from "../../services/authServices";
 import validatorInteraface from "../../services/validatorInteraface";
 import { userEntity } from "../../../entities";
-import { IUser } from "../../../entities/user.normal";
+import { User } from "../../../entities/user.normal";
 import otpRepositoryInterface from "../../repository/otpRepositoyInteraface";
+import GetJwt from "dynotxt-common-services/build/jwt";
+import GetUtils from "dynotxt-common-services/build/utils";
+import GetEmail from "dynotxt-common-services/build/email";
 
 export default async function userSignin(
-  authService: ReturnType<typeof authServiceInterface>,
-  userRepository: ReturnType<typeof userRepositoryInteraface>,
-  tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
-  otpRepository: ReturnType<typeof otpRepositoryInterface>,
-  validator: ReturnType<typeof validatorInteraface>,
-  createError,
-  email,
+  authService: authServiceInterface,
+  userRepository: userRepositoryInteraface,
+  tokenRepository: tokenRepositoryInteraface,
+  otpRepository: otpRepositoryInterface,
+  validator: validatorInteraface,
+  jwtService: GetJwt,
+  emailService: GetEmail,
+  utilsService: GetUtils,
   idToken: string
 ) {
   const config = getConfigs();
 
-  try {
-    await validator.isValidJwt(idToken as string);
-  } catch (error) {
-    throw createError(400, error);
-  }
+  await validator.isValidJwt(idToken as string).catch(utilsService.throwCustomError(400, "Invalid token"));
 
   // verfy idToken and retrive userData from firebase
   const user = await authService.verifyIdToken(idToken);
 
   // check for existing data
-  let existingData: IUser | null;
-  try {
-    existingData = await userRepository.getById(user.uid);
-  } catch (error) {
-    throw createError(500, "Faild to fetch user data");
-  }
+  const existingData = await userRepository.getById(user.uid).catch(utilsService.throwInternalError());
+
   if (!existingData) {
     // creates and saves new user
     const newUserData = await userEntity({
@@ -50,14 +46,11 @@ export default async function userSignin(
       disabled: user.disabled,
     });
 
-    try {
-      await userRepository.add(newUserData.getSafeData());
-    } catch (error) {
-      throw createError(500, "Error creating user");
-    }
+    // saves new user Data
+    await userRepository.add(newUserData.getSafeData()).catch(utilsService.throwInternalError("Error creating user"));
   }
 
-  if (existingData?.disabled) throw createError(401, "You account is disabled");
+  if (existingData?.disabled) throw utilsService.createError(401, "You account is disabled");
 
   if (!existingData || !existingData.emailVerified) {
     const otp = await authService.createOtp();
@@ -67,26 +60,23 @@ export default async function userSignin(
         reason: config.actions.VERIFY_EMAIL_AT_SIGNIN,
         otp,
       });
-      await email.sendOtp(user.email, `${otp}`);
+      await emailService.sendOtpWithCommonTemplate(user.email, `${otp}`);
     } catch (error) {
-      throw createError(
-        500,
-        "Error while sending otp. Please try after sometime."
-      );
+      throw utilsService.createError(500, "Error while sending otp. Please try after sometime.");
     }
-    throw createError(403, "You must verify your email to login", {
+    throw utilsService.createError(403, "You must verify your email to login", {
       action: config.actions.VERIFY_EMAIL_AT_SIGNIN,
     });
   }
 
   // ----- TOKENS -----
-  const tokens = authService.tokensForUser(user.uid);
+  const tokens = jwtService.generateTokens(user.uid);
 
   try {
     await tokenRepository.add(user.uid, tokens.refreshToken);
     await userRepository.update(user.uid, { lastLogin: new Date() });
   } catch (error) {
-    throw createError(500, "Faild to login, Error updating login status");
+    throw utilsService.createError(500, "Faild to login, Error updating login status");
   }
 
   if (existingData) {

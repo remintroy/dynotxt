@@ -1,6 +1,6 @@
 import { model } from "mongoose";
-import adminUserSchema, { IAdminUser } from "./admin.schema";
+import adminUserSchema, { AdminUser } from "./admin.schema";
 
-const AdminUserModel = model<IAdminUser>("adminUser", adminUserSchema);
+const AdminUserModel = model<AdminUser>("adminUser", adminUserSchema);
 
 export default AdminUserModel;

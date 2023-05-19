@@ -1,12 +1,10 @@
-import { IUser } from "../../../entities/user.normal";
+import GetUtils from "dynotxt-common-services/build/utils";
+import { User } from "../../../entities/user.normal";
 
-const caseGetFullDetailsOfSingleUser = async (
-  createError: any,
-  userData: IUser
-) => {
-  if (userData.disabled) throw createError(400, "User is disabled");
+const caseGetFullDetailsOfSingleUser = async (utilsService: GetUtils, userData: User) => {
+  if (userData.disabled) throw utilsService.createError(400, "User is disabled");
 
-  const output: IUser = {};
+  const output: User = {};
 
   output.privateAccount = userData.privateAccount;
   output.name = userData?.name ?? userData.email.split("@")[0];
