@@ -96,8 +96,8 @@ const blogRepositoryImpl = () => {
     );
   };
 
-  const getAllBlogsDisplayWithUidWithPrivate = async (userId: string) => {
-    return await BlogModel.aggregate([
+  const getAllBlogsDisplayWithUidWithPrivate = async (userId: string, page: number) => {
+    const pipeline: any = [
       {
         $match: {
           author: userId,
@@ -120,11 +120,20 @@ const blogRepositoryImpl = () => {
       {
         $sort: { updatedAt: -1 },
       },
-    ]);
+    ];
+
+    const aggrigate = BlogModel.aggregate(pipeline);
+
+    const paginatedValue = await BlogModel.aggregatePaginate(aggrigate, {
+      page: page || 1,
+      limit: 12,
+    });
+
+    return paginatedValue;
   };
 
-  const getAllBlogsDisplayWithUid = async (userId: string) => {
-    return await BlogModel.aggregate([
+  const getAllBlogsDisplayWithUid = async (userId: string, page: number) => {
+    const pipeline: any = [
       {
         $match: {
           author: userId,
@@ -148,7 +157,11 @@ const blogRepositoryImpl = () => {
       {
         $sort: { updatedAt: -1 },
       },
-    ]);
+    ];
+
+    const aggrigate = BlogModel.aggregate(pipeline);
+
+    return await BlogModel.aggregatePaginate(aggrigate, { page: page || 1, limit: 12 });
   };
 
   const adminGetAllDisabledBlogs = async () => {

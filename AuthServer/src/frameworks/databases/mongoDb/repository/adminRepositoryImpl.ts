@@ -1,12 +1,12 @@
 import AdminUserModel from "../models/admin";
-import { IAdminUser } from "../models/admin.schema";
+import { AdminUser } from "../models/admin.schema";
 
 const adminUserRepositoryImpl = () => {
-  const add = async (user: IAdminUser) => {
+  const add = async (user: AdminUser) => {
     const response = new AdminUserModel(user).save();
     return response;
   };
-  const update = async (email: string, data: IAdminUser) => {
+  const update = async (email: string, data: AdminUser) => {
     const response = await AdminUserModel.updateOne(
       { email },
       {
@@ -16,8 +16,7 @@ const adminUserRepositoryImpl = () => {
     return response;
   };
   const getByEmail = async (email: string) => {
-    const response = await AdminUserModel.findOne({ email });
-    return response;
+    return await AdminUserModel.findOne({ email });
   };
 
   return {

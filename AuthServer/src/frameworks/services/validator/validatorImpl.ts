@@ -90,4 +90,5 @@ const validatorImpl = () => {
   };
 };
 
+type validatorImpl = ReturnType<typeof validatorImpl>;
 export default validatorImpl;

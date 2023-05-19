@@ -1,38 +1,21 @@
 import validatorImpl from "../../frameworks/services/validator/validatorImpl";
 
 const validatorInteraface = (validator: ReturnType<typeof validatorImpl>) => {
-  const isValidExisingUid = (uid: string) => validator.isValidExisingUid(uid);
-
-  const isValidNewUid = (uid: string) => validator.isValidNewUid(uid);
-
-  const isValidUid = (uid: string) => validator.isValidUid(uid);
-
-  const isValidName = (name: string) => validator.isValidName(name);
-
-  const isValidEmail = (email: string) => validator.isValidEmail(email);
-
-  const isValidPhone = (phone: string) => validator.isValidPhone(phone);
-
-  const isValidUrl = (url: string) => validator.isValidUrl(url);
-
-  const isValidBoolean = (bool: boolean) => validator.isValidBoolean(bool);
-
-  const isValidReferCode = (referCode: string) =>
-    validator.isValidReferCode(referCode);
-
-  const isValidGender = (gender: string) => validator.isValidGender(gender);
-
-  const isValidDate = (date: Date | string) => validator.isValidDate(date);
-
-  const isValidJwt = (jwt: string) => validator.isValidJwt(jwt);
-
-  const isValidHash = (hash: string) => validator.isValidHash(hash);
-
-  const isValidPassword = (password: string) =>
-    validator.isValidPassword(password);
-
-  const isValidProvider = (provider: string) =>
-    validator.isValidProvider(provider);
+  const isValidExisingUid = validator.isValidExisingUid;
+  const isValidNewUid = validator.isValidNewUid;
+  const isValidUid = validator.isValidUid;
+  const isValidName = validator.isValidName;
+  const isValidEmail = validator.isValidEmail;
+  const isValidPhone = validator.isValidPhone;
+  const isValidUrl = validator.isValidUrl;
+  const isValidBoolean = validator.isValidBoolean;
+  const isValidReferCode = validator.isValidReferCode;
+  const isValidGender = validator.isValidGender;
+  const isValidDate = validator.isValidDate;
+  const isValidJwt = validator.isValidJwt;
+  const isValidHash = validator.isValidHash;
+  const isValidPassword = validator.isValidPassword;
+  const isValidProvider = validator.isValidProvider;
 
   return {
     isValidExisingUid,
@@ -53,4 +36,5 @@ const validatorInteraface = (validator: ReturnType<typeof validatorImpl>) => {
   };
 };
 
+type validatorInteraface = ReturnType<typeof validatorInteraface>;
 export default validatorInteraface;

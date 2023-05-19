@@ -1,28 +1,30 @@
 import { Request, Response } from "express";
-import { IUser } from "../../entities/user.normal";
 import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
 import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
 import authServiceInterface from "../../application/services/authServices";
 import otpRepositoryInterface from "../../application/repository/otpRepositoyInteraface";
 import validatorInteraface from "../../application/services/validatorInteraface";
 import getUserFromRefreshToken from "../../application/use-cases/user/user-data-from-refresh-token";
-import userVerificationStatus from "../../application/use-cases/user/user-verification-status";
-import userSignin from "../../application/use-cases/user/signin-user";
-import refreshUser from "../../application/use-cases/user/refresh-access-token";
-import userUpdate from "../../application/use-cases/user/update-user";
-import userLogout from "../../application/use-cases/user/logout-user";
-import verifyEmail from "../../application/use-cases/user/verify-email";
-import getPublicUser from "../../application/use-cases/user/get-public-user-data";
-import caseGetFullDetailsOfSingleUser from "../../application/use-cases/user/get-user-full-details";
-import updatePublicUserData from "../../application/use-cases/user/update-user-public-details";
-import updatePersonalUserData from "../../application/use-cases/user/update-user-personal-details";
-import caseAddNewFollow from "../../application/use-cases/user/follow-user";
+import userVerificationStatus from "../../application/use-cases/user/user-get-verification-status";
+import userSignin from "../../application/use-cases/user/user-signin";
+import refreshUser from "../../application/use-cases/user/user-refresh-access-token";
+import userUpdate from "../../application/use-cases/user/user-update-data";
+import userLogout from "../../application/use-cases/user/user-logout";
+import verifyEmail from "../../application/use-cases/user/user-verify-email";
+import getPublicUser from "../../application/use-cases/user/user-get-public-data";
+import caseGetFullDetailsOfSingleUser from "../../application/use-cases/user/user-get-full-data";
+import updatePublicUserData from "../../application/use-cases/user/user-update-public-data";
+import updatePersonalUserData from "../../application/use-cases/user/user-update-personal-data";
+import caseAddNewFollow from "../../application/use-cases/user/user-new-follow";
 import followsRepositoryInterface from "../../application/repository/followsRepositoryInterface";
-import caseGetFollowingStatus from "../../application/use-cases/user/get-following-status";
-import caseUnfollowUser from "../../application/use-cases/user/unfollow-user";
+import caseGetFollowingStatus from "../../application/use-cases/user/user-follow-status";
+import caseUnfollowUser from "../../application/use-cases/user/user-unfollow";
+import GetJwt from "dynotxt-common-services/build/jwt";
+import GetUtils from "dynotxt-common-services/build/utils";
+import GetEmail from "dynotxt-common-services/build/email";
 
 export interface IRequest extends Request {
-  user: IUser;
+  user: string;
 }
 
 const userController = (
@@ -30,10 +32,11 @@ const userController = (
   tokenRepository: tokenRepositoryInteraface,
   otpRepository: otpRepositoryInterface,
   followsRepository: followsRepositoryInterface,
-  authService: ReturnType<typeof authServiceInterface>,
-  validator: ReturnType<typeof validatorInteraface>,
-  createError,
-  emailService
+  authService: authServiceInterface,
+  validator: validatorInteraface,
+  jwtService: GetJwt,
+  emailService: GetEmail,
+  utilsService: GetUtils
 ) => {
   const userPostSignin = async (req: IRequest, res?: Response) => {
     const { idToken } = req.body;
@@ -43,14 +46,13 @@ const userController = (
       tokenRepository,
       otpRepository,
       validator,
-      createError,
+      jwtService,
       emailService,
+      utilsService,
       idToken
     );
     const currentdate = new Date();
-    const next3months = new Date(
-      currentdate.setMonth(currentdate.getMonth() + 3)
-    );
+    const next3months = new Date(currentdate.setMonth(currentdate.getMonth() + 3));
     res.cookie("refreshToken", response.refreshToken, {
       httpOnly: true,
       secure: true,
@@ -62,72 +64,37 @@ const userController = (
 
   const getNewAccessTokenFromRefreshToken = async (req: IRequest) => {
     const { refreshToken } = req.cookies;
-    const response = await refreshUser(
-      tokenRepository,
-      userRepository,
-      authService,
-      validator,
-      createError,
-      refreshToken
-    );
-    return response;
+    return await refreshUser(tokenRepository, userRepository, utilsService, jwtService, refreshToken);
   };
 
   const putCurrentUserData = async (req: IRequest) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const data = req.body;
-    const response = await userUpdate(userRepository, createError, data, uid);
-    return response;
+    return await userUpdate(userRepository, utilsService, data, uid);
   };
 
   const putUpdatePublicUserData = async (req: IRequest) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const data = req.body;
-    const response = await updatePublicUserData(
-      userRepository,
-      createError,
-      data,
-      uid
-    );
-    return response;
+    return await updatePublicUserData(userRepository, utilsService, data, uid);
   };
 
   const putUpdatePersionalUserData = async (req: IRequest) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const data = req.body;
-    const response = await updatePersonalUserData(
-      userRepository,
-      createError,
-      data,
-      uid
-    );
-    return response;
+    return await updatePersonalUserData(userRepository, utilsService, data, uid);
   };
 
   const getUserLogout = async (req: IRequest, res: Response) => {
-    const uid = req.user?.uid;
+    const uid = req.user;
     const { refreshToken } = req.cookies;
-    const response = await userLogout(
-      tokenRepository,
-      createError,
-      refreshToken,
-      uid
-    );
     res.cookie("refreshToken", "");
-    return response;
+    return await userLogout(tokenRepository, utilsService, refreshToken, uid);
   };
 
   const getInitialUserDataFromRefreshToken = async (req: IRequest) => {
     const { refreshToken } = req.cookies;
-    const response = await getUserFromRefreshToken(
-      userRepository,
-      validator,
-      tokenRepository,
-      authService,
-      createError,
-      refreshToken
-    );
-    return response;
+    return await getUserFromRefreshToken(userRepository, tokenRepository, jwtService, utilsService, refreshToken);
   };
 
   const postVerifyEmailWithOtp = async (req: IRequest, res: Response) => {
@@ -138,14 +105,13 @@ const userController = (
       otpRepository,
       authService,
       tokenRepository,
-      createError,
+      jwtService,
+      utilsService,
       uid,
       otp
     );
     const currentdate = new Date();
-    const next3months = new Date(
-      currentdate.setMonth(currentdate.getMonth() + 3)
-    );
+    const next3months = new Date(currentdate.setMonth(currentdate.getMonth() + 3));
     res.cookie("refreshToken", response.refreshToken, {
       httpOnly: true,
       secure: true,
@@ -158,67 +124,35 @@ const userController = (
   const getUserEmailVerificationStatus = async (req: IRequest) => {
     const { uid } = req.params;
     const typeofVerification = "email";
-    const response = await userVerificationStatus(
-      userRepository,
-      createError,
-      typeofVerification,
-      uid
-    );
-    return response;
+    return await userVerificationStatus(userRepository, utilsService, typeofVerification, uid);
   };
 
   const getUserDataPublic = async (req: IRequest) => {
     const { id: userId } = req.params;
-    const response = await getPublicUser(
-      userRepository,
-      followsRepository,
-      createError,
-      userId
-    );
-    return response;
+    return await getPublicUser(userRepository, followsRepository, utilsService, userId);
   };
 
   const getDataForCurrentUserDashboard = async (req: IRequest) => {
     const { user } = req;
-    const response = await caseGetFullDetailsOfSingleUser(createError, user);
-    return response;
+    return await caseGetFullDetailsOfSingleUser(userRepository, utilsService, user);
   };
 
   const postFollowNewUser = async (req: IRequest) => {
     const { uid: uidToFollow } = req.params;
     const { user } = req;
-    const response = await caseAddNewFollow(
-      followsRepository,
-      userRepository,
-      createError,
-      user,
-      uidToFollow
-    );
-    return response;
+    return await caseAddNewFollow(followsRepository, userRepository, utilsService, user, uidToFollow);
   };
 
   const getFollowingDataWithSingleUser = async (req: IRequest) => {
     const { user } = req;
     const { uid: uidToCheck } = req.params;
-    const response = await caseGetFollowingStatus(
-      followsRepository,
-      createError,
-      user,
-      uidToCheck
-    );
-    return response;
+    return await caseGetFollowingStatus(followsRepository, utilsService, user, uidToCheck);
   };
 
   const deleteUnfollowUser = async (req: IRequest) => {
     const { user } = req;
     const { uid: userIdToUnfollow } = req.params;
-    const response = await caseUnfollowUser(
-      followsRepository,
-      createError,
-      user,
-      userIdToUnfollow
-    );
-    return response;
+    return await caseUnfollowUser(followsRepository, utilsService, user, userIdToUnfollow);
   };
 
   return {

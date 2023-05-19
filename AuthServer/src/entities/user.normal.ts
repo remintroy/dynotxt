@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import validatorInteraface from "../application/services/validatorInteraface";
 
-export interface IUser {
+export interface User {
   uid?: string;
   bio?: string;
   name?: string;
@@ -35,7 +35,7 @@ function createNormalUser({
   createError: any;
 }) {
   // Check class fucntionally
-  return async (data: IUser) => {
+  return async (data: User) => {
     try {
       const userValidatedData = await Promise.all([
         validator.isValidUid(data.uid),
@@ -131,7 +131,7 @@ function createNormalUser({
       const updateLastRefresh = async (lastRefresh: Date) => {
         this.lastRefresh = await validator.isValidDate(lastRefresh);
       };
-      const getSafeData = (): IUser => {
+      const getSafeData = (): User => {
         const userData = data;
         return Object.keys(userData).reduce((acc, key) => {
           if (userData[key]) acc = { ...acc, [key]: userData[key] };

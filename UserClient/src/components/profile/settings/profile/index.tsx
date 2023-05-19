@@ -1,42 +1,175 @@
 import { useEffect, useRef, useState } from "react";
-import { useGetFullUserDataQuery } from "../../../../lib/api/authApi";
+import {
+  useGetFullUserDataQuery,
+  usePutUserDataMutation,
+  usePutUserPersionalDataMutation,
+} from "../../../../lib/api/authApi";
 import { Avatar, Box, Button, Divider, Flex, Grid, Input, Loader, Select, Text } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
+import { notifications } from "@mantine/notifications";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { storageConfig } from "../../../../lib/firebase";
+import { nprogress, NavigationProgress } from "@mantine/nprogress";
 
 const UserPublicProfileDataManagerComponent = () => {
   const { data: user, isLoading, isFetching } = useGetFullUserDataQuery({});
   const openRef = useRef<() => void>(null);
 
+  const [updatePublicApi] = usePutUserDataMutation();
+  const [updatePrivateApi] = usePutUserPersionalDataMutation();
+
+  const [publicLoading, setPublicLoading] = useState(true);
+  const [privateLoading, setPrivateLoading] = useState(true);
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState<string | null>("");
+  const [img, setImg] = useState("");
+  const [imgFile, setImgFile] = useState<File | null>(null);
+  const [imgLoading, setImgLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
       setName(user?.name ?? "");
       setPhone(user?.phone ?? "");
       setGender(user?.gender ?? "");
+      setImg(user?.photoURL ?? "");
+      setPublicLoading(false);
+      setPrivateLoading(false);
     }
   }, [user]);
 
+  const handlePublicDetalsSubmit = async () => {
+    try {
+      setPublicLoading(true);
+      await updatePublicApi({
+        name,
+      });
+    } catch (error: any) {
+      notifications.show({
+        color: "red",
+        title: "Something went wrong",
+        message: error?.data?.message ? error?.data?.message : "There was an error updating your data.",
+      });
+      console.log(error);
+    }
+    setPublicLoading(false);
+  };
+
+  const HandlePersionalDetalsSubmit = async () => {
+    try {
+      setPrivateLoading(true);
+      await updatePrivateApi({
+        phone,
+        gender,
+      });
+    } catch (error: any) {
+      notifications.show({
+        color: "red",
+        title: "Something went wrong",
+        message: error?.data?.message ? error?.data?.message : "There was an error updating your data.",
+      });
+      console.log(error);
+    }
+    setPrivateLoading(false);
+  };
+
+  const handleImageDrop = (files: File[]) => {
+    const url = URL.createObjectURL(files?.[0]);
+    if (files?.[0]?.type?.split("/")[0] === "image") {
+      setImgFile(files?.[0]);
+      setImg(url);
+    } else {
+      notifications.show({
+        title: "Invalid image file",
+        message: "Consider checking the file you selected and make sure it is a valid image file",
+        color: "red",
+      });
+    }
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      if (imgFile) {
+        setImgLoading(true);
+        const storageRef = ref(
+          storageConfig,
+          `users/${user?.uid}/pp.${imgFile.name.split(".")[imgFile.name.split(".").length - 1]}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, imgFile);
+
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            if (progress === 100) nprogress.complete();
+            else nprogress.set(progress);
+          },
+          (error) => {
+            // storage error
+            setImgLoading(false);
+            console.error(error);
+            notifications.show({
+              color: "red",
+              title: "Something went wrong",
+              message: error?.message ? error?.message : "There was an error updating your data.",
+            });
+          },
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+              // after completeing image uploading, upload data to firestore
+              try {
+                await updatePublicApi({
+                  photoURL: downloadURL,
+                });
+                setImgLoading(false);
+                notifications.show({
+                  title: "Profile photo updated successfully",
+                  message: "It may take some time to reflect changes to every pages",
+                });
+              } catch (error: any) {
+                setImgLoading(false);
+                console.log(error);
+                notifications.show({
+                  color: "red",
+                  title: "Something went wrong",
+                  message: error?.data?.message ? error?.data?.message : "There was an error updating your data.",
+                });
+              }
+            });
+          }
+        );
+      }
+    } catch (error) {
+      setImgLoading(false);
+      notifications.show({
+        color: "red",
+        title: "Something went wrong",
+        message: "There was an error updating your data.",
+      });
+      //
+    }
+  };
+
   return (
     <>
+      <NavigationProgress />
       {(isLoading || isFetching) && (
         <Box>
           <Loader />
         </Box>
       )}
       {user && !isLoading && !isFetching && (
-        <Box w={"100%"}>
+        <Box w={"100%"} >
           <Text fz={"20px"} fw={"bold"}>
             Public Profile
           </Text>
           <Text c="dimmed">{user?.email}</Text>
           <Divider my="sm" />
           <Box>
-            <Dropzone onDrop={() => console.log("dropped")} openRef={openRef} p={40}>
+            <Dropzone onDrop={handleImageDrop} openRef={openRef} p={40}>
               <Flex align={"center"} justify={"start"} gap={20}>
-                <Avatar src={user?.photoURL} size={120} radius={12} />
+                <Avatar src={img} size={120} radius={12} />
                 <div>
                   <Text size="xl" inline>
                     Drag images here or click to select files
@@ -48,7 +181,13 @@ const UserPublicProfileDataManagerComponent = () => {
               </Flex>
             </Dropzone>
             <br />
-            <Button variant="default">Save new profile image</Button>
+            <Button
+              leftIcon={imgLoading ? <Loader size={"sm"} /> : ""}
+              onClick={() => handleImageUpload()}
+              variant="default"
+            >
+              Save new profile image
+            </Button>
           </Box>
           <br />
           <br />
@@ -61,7 +200,13 @@ const UserPublicProfileDataManagerComponent = () => {
               <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" />
             </Input.Wrapper>
             <div>
-              <Button variant="default">Save Public details</Button>
+              <Button
+                leftIcon={publicLoading ? <Loader size={"sm"} /> : ""}
+                onClick={() => !publicLoading && handlePublicDetalsSubmit()}
+                variant="default"
+              >
+                Save Public details
+              </Button>
             </div>
           </Flex>
           <br />
@@ -98,7 +243,13 @@ const UserPublicProfileDataManagerComponent = () => {
               data={["male", "female", "other"]}
             />
             <div>
-              <Button variant="default">Save Persional details</Button>
+              <Button
+                leftIcon={privateLoading ? <Loader size={"sm"} /> : ""}
+                onClick={() => !privateLoading && HandlePersionalDetalsSubmit()}
+                variant="default"
+              >
+                Save Persional details
+              </Button>
             </div>
           </Flex>
         </Box>

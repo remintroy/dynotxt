@@ -40,7 +40,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
 
   const toggleTheme = () => {
     setDark((pre) => !pre);
