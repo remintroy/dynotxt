@@ -1,25 +1,28 @@
+import GetUtils from "dynotxt-common-services/build/utils";
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 import { Blog } from "../../../entities/blog";
 
-const getBlogData = async (
+const caseUserBlogGet = async (
   blogrepository: ReturnType<typeof blogRepositoryInteraface>,
-  createError: any,
+  utilsService: GetUtils,
   blogId: string,
   user: string
 ) => {
-  if (!blogId) throw createError(400, "Blog id is required to get blog data");
+  if (!blogId) throw utilsService.createError(400, "Blog id is required to get blog data");
 
-  let blogDataFromDb = await blogrepository.getBlogById(blogId);
+  let blogDataFromDb = await blogrepository.getBlogById(blogId).catch(utilsService.throwInternalError());
 
   if (!blogDataFromDb) {
     blogDataFromDb = await blogrepository.getBlogByIdPrivate(blogId, user).catch((err) => {
-      throw createError(500, "Something went wrong", err.message);
+      throw utilsService.createError(500, "Something went wrong", err.message);
     });
-    if (!blogDataFromDb) throw createError(400, "Not found, blog may not exist or it may be deleted");
+    if (!blogDataFromDb) throw utilsService.createError(400, "Not found, blog may not exist or it may be deleted");
   }
 
   if (!blogDataFromDb.published) {
-    if (blogDataFromDb.author !== user) throw createError(403, "You dont have permission to access this blog");
+    if (blogDataFromDb.author !== user) {
+      throw utilsService.createError(403, "You dont have permission to access this blog");
+    }
   }
 
   const output: Blog = {
@@ -36,4 +39,4 @@ const getBlogData = async (
   return output;
 };
 
-export default getBlogData;
+export default caseUserBlogGet;

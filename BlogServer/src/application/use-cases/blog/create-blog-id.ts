@@ -2,10 +2,7 @@ import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositor
 import blogServiceInterface from "../../../adaptor/service";
 import { Blog } from "../../../entities/blog";
 
-const createBlogId = async (
-  blogRepository: ReturnType<typeof blogRepositoryInteraface>,
-  blogService: ReturnType<typeof blogServiceInterface>
-) => {
+const caseCreateBlogId = async (blogRepository: blogRepositoryInteraface, blogService: blogServiceInterface) => {
   let blogId: string;
   let exisitingBlog: Blog;
 
@@ -19,4 +16,4 @@ const createBlogId = async (
   return blogId;
 };
 
-export default createBlogId;
+export default caseCreateBlogId;

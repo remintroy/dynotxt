@@ -1,13 +1,14 @@
+import GetUtils from "dynotxt-common-services/build/utils";
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 import blogServiceInterface from "../../../adaptor/service";
 import { Blog } from "../../../entities/blog";
 import { blogValidator } from "../../validators/blog";
 import createBlogId from "./create-blog-id";
 
-const addNewBlog = async (
-  blogRepository: ReturnType<typeof blogRepositoryInteraface>,
-  blogService: ReturnType<typeof blogServiceInterface>,
-  createError,
+const caseUserBlogAddNew = async (
+  blogRepository: blogRepositoryInteraface,
+  blogService: blogServiceInterface,
+  utilsService: GetUtils,
   blogData: Blog,
   author: string
 ) => {
@@ -16,19 +17,15 @@ const addNewBlog = async (
   const blogId = await createBlogId(blogRepository, blogService);
 
   const dataToCheck = { ...blogData, blogId, author };
-  const validBlogData = new Blog(blogValidator(dataToCheck, createError));
+  const validBlogData = new Blog(blogValidator(dataToCheck, utilsService.createError));
 
   // if(Object.keys(validBlogData).length)delta
+  await blogRepository.addNewBlog(validBlogData).catch(utilsService.throwInternalError("Faild to save blog"));
 
-  try {
-    await blogRepository.addNewBlog(validBlogData);
-    return {
-      blogId,
-      status: "Created",
-    };
-  } catch (error) {
-    throw createError(500, "Faild to save blog");
-  }
+  return {
+    blogId,
+    status: "Created",
+  };
 };
 
-export default addNewBlog;
+export default caseUserBlogAddNew;

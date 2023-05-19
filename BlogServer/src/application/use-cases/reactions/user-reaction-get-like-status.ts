@@ -1,15 +1,16 @@
+import GetUtils from "dynotxt-common-services/build/utils";
 import reactionRepositoryInterface from "../../../adaptor/repositorys/reactionRepositoryInterface";
 import getConfigs from "../../../configs";
 
 const config = getConfigs();
 
-const caseGetBlogReactionStatus = async (
+const caseUserReactionLikeGetStatus = async (
   reactionRepository: reactionRepositoryInterface,
-  createError: any,
+  utilsService: GetUtils,
   currentUserId: string,
   blogId: string
 ) => {
-  if (!blogId) throw createError(400, "Blog id is required");
+  if (!blogId) throw utilsService.createError(400, "Blog id is required");
 
   try {
     const blogReaction = currentUserId
@@ -28,9 +29,8 @@ const caseGetBlogReactionStatus = async (
           : config.actions.NOTHING,
     };
   } catch (error) {
-    throw createError(500, "Failed to get reaction status");
+    throw utilsService.createError(500, "Failed to get reaction status");
   }
 };
 
-type caseGetBlogReactionStatus = typeof caseGetBlogReactionStatus;
-export default caseGetBlogReactionStatus;
+export default caseUserReactionLikeGetStatus;

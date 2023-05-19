@@ -1,22 +1,23 @@
+import GetUtils from "dynotxt-common-services/build/utils";
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 import { Blog } from "../../../entities/blog";
 
-const getBlogDataToEdit = async (
+const caseUserBlogGetDataToEdit = async (
   blogrepository: blogRepositoryInteraface,
-  createError,
+  utilsService: GetUtils,
   blogId: string,
   user: string
 ) => {
-  if (!blogId) throw createError(400, "Blog id is required to get blog data");
+  if (!blogId) throw utilsService.createError(400, "Blog id is required to get blog data");
 
-  const blogDataFromDb = await blogrepository.getBlogById(blogId);
+  const blogDataFromDb = await blogrepository.getBlogById(blogId).catch(utilsService.throwInternalError());
 
   if (!blogDataFromDb) {
-    throw createError(400, "Cannot retreive blog data, As blog not exist or it may be deleted");
+    throw utilsService.createError(400, "Cannot retreive blog data, As blog not exist or it may be deleted");
   }
 
   if (blogDataFromDb.author !== user) {
-    throw createError(403, "You dont have permission to access this blog");
+    throw utilsService.createError(403, "You dont have permission to access this blog");
   }
 
   const output: Blog = {
@@ -32,4 +33,4 @@ const getBlogDataToEdit = async (
   return output;
 };
 
-export default getBlogDataToEdit;
+export default caseUserBlogGetDataToEdit;
