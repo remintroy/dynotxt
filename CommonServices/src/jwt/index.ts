@@ -6,7 +6,7 @@ interface TokenOptions {
 
 interface ConstructorInput {
   accessTokenSecret: string;
-  accessTokenOptions: TokenOptions;
+  accessTokenOptions?: TokenOptions;
   refreshTokenSecret?: string;
   refreshTokenOptions?: TokenOptions;
 }
@@ -17,7 +17,7 @@ interface ConstructorInput {
  */
 export default class GetJwt {
   private accessTokenSecret: string;
-  private accessTokenOptions: TokenOptions;
+  private accessTokenOptions?: TokenOptions;
   private refreshTokenSecret?: string;
   private refreshTokenOptions?: TokenOptions;
 
@@ -54,7 +54,7 @@ export default class GetJwt {
    * @returns New access token string
    */
   generateAccessToken(payload: any) {
-    return jwt.sign(payload, this.accessTokenSecret, this.accessTokenOptions);
+    return jwt.sign(payload, this.accessTokenSecret, this.accessTokenOptions ?? {});
   }
 
   /**
@@ -74,7 +74,7 @@ export default class GetJwt {
    */
   generateRefreshToken(payload: any) {
     if (!this.refreshTokenSecret) return null;
-    return jwt.sign(payload, this.refreshTokenSecret, this?.refreshTokenOptions);
+    return jwt.sign(payload, this.refreshTokenSecret, this?.refreshTokenOptions ?? {});
   }
 
   /**
