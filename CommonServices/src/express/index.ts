@@ -33,7 +33,7 @@ export default class GetExpress {
       // user
       if (userJwt) {
         try {
-          req.user = userJwt.verifyAccessToken(accessToken) || null;
+          req.user = userJwt.verifyAccessToken(accessToken)?.uid || null;
         } catch (error) {
           req.user = null;
         }
@@ -43,7 +43,7 @@ export default class GetExpress {
       // admin
       if (adminJwt) {
         try {
-          req.admin = adminJwt.verifyAccessToken(accessToken) || null;
+          req.admin = adminJwt.verifyAccessToken(accessToken)?.email || null;
         } catch (error) {
           req.admin = null;
         }
