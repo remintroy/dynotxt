@@ -19,9 +19,9 @@ const caseUserBlogMoveToTrash = async (
   if (existingBlogData.author !== currentUserId)
     throw utilsService.createError(403, "You dont have permission to trash this blog");
 
-  if (existingBlogData.deleted) throw utilsService.createError(400, "Blog already trashed");
+  if (existingBlogData.trashed) throw utilsService.createError(400, "Blog already trashed");
 
-  return await blogRepository.deleteBlogById(blogId).catch(utilsService.throwInternalError("Faild to trash blog"));
+  return await blogRepository.trashBlogById(blogId).catch(utilsService.throwInternalError("Faild to trash blog"));
 };
 
 export default caseUserBlogMoveToTrash;

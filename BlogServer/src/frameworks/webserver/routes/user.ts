@@ -50,6 +50,9 @@ export default function userRouter(express: typeof ExpressApp) {
     .put(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserUpdateBlog))
     .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUserBlog));
   router
+    .route("/blog/:id/permenent")
+    .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteBlogPermenetly));
+  router
     .route("/blog/:id/edit")
     .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getUserBlogDataForEdit));
   router

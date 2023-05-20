@@ -16,8 +16,8 @@ const caseUserBlogRecoverFromTrash = async (
   if (!existingData) throw utilsService.createError(404, "Blog not found");
 
   await blogRepository
-    .recoverDeletedBlogById(blogId)
+    .recoverTrashedBlogById(blogId)
     .catch(utilsService.throwInternalError("Error while recovering blog"));
 };
- 
+
 export default caseUserBlogRecoverFromTrash;

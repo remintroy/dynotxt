@@ -1,36 +1,20 @@
 import { Schema } from "mongoose";
 
 export const BlogSchema = new Schema({
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
-  updatedAt: {
-    type: Date,
-    default: new Date(),
-  },
+  version: { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
+  disabled: { type: Boolean, default: false },
+  trashed: { type: Boolean, default: false },
+  createdAt: { type: Date, default: new Date() },
+  updatedAt: Date,
+  deletedAt: Date,
+  trashedAt: Date,
+  published: { type: Boolean, default: false },
   subtitle: String,
-  published: {
-    type: Boolean,
-    default: false,
-  },
   blogId: String,
   author: String,
   title: String,
-  views: {
-    type: Number,
-    default: 0,
-  },
-  deleted: {
-    type: Boolean,
-    default: false,
-  },
   bannerImgURL: String,
-  version: { type: Number, default: 0 },
   body: [],
 });
 
