@@ -1,112 +1,103 @@
-import { Avatar, Box, Button, Card, Chip, Flex, Grid, Image, Tabs, Text } from "@mantine/core";
-import { useParams } from "react-router-dom";
-import { useGetUserDataWithUidQuery } from "../../lib/api/authApi";
-import { useGetBlogDataDisplayQuery } from "../../lib/api/blogApi";
-import { IconLock, IconPhoto, IconWorld } from "@tabler/icons-react";
-import { IconSettings } from "@tabler/icons-react";
-import { useAppSelector } from "../../lib/redux/hooks";
-import BlogCardComponent from "../../components/profile/blogs/blogCardSettings";
-import SettingsComponent from "../../components/profile/settings";
 import { useEffect, useState } from "react";
-import BlogCardSkeltonComponent from "../../components/profile/blogs/blogCardSkelton";
+import { useParams } from "react-router-dom";
+import { Avatar, Box, Button, Chip, Flex, Grid, Loader, Tabs, Text } from "@mantine/core";
+import { IconWorld, IconPhoto, IconLock } from "@tabler/icons-react";
+import { IconSettings } from "@tabler/icons-react";
+import { useGetUserDataWithUidQuery } from "../../lib/api/authApi";
+import { useAppDispatch, useAppSelector } from "../../lib/redux/hooks";
+import { useGetBlogDataDisplayQuery } from "../../lib/api/blogApi";
+import { NavigationProgress, nprogress } from "@mantine/nprogress";
+import { addBlogToAllBlogsProfile, resetProfile, setAllBlogsMetaDataProfile } from "../../lib/redux/profileSlice";
 import FollowButtonComponent from "../../components/profile/followButton";
+import SettingsComponent from "../../components/profile/settings";
+import BlogCardWithSettingsComponent from "../../components/profile/blogs/blogCardSettings";
+
+const AllBlogListComponent = () => {
+  const { id: userId } = useParams();
+  const [page, setPage] = useState(1);
+  const dispatch = useAppDispatch();
+  const { data: blogsData, isLoading, isFetching } = useGetBlogDataDisplayQuery({ uid: userId, page });
+  const allBlogsData = useAppSelector((state) => state.profile.allBlogs);
+  BlogCardWithSettingsComponent;
+  useEffect(() => {
+    // assignig AllBlogs data to redux
+    if (blogsData) {
+      blogsData?.docs?.forEach((blog: any) => {
+        dispatch(addBlogToAllBlogsProfile(blog));
+      });
+      let allBlogsMetaData: any = JSON.stringify(blogsData);
+      allBlogsMetaData = JSON.parse(allBlogsMetaData);
+      allBlogsMetaData.docs = null;
+      dispatch(setAllBlogsMetaDataProfile(allBlogsMetaData));
+    }
+  }, [blogsData]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetProfile());
+    };
+  },[]);
+
+  useEffect(() => {
+    if (isLoading || isFetching) {
+      nprogress.set(0);
+      nprogress.start();
+    } else nprogress.complete();
+  }, [isLoading, isFetching]);
+
+  const handleShowMore = () => {
+    // when page changes next page data is requested
+    setPage((blogsData?.page ?? 0) + 1);
+  };
+
+  console.log(blogsData);
+
+  return (
+    <>
+      <Grid>
+        {Object.keys(allBlogsData)?.map((blogId: any) => {
+          const blog = allBlogsData[blogId];
+          return <BlogCardWithSettingsComponent span={12} key={blog?.blogId} blog={blog} userId={userId} />;
+        })}
+      </Grid>
+      {blogsData?.hasNextPage && (
+        <Box py={50} display="flex" sx={{ justifyContent: "center" }}>
+          <Button
+            variant="default"
+            onClick={handleShowMore}
+            leftIcon={isLoading || isFetching ? <Loader size={"xs"} /> : ""}
+          >
+            Show More
+          </Button>
+        </Box>
+      )}
+    </>
+  );
+};
 
 const UserProfilePage = () => {
   const { id: userId } = useParams();
-  const {
-    data: userData,
-    isLoading: isUserDataLoading,
-    isFetching: isUserDataFetching,
-  } = useGetUserDataWithUidQuery(userId);
-
-  const {
-    data: blogData,
-    isLoading: isBlogDataLoading,
-    isFetching: isBlogDataFetching,
-  } = useGetBlogDataDisplayQuery(userId, { skip: !userData });
-
-  const user = useAppSelector((state) => state.user.data);
-
-  useEffect(() => {
-    document.getElementsByTagName("html")[0].scrollTop = 0;
-  }, [userId]);
-
-  const [allBlogs, setAllBlogs] = useState([]);
-  const [publicBlogs, setPublicBlogs] = useState([]);
-  const [privateBlogs, setPrivateBlogs] = useState([]);
-  const [userDataLoading, setUserDataLoading] = useState(true);
-  const [blogLoading, setBlogLoading] = useState(true);
+  const currentUser = useAppSelector((state) => state.user.data);
+  const blogData = useAppSelector((state) => state.profile?.allBlogsMetaData);
   const [tabsValue, setTabsValue] = useState<string | null>("all-blogs");
-
-  useEffect(() => {
-    setTabsValue("all-blogs");
-  }, [userId, user]);
-
-  useEffect(() => {
-    if (isUserDataLoading || isUserDataFetching) setUserDataLoading(true);
-    else setUserDataLoading(true);
-  }, [isUserDataLoading, isUserDataFetching]);
-
-  useEffect(() => {
-    if (blogData) {
-      setAllBlogs(blogData);
-      setPublicBlogs(blogData.filter((blog: any) => blog?.published == true));
-      setPrivateBlogs(blogData.filter((blog: any) => blog?.published == false));
-    }
-    if (isBlogDataLoading) {
-      setBlogLoading(true);
-    } else {
-      setBlogLoading(false);
-    }
-  }, [blogData, isBlogDataLoading, isBlogDataFetching]);
-
-  const BlogsList = ({ data }: { data: any[] }) => {
-    const skeltonData = Array(5).fill("");
-
-    if (blogLoading) {
-      return (
-        <Grid>
-          {skeltonData?.map((blog: any, index) => {
-            return <BlogCardSkeltonComponent key={index} />;
-          })}
-        </Grid>
-      );
-    }
-
-    return (
-      <Grid gutter={"lg"}>
-        {data?.map((blog: any) => {
-          return <BlogCardComponent key={blog?.blogId} blog={blog} userId={userId} />;
-        })}
-        {(data?.length === 0 || !blogData) && (
-          <Flex
-            style={{ padding: 30 }}
-            justify={"center"}
-            align={"center"}
-            direction={"column"}
-            sx={{ position: "relative", width: "100%" }}
-          >
-            <h1>No blogs here</h1>
-          </Flex>
-        )}
-      </Grid>
-    );
-  };
+  const formatter = Intl.NumberFormat("us", { notation: "compact" });
+  const { data: userData } = useGetUserDataWithUidQuery(userId);
 
   return (
     <div style={{ padding: "25px" }}>
+      <NavigationProgress />
       <div className="porfileCont">
         <Flex gap={"30px"} align={"center"} my={20}>
           <Avatar size={"xl"} radius={"lg"} src={userData?.photoURL} />
           <div>
             <Flex mb={10} align={"center"} gap={20}>
               <h1 style={{ margin: 0, padding: 0 }}>{userData?.name}</h1>
-              {user && user?.uid != userId && <FollowButtonComponent userId={userData?.uid} />}
+              {currentUser && currentUser?.uid != userId && <FollowButtonComponent userId={userData?.uid} />}
             </Flex>
             <Flex gap={10}>
-              <Chip checked={false}>{blogData?.length ?? 0} Blogs</Chip>
-              <Chip checked={false}>{userData?.followers ?? 0} Followers</Chip>
-              <Chip checked={false}>{userData?.following ?? 0} Following</Chip>
+              <Chip checked={false}>{formatter.format(blogData?.totalDocs ?? 0)} Blogs</Chip>
+              <Chip checked={false}>{formatter.format(userData?.followers ?? 0)} Followers</Chip>
+              <Chip checked={false}>{formatter.format(userData?.following ?? 0)} Following</Chip>
             </Flex>
           </div>
         </Flex>
@@ -118,17 +109,17 @@ const UserProfilePage = () => {
           <Tabs.Tab value="all-blogs" icon={<IconPhoto size="20px" />}>
             All Blogs
           </Tabs.Tab>
-          {user?.uid == userId && (
+          {currentUser?.uid == userId && (
             <Tabs.Tab value="public" icon={<IconWorld size="20px" />}>
               Public
             </Tabs.Tab>
           )}
-          {user?.uid == userId && (
+          {currentUser?.uid == userId && (
             <Tabs.Tab value="private" icon={<IconLock size="20px" />}>
               Private
             </Tabs.Tab>
           )}
-          {user?.uid == userId && (
+          {currentUser?.uid == userId && (
             <Tabs.Tab value="settings" icon={<IconSettings size="20px" />}>
               Settings
             </Tabs.Tab>
@@ -136,16 +127,16 @@ const UserProfilePage = () => {
         </Tabs.List>
 
         <Tabs.Panel value="all-blogs" pt="xs">
-          <BlogsList data={allBlogs} />
+          <AllBlogListComponent />
         </Tabs.Panel>
 
-        <Tabs.Panel value="public" pt="xs">
+        {/* <Tabs.Panel value="public" pt="xs">
           <BlogsList data={publicBlogs} />
         </Tabs.Panel>
 
         <Tabs.Panel value="private" pt="xs">
           <BlogsList data={privateBlogs} />
-        </Tabs.Panel>
+        </Tabs.Panel> */}
 
         <Tabs.Panel value="settings" pt="xs">
           <SettingsComponent />
