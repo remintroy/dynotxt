@@ -10,7 +10,7 @@ const caseUserAccessCheck = async (
 
   const userData = await userRepository.getById(userId).catch(utilsService.throwInternalError());
   if (!userData) throw utilsService.createError(404, "User not found");
-  if (userData.disabled) throw utilsService.createError(403, "User is not active");
+  if (userData?.disabled) throw utilsService.createError(403, "User is not active");
 
   return userData;
 };

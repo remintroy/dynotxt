@@ -4,7 +4,6 @@ import userRepositoryInteraface from "../../repository/userRepositoryInteraface"
 import authServiceInterface from "../../services/authServices";
 import validatorInteraface from "../../services/validatorInteraface";
 import { userEntity } from "../../../entities";
-import { User } from "../../../entities/user.normal";
 import otpRepositoryInterface from "../../repository/otpRepositoyInteraface";
 import GetJwt from "dynotxt-common-services/build/jwt";
 import GetUtils from "dynotxt-common-services/build/utils";
@@ -70,7 +69,7 @@ export default async function userSignin(
   }
 
   // ----- TOKENS -----
-  const tokens = jwtService.generateTokens(user.uid);
+  const tokens = jwtService.generateTokens({ uid: user.uid });
 
   try {
     await tokenRepository.add(user.uid, tokens.refreshToken);

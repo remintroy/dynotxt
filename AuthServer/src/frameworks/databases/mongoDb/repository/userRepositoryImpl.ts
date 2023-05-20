@@ -16,8 +16,7 @@ const userRepositoryImpl = () => {
     return response;
   };
   const getById = async (uid: string) => {
-    const response = await UserModel.findOne({ uid });
-    return response;
+    return await UserModel.findOne({ uid });
   };
 
   const getByPageNo = async (page: number) => {
