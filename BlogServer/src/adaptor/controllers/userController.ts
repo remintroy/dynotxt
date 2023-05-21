@@ -26,6 +26,7 @@ import reactionRepositoryInterface from "../repositorys/reactionRepositoryInterf
 import blogServiceInterface from "../service";
 import { RequestWithUser } from "../../frameworks/webserver/express";
 import GetUtils from "dynotxt-common-services/build/utils";
+import caseUserBlogSoftDeleteFromTrash from "../../application/use-cases/blog/user-trash-soft-delete";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -107,6 +108,12 @@ const userController = (
     return await caseUserBlogRecoverFromTrash(blogRepository, utilsService, user, blogId);
   };
 
+  const deleteBlogPermenetly = async (req: RequestWithUser) => {
+    const { user } = req;
+    const blogId = req.params.id;
+    return await caseUserBlogSoftDeleteFromTrash(blogRepository, utilsService, blogId, user);
+  };
+
   const putUserComment = async (req: RequestWithUser) => {
     const { user } = req;
     const blogId = req.params.id;
@@ -177,6 +184,7 @@ const userController = (
     getAllBlogsDisplay,
     putUserUnpublishBlog,
     deleteUserBlog,
+    deleteBlogPermenetly,
     getDeletedBlogs,
     putRecoverDeletedBlog,
     getAllBlogsForHome,

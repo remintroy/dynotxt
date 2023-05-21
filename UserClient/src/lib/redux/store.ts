@@ -4,12 +4,14 @@ import navBarSlice from "./navBarSlice";
 import configSlice from "./configSlice";
 import { userApiMiddleware, userApiReducer, userApiReducerPath } from "../api/authApi";
 import { blogApiMiddleware, blogApiReducer, blogApiReducerPath } from "../api/blogApi";
+import profileSlice from "./profileSlice";
 
 const store = configureStore({
   reducer: {
     user: userSlice,
     navbar: navBarSlice,
     config: configSlice,
+    profile: profileSlice,
     [userApiReducerPath]: userApiReducer,
     [blogApiReducerPath]: blogApiReducer,
   },

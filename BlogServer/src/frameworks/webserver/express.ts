@@ -4,6 +4,7 @@ import { Express, Request } from "express";
 import logger from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import helmet from "helmet";
 import getConfigs from "../../configs";
 
 export interface RequestWithUser extends Request {
@@ -11,12 +12,9 @@ export interface RequestWithUser extends Request {
   admin?: string;
 }
 
-export default function expressConfig(
-  app: Express,
-  configs: typeof getConfigs
-) {
+export default function expressConfig(app: Express, configs: typeof getConfigs) {
   const config = configs();
-
+  app.use(helmet());
   app.use(logger(config.morgan.logStyle));
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(

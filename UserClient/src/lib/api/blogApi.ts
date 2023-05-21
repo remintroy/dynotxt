@@ -101,12 +101,19 @@ const blogApiSlice = createApi({
       invalidatesTags: ["blogDisplay", "home"],
     }),
     getBlogDataDisplay: builder.query({
-      query: (uid) => `/user/${uid}`,
+      query: ({ uid, page }) => `/user/${uid}?page=${page}`,
       providesTags: ["blogDisplay"],
     }),
     deleteBlogWithBlogId: builder.mutation({
       query: (blogId) => ({
         url: `/blog/${blogId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
+    }),
+    permenentlyDeleteBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}/permenent`,
         method: "DELETE",
       }),
       invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
@@ -185,6 +192,7 @@ export const {
   useGetBlogDataDisplayQuery,
   usePutUnPublishBlogMutation,
   useDeleteBlogWithBlogIdMutation,
+  usePermenentlyDeleteBlogMutation,
   useGetAllTrashedBlogsQuery,
   usePutRecoverTrashedBlogMutation,
   useGetBlogsForHomeQuery,

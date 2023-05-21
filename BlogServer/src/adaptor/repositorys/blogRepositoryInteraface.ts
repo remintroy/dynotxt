@@ -5,18 +5,19 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
   const getBlogByIdPrivate = repository.getBlogByIdPrivate;
   const addNewBlog = repository.addNewBlog;
   const updateBlog = repository.updateBlog;
-  const deleteBlogById = repository.deleteBlogById;
+  const trashBlogById = repository.trashBlogById;
   const updateBodyIndex = repository.updateBodyIndex;
   const updateAsNewBodyIndex = repository.updateAsNewBodyIndex;
   const changeVisiblity = repository.changeVisiblity;
   const getAllBlogsDisplayWithUidWithPrivate = repository.getAllBlogsDisplayWithUidWithPrivate;
   const getAllBlogsDisplayWithUid = repository.getAllBlogsDisplayWithUid;
-  const recoverDeletedBlogById = repository.recoverDeletedBlogById;
+  const recoverTrashedBlogById = repository.recoverTrashedBlogById;
   const getAllDeletedBlogs = repository.getAllDeletedBlogs;
   const getDeleteBlog = repository.getDeleteBlog;
   const getAllPublicBlogs = repository.getAllPublicBlogs;
   const adminGetAllDisabledBlogs = repository.adminGetAllDisabledBlogs;
   const getBlogByIdAdmin = repository.getBlogByIdAdmin;
+  const softDeleteBlogs = repository.softDeleteBlogs;
 
   return {
     getBlogById,
@@ -24,17 +25,18 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
     getBlogByIdAdmin,
     addNewBlog,
     updateBlog,
-    deleteBlogById,
+    trashBlogById,
     updateBodyIndex,
     updateAsNewBodyIndex,
     changeVisiblity,
     getAllBlogsDisplayWithUidWithPrivate,
     getAllBlogsDisplayWithUid,
-    recoverDeletedBlogById,
+    recoverTrashedBlogById,
     getAllDeletedBlogs,
     getDeleteBlog,
     adminGetAllDisabledBlogs,
     getAllPublicBlogs,
+    softDeleteBlogs,
   };
 };
 

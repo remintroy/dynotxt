@@ -34,7 +34,7 @@ export default class GetJwt {
    */
   constructor(data: ConstructorInput) {
     this.accessTokenSecret = data.accessTokenSecret;
-    this.accessTokenOptions = data.accessTokenOptions;
+    this.accessTokenOptions = data?.accessTokenOptions;
     this.refreshTokenSecret = data?.refreshTokenSecret;
     this.refreshTokenOptions = data?.refreshTokenOptions;
   }
