@@ -8,6 +8,7 @@ import routes from "./frameworks/webserver/routes";
 import GetMongo from 'dynotxt-common-services/build/mongodb'
 
 const app = express();
+
 const server = http.createServer(app);
 
 expressConfig(app, getConfigs);
