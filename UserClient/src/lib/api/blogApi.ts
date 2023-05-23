@@ -172,6 +172,18 @@ const blogApiSlice = createApi({
         body: { message },
       }),
     }),
+    postBlogViewCount: builder.mutation({
+      query: (blogId) => ({
+        url: `/analytics/view/${blogId}`,
+        method: "POST",
+      }),
+    }),
+    getBlogViewCountByBlogId: builder.query({
+      query: (blogId) => `/analytics/view/${blogId}`,
+    }),
+    getBlogViewCountByUserId: builder.query({
+      query: () => `/analytics/view/`,
+    }),
   }),
 });
 
@@ -202,4 +214,7 @@ export const {
   useDeleteBlogDislikeMutation,
   useGetBlogReactionStatusQuery,
   usePostBlogReportMutation,
+  usePostBlogViewCountMutation,
+  useGetBlogViewCountByBlogIdQuery,
+  useGetBlogViewCountByUserIdQuery
 } = blogApiSlice;

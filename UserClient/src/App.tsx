@@ -6,7 +6,7 @@ import HomePage from "./pages/home";
 import SignIn from "./pages/auth/login";
 import SignUp from "./pages/auth/signup";
 import { Notifications } from "@mantine/notifications";
-import UserProfilePage from "./pages/profile";
+import UserProfilePage from "./pages/profile/";
 import BlogViewPage from "./pages/blog/viewBlog";
 import VerfiyEmailPage from "./pages/auth/verifyEmail";
 import { useGetUserDataQuery } from "./lib/api/authApi";
@@ -16,6 +16,10 @@ import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
 import EditBlogPage from "./pages/blog/editBlog";
 import { Box } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
+import TestPage from "./pages/test";
+import PageInitialLoader from "./components/pageInitialLoader";
+import ProfileDashboardLayout from "./layout/profileDashboard";
+import ProfileBlogsPage from "./pages/profile/blogs";
 
 const router = createBrowserRouter([
   {
@@ -31,15 +35,29 @@ const router = createBrowserRouter([
         path: "blog/:id",
         element: <BlogViewPage />,
       },
+    ],
+  },
+  {
+    path: "/profile/:id",
+    element: <ProfileDashboardLayout />,
+    children: [
       {
-        path: "profile/:id",
+        path: "/profile/:id",
         element: <UserProfilePage />,
+      },
+      {
+        path: "/profile/:id/blogs",
+        element: <ProfileBlogsPage />,
       },
     ],
   },
   {
     path: "/blog/edit/:id",
     element: <EditBlogPage />,
+  },
+  {
+    path: "/test",
+    element: <TestPage />,
   },
   {
     path: "/",
@@ -81,10 +99,13 @@ function App() {
 
   return (
     <Box className="App">
-      <ModalsProvider>
-        <Notifications />
-        <RouterProvider router={router} />
-      </ModalsProvider>
+      {isLoading && <PageInitialLoader />}
+      {!isLoading && (
+        <ModalsProvider>
+          <Notifications />
+          <RouterProvider router={router} />
+        </ModalsProvider>
+      )}
     </Box>
   );
 }
