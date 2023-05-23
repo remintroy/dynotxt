@@ -76,6 +76,12 @@ export default function v1UserRouter(express: typeof ExpressApp) {
     .post(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.postFollowNewUser))
     .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getFollowingDataWithSingleUser))
     .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUnfollowUser));
+  router
+    .route("/analytics/following")
+    .get(
+      expressService.mustLoginAsUser,
+      expressService.makeExpressCallback(controller.getUserAnalyticsFollowingInLastNDays)
+    );
 
   return router;
 }

@@ -14,6 +14,8 @@ import GetUtils from "dynotxt-common-services/build/utils";
 import GetJwt from "dynotxt-common-services/build/jwt";
 import getConfigs from "../../../configs";
 import GetExpress from "dynotxt-common-services/build/express";
+import viewsRepositoryInterface from "../../../adaptor/repositorys/viewsRepositoryInterface";
+import viewsRepositoryImpl from "../../mongoDb/repository/viewsRepositoryImpl";
 
 export default function userRouter(express: typeof ExpressApp) {
   const router = express.Router();
@@ -30,12 +32,15 @@ export default function userRouter(express: typeof ExpressApp) {
   const reactionRepository = reactionRepositoryInterface(reactionRepositoryImpl());
   const commentRepository = commentRepositoryInterface(commentRepositoryImpl());
   const flagsRepository = flagsRepositoryInterface(flagsRepositoryImpl());
+  const viewsRepository = viewsRepositoryInterface(viewsRepositoryImpl());
+
   const controller = userController(
     blogRepository,
     blogService,
     reactionRepository,
     flagsRepository,
     commentRepository,
+    viewsRepository,
     utilsService
   );
 
@@ -89,6 +94,13 @@ export default function userRouter(express: typeof ExpressApp) {
     .post(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserDislikeBlog))
     .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUserDislikeBlog));
   router.route("/report/:id").post(expressService.makeExpressCallback(controller.postAddBlogReport));
+  router
+    .route("/analytics/view/:id")
+    .get(expressService.makeExpressCallback(controller.getViewsByBlogId))
+    .post(expressService.makeExpressCallback(controller.postViewsAddNew));
+  router
+    .route("/analytics/view/")
+    .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getViewsByUserId));
 
   return router;
 }

@@ -27,6 +27,10 @@ import blogServiceInterface from "../service";
 import { RequestWithUser } from "../../frameworks/webserver/express";
 import GetUtils from "dynotxt-common-services/build/utils";
 import caseUserBlogSoftDeleteFromTrash from "../../application/use-cases/blog/user-trash-soft-delete";
+import caseUserViewsAddNew from "../../application/use-cases/views/user-views-add-view";
+import viewsRepositoryInterface from "../repositorys/viewsRepositoryInterface";
+import caseUserViewsGetByBlogId from "../../application/use-cases/views/user-views-blog-get-views";
+import caseUserVIewsGetByUserId from "../../application/use-cases/views/user-views-get-all-by-userId";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -34,6 +38,7 @@ const userController = (
   reactionRepository: reactionRepositoryInterface,
   flagsRepository: flagsRepositoryInterface,
   commentRepository: commentRepositoryInterface,
+  viewsRepository: viewsRepositoryInterface,
   utilsService: GetUtils
 ) => {
   // create new blog which is currently a draft
@@ -171,6 +176,22 @@ const userController = (
     return await caseUserReactionLikeGetStatus(reactionRepository, utilsService, user, blogId);
   };
 
+  const postViewsAddNew = async (req: RequestWithUser) => {
+    const blogId = req.params.id;
+    return await caseUserViewsAddNew(viewsRepository, blogRepository, utilsService, blogId);
+  };
+
+  const getViewsByBlogId = async (req: RequestWithUser) => {
+    const blogId = req.params.id;
+    return await caseUserViewsGetByBlogId(viewsRepository, utilsService, blogId);
+  };
+
+  const getViewsByUserId = async (req: RequestWithUser) => {
+    const { user } = req;
+    const nDaysAgo = 10;
+    return await caseUserVIewsGetByUserId(viewsRepository, utilsService, user, nDaysAgo);
+  };
+
   return {
     postUserNewBlog,
     getUserBlogUploadUrl,
@@ -194,6 +215,9 @@ const userController = (
     deleteUserDislikeBlog,
     getBlogReactionStatus,
     postAddBlogReport,
+    postViewsAddNew,
+    getViewsByBlogId,
+    getViewsByUserId,
   };
 };
 

@@ -215,6 +215,10 @@ const blogRepositoryImpl = () => {
     return await blogData.save();
   };
 
+  const viewsInLastNDays = async (blogId: string, lastNDays: number) => {
+    
+  };
+
   return {
     getBlogById,
     getBlogByIdPrivate,
