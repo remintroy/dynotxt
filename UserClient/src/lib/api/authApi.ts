@@ -108,6 +108,9 @@ const userApiSlice = createApi({
       }),
       invalidatesTags: ["singleFollow", "userDataPublic"],
     }),
+    getAnalyticsFollwers: builder.query({
+      query: () => `/analytics/following`,
+    }),
   }),
 });
 
@@ -129,4 +132,5 @@ export const {
   useGetFollowUserQuery,
   useDeleteFollowUserMutation,
   useLogOutMutation,
+  useGetAnalyticsFollwersQuery
 } = userApiSlice;

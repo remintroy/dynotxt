@@ -6,21 +6,28 @@ import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import CommentSectionComponent from "../../../components/blog/commentSection";
-import { useGetBlogQuery, useGetBlogsForHomeQuery } from "../../../lib/api/blogApi";
+import { useGetBlogQuery, useGetBlogsForHomeQuery, usePostBlogViewCountMutation } from "../../../lib/api/blogApi";
 import { useGetAuthorDataQuery } from "../../../lib/api/authApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
 import FollowButtonComponent from "../../../components/profile/followButton";
 import { IconExclamationCircle } from "@tabler/icons-react";
 import ErrorImage from "../../../assets/error.png";
 import BlogActionButtonComponent from "../../../components/blog/blogActions";
-import { NavigationProgress } from "@mantine/nprogress";
+import { NavigationProgress, nprogress } from "@mantine/nprogress";
 import ReportBlogComponet from "../../../components/blog/reportBlog";
 import BlogCardNormalComponent from "../../../components/profile/blogs/blogCardNormal";
 
 const BlogViewPage = () => {
   const user = useAppSelector((state) => state.user.data);
   const { id: blogId } = useParams();
-  const { data: blogData, isError, error } = useGetBlogQuery({ blogId });
+  const [postViewCountApi] = usePostBlogViewCountMutation();
+  const {
+    data: blogData,
+    isError,
+    isLoading: isBlogDataLoading,
+    isFetching: isBlogDataFetching,
+    error,
+  }: any = useGetBlogQuery({ blogId });
   const { data: blogsListData } = useGetBlogsForHomeQuery({});
 
   const {
@@ -29,10 +36,24 @@ const BlogViewPage = () => {
     isFetching: isAuthorFetching,
   } = useGetAuthorDataQuery(blogData?.author, { skip: !blogData });
 
+  useEffect(() => {
+    if (isBlogDataLoading || isBlogDataFetching) {
+      nprogress.set(0);
+      nprogress.start();
+    } else {
+      nprogress.complete();
+    }
+  }, [isBlogDataLoading, isBlogDataFetching]);
+
   const [blogDataToShow, setBlogDataToShow] = useState<any>("");
 
   useEffect(() => {
     document.getElementsByTagName("html")[0].scrollTop = 0;
+    (async () => {
+      await postViewCountApi(blogId).catch((err) => {
+        console.warn(err);
+      });
+    })();
   }, [blogId]);
 
   useEffect(() => {

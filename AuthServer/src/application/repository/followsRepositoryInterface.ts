@@ -5,12 +5,14 @@ const followsRepositoryInterface = (repository: followsRepositoryImpl) => {
   const getFollowingDataWithSingleUser = repository.getFollowingDataWithSingleUser;
   const getFollowingAndFollowsCount = repository.getFollowingAndFollowsCount;
   const deleteFollowersForSingleConnection = repository.deleteFollowersForSingleConnection;
+  const followersInLastNDays = repository.followersInLastNDays;
 
   return {
     addFollowerToUserWithUid,
     getFollowingDataWithSingleUser,
     getFollowingAndFollowsCount,
     deleteFollowersForSingleConnection,
+    followersInLastNDays,
   };
 };
 

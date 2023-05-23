@@ -22,6 +22,7 @@ import caseUnfollowUser from "../../application/use-cases/user/user-unfollow";
 import GetJwt from "dynotxt-common-services/build/jwt";
 import GetUtils from "dynotxt-common-services/build/utils";
 import GetEmail from "dynotxt-common-services/build/email";
+import caseUserAnalyticsFollowersInNDays from "../../application/use-cases/user/user-analytics-followers-in-n-days";
 
 export interface IRequest extends Request {
   user: string;
@@ -155,6 +156,11 @@ const userController = (
     return await caseUnfollowUser(followsRepository, utilsService, user, userIdToUnfollow);
   };
 
+  const getUserAnalyticsFollowingInLastNDays = async (req: IRequest) => {
+    const { user } = req;
+    return await caseUserAnalyticsFollowersInNDays(followsRepository, utilsService, user, 10);
+  };
+
   return {
     userPostSignin,
     getNewAccessTokenFromRefreshToken,
@@ -170,6 +176,7 @@ const userController = (
     postFollowNewUser,
     getFollowingDataWithSingleUser,
     deleteUnfollowUser,
+    getUserAnalyticsFollowingInLastNDays,
   };
 };
 
