@@ -20,6 +20,7 @@ import TestPage from "./pages/test";
 import PageInitialLoader from "./components/pageInitialLoader";
 import ProfileDashboardLayout from "./layout/profileDashboard";
 import ProfileBlogsPage from "./pages/profile/blogs";
+import ProfileCommentsPage from "./pages/profile/comments";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/profile/:id/blogs",
         element: <ProfileBlogsPage />,
+      },
+      {
+        path: "/profile/:id/comments",
+        element: <ProfileCommentsPage />,
       },
     ],
   },

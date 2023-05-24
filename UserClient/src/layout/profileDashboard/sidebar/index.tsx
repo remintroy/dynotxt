@@ -92,7 +92,15 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
                 description="Manage your blogs"
               />
             </Link>
-            <NavLink variant="light" label="Comments" description="New comments, all comments" icon={<IconMessage />} />
+            <Link to={`/profile/${user?.uid}/comments`} className="link">
+              <NavLink
+                variant="light"
+                label="Comments"
+                active={path[0] == "profile" && path[2] == "comments" && path[1] == `${user?.uid}`}
+                description="New comments, all comments"
+                icon={<IconMessage />}
+              />
+            </Link>
           </Navbar.Section>
 
           <Navbar.Section>
