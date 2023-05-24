@@ -96,7 +96,7 @@ const blogRepositoryImpl = () => {
   };
 
   const getAllBlogsDisplayWithUidWithPrivate = async (userId: string, page: number) => {
-    const pipeline: any = [
+    const aggrigate = BlogModel.aggregate([
       {
         $match: {
           author: userId,
@@ -117,6 +117,61 @@ const blogRepositoryImpl = () => {
         },
       },
       {
+        $lookup: {
+          from: "reactions",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "reactions",
+          pipeline: [
+            {
+              $facet: {
+                likes: [
+                  { $match: { value: "like" } },
+                  { $group: { _id: "$blogId", count: { $sum: 1 } } },
+                  { $project: { _id: 0 } },
+                ],
+                dislikes: [
+                  { $match: { value: "dislike" } },
+                  { $group: { _id: "$blogId", count: { $sum: 1 } } },
+                  { $project: { _id: 0 } },
+                ],
+              },
+            },
+            {
+              $project: {
+                likes: { $arrayElemAt: ["$likes.count", 0] },
+                dislikes: { $arrayElemAt: ["$dislikes.count", 0] },
+              },
+            },
+          ],
+        },
+      },
+      { $addFields: { reactions: { $arrayElemAt: ["$reactions", 0] } } },
+      { $addFields: { "reactions.likes": { $ifNull: ["$reactions.likes", 0] } } },
+      { $addFields: { "reactions.dislikes": { $ifNull: ["$reactions.dislikes", 0] } } },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "comments",
+          pipeline: [{ $project: { count: { $size: "$comment" } } }, { $project: { _id: 0 } }],
+        },
+      },
+      { $addFields: { comments: { $arrayElemAt: ["$comments.count", 0] } } },
+      { $addFields: { comments: { $ifNull: ["$comments", 0] } } },
+      {
+        $lookup: {
+          from: "views",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "views",
+          pipeline: [{ $group: { _id: "$blogId", count: { $sum: 1 } } }, { $project: { _id: 0 } }],
+        },
+      },
+      { $addFields: { views: { $arrayElemAt: ["$views.count", 0] } } },
+      { $addFields: { views: { $ifNull: ["$views", 0] } } },
+      {
         $sort: { updatedAt: -1 },
       },
       {
@@ -124,9 +179,7 @@ const blogRepositoryImpl = () => {
           _id: 0,
         },
       },
-    ];
-
-    const aggrigate = BlogModel.aggregate(pipeline);
+    ]);
 
     const paginatedValue = await BlogModel.aggregatePaginate(aggrigate, {
       page: page || 1,
@@ -215,9 +268,7 @@ const blogRepositoryImpl = () => {
     return await blogData.save();
   };
 
-  const viewsInLastNDays = async (blogId: string, lastNDays: number) => {
-    
-  };
+  const viewsInLastNDays = async (blogId: string, lastNDays: number) => {};
 
   return {
     getBlogById,
