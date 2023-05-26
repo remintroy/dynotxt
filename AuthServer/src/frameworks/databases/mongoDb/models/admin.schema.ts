@@ -1,6 +1,6 @@
 import { Schema } from "mongoose";
 
-export interface IAdminUser {
+export interface AdminUser {
   name?: string;
   email?: string;
   uid?: string;
@@ -18,7 +18,7 @@ export interface IAdminUser {
 }
 
 export const adminUserSchema = new Schema({
-  name: "String",
+  name: String,
   email: String,
   uid: String,
   password: String,

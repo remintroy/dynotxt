@@ -1,11 +1,7 @@
 import FollowsModel from "../models/follows";
 
 const followsRepositoryImpl = () => {
-  const addFollowerToUserWithUid = async (
-    followerUserId: string,
-    followingUserId: string,
-    accepeted: boolean
-  ) => {
+  const addFollowerToUserWithUid = async (followerUserId: string, followingUserId: string, accepeted: boolean) => {
     const response = await new FollowsModel({
       following: followingUserId,
       follower: followerUserId,
@@ -14,10 +10,7 @@ const followsRepositoryImpl = () => {
     return response;
   };
 
-  const getFollowingDataWithSingleUser = async (
-    followingUserId: string,
-    followerUserId: string
-  ) => {
+  const getFollowingDataWithSingleUser = async (followingUserId: string, followerUserId: string) => {
     const response = await FollowsModel.findOne({
       follower: followerUserId,
       following: followingUserId,
@@ -60,15 +53,38 @@ const followsRepositoryImpl = () => {
     return output;
   };
 
-  const deleteFollowersForSingleConnection = async (
-    followingUserId: string,
-    followerUserId: string
-  ) => {
-    const response = await FollowsModel.deleteOne({
+  const deleteFollowersForSingleConnection = async (followingUserId: string, followerUserId: string) => {
+    return await FollowsModel.deleteOne({
       follower: followerUserId,
       following: followingUserId,
     });
-    return response;
+  };
+
+  const followersInLastNDays = async (userId: string, lastNDays: number) => {
+    const currentDate: any = new Date();
+    const calulatedDate = currentDate - (lastNDays ?? 10) * 60 * 60 * 24 * 1000;
+    return await FollowsModel.aggregate([
+      { $match: { following: userId, createdAt: { $gte: new Date(calulatedDate) } } },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: "%d-%m-%Y",
+              date: "$createdAt",
+            },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          count: 1,
+        },
+      },
+      { $sort: { date: 1 } },
+    ]);
   };
 
   return {
@@ -76,6 +92,7 @@ const followsRepositoryImpl = () => {
     getFollowingDataWithSingleUser,
     getFollowingAndFollowsCount,
     deleteFollowersForSingleConnection,
+    followersInLastNDays,
   };
 };
 

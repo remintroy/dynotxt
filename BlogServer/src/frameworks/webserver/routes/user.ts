@@ -1,11 +1,7 @@
 import ExpressApp from "express";
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 import blogRepositoryImpl from "../../mongoDb/repository/blogRepositoryImpl";
-// eslint-disable-next-line import/order
-import GetUtils from "dynotxt-common-services/utils";
 import userController from "../../../adaptor/controllers/userController";
-import makeExpressResponseCallback from "../callbacks/createExpressCallback";
-import mustLoginAsUser from "../middleware/mustLoginAsUser";
 import blogServiceInterface from "../../../adaptor/service";
 import blogServiceImpl from "../../services";
 import commentRepositoryInterface from "../../../adaptor/repositorys/commentRepositoryInterface";
@@ -14,58 +10,97 @@ import reactionRepositoryInterface from "../../../adaptor/repositorys/reactionRe
 import reactionRepositoryImpl from "../../mongoDb/repository/reactionsRepositoryImpl";
 import flagsRepositoryInterface from "../../../adaptor/repositorys/flagsRepositoryInterface";
 import flagsRepositoryImpl from "../../mongoDb/repository/flagsReporitoryImpl";
+import GetUtils from "dynotxt-common-services/build/utils";
+import GetJwt from "dynotxt-common-services/build/jwt";
+import getConfigs from "../../../configs";
+import GetExpress from "dynotxt-common-services/build/express";
+import viewsRepositoryInterface from "../../../adaptor/repositorys/viewsRepositoryInterface";
+import viewsRepositoryImpl from "../../mongoDb/repository/viewsRepositoryImpl";
 
 export default function userRouter(express: typeof ExpressApp) {
   const router = express.Router();
+  const config = getConfigs();
 
-  const utils = new GetUtils();
+  const expressService = new GetExpress();
+  const utilsService = new GetUtils();
+  const jwtService = new GetJwt({
+    accessTokenSecret: config.jwt.user,
+  });
+
   const blogRepository = blogRepositoryInteraface(blogRepositoryImpl());
   const blogService = blogServiceInterface(blogServiceImpl());
   const reactionRepository = reactionRepositoryInterface(reactionRepositoryImpl());
   const commentRepository = commentRepositoryInterface(commentRepositoryImpl());
   const flagsRepository = flagsRepositoryInterface(flagsRepositoryImpl());
+  const viewsRepository = viewsRepositoryInterface(viewsRepositoryImpl());
+
   const controller = userController(
     blogRepository,
     blogService,
     reactionRepository,
     flagsRepository,
     commentRepository,
-    utils.createError
+    viewsRepository,
+    utilsService
   );
 
-  router.route("/blog").post(mustLoginAsUser, makeExpressResponseCallback(controller.postUserNewBlog));
+  router.use(expressService.createAuthInit({ userJwt: jwtService }));
+
+  router
+    .route("/blog")
+    .post(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.postUserNewBlog));
   router
     .route("/blog/:id")
-    .get(makeExpressResponseCallback(controller.getUserBlogData))
-    .put(mustLoginAsUser, makeExpressResponseCallback(controller.putUserUpdateBlog))
-    .delete(mustLoginAsUser, makeExpressResponseCallback(controller.deleteUserBlog));
-  router.route("/blog/:id/edit").get(mustLoginAsUser, makeExpressResponseCallback(controller.getUserBlogDataForEdit));
-  router.route("/blog/:id/publish").put(mustLoginAsUser, makeExpressResponseCallback(controller.putUserPublishBlog));
+    .get(expressService.makeExpressCallback(controller.getUserBlogData))
+    .put(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserUpdateBlog))
+    .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUserBlog));
+  router
+    .route("/blog/:id/permenent")
+    .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteBlogPermenetly));
+  router
+    .route("/blog/:id/edit")
+    .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getUserBlogDataForEdit));
+  router
+    .route("/blog/:id/publish")
+    .put(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserPublishBlog));
   router
     .route("/blog/:id/unpublish")
-    .put(mustLoginAsUser, makeExpressResponseCallback(controller.putUserUnpublishBlog));
-  router.route("/upload/:id").get(mustLoginAsUser, makeExpressResponseCallback(controller.getUserBlogUploadUrl));
+    .put(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserUnpublishBlog));
+  router
+    .route("/upload/:id")
+    .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getUserBlogUploadUrl));
   router
     .route("/comment/:id")
-    .get(makeExpressResponseCallback(controller.getUserBlogComments))
-    .put(mustLoginAsUser, makeExpressResponseCallback(controller.putUserComment));
+    .get(expressService.makeExpressCallback(controller.getUserBlogComments))
+    .put(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserComment));
   router
     .route("/comment/:id/:cid")
-    .delete(mustLoginAsUser, makeExpressResponseCallback(controller.deleteUserBlogComment));
-  router.route("/user/:id").get(makeExpressResponseCallback(controller.getAllBlogsDisplay));
-  router.route("/trash").get(mustLoginAsUser, makeExpressResponseCallback(controller.getDeletedBlogs));
-  router.route("/trash/:id").put(mustLoginAsUser, makeExpressResponseCallback(controller.putRecoverDeletedBlog));
-  router.route("/public/all").get(makeExpressResponseCallback(controller.getAllBlogsForHome));
+    .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUserBlogComment));
+  router.route("/user/:id").get(expressService.makeExpressCallback(controller.getAllBlogsDisplay));
+  router
+    .route("/trash")
+    .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getDeletedBlogs));
+  router
+    .route("/trash/:id")
+    .put(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putRecoverDeletedBlog));
+  router.route("/public/all").get(expressService.makeExpressCallback(controller.getAllBlogsForHome));
   router
     .route("/like/:id")
-    .post(mustLoginAsUser, makeExpressResponseCallback(controller.putUserLikeBlog))
-    .delete(mustLoginAsUser, makeExpressResponseCallback(controller.deleteLikeBlog))
-    .get(makeExpressResponseCallback(controller.getBlogReactionStatus));
+    .post(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserLikeBlog))
+    .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteLikeBlog))
+    .get(expressService.makeExpressCallback(controller.getBlogReactionStatus));
   router
     .route("/dislike/:id")
-    .post(mustLoginAsUser, makeExpressResponseCallback(controller.putUserDislikeBlog))
-    .delete(mustLoginAsUser, makeExpressResponseCallback(controller.deleteUserDislikeBlog));
+    .post(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.putUserDislikeBlog))
+    .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUserDislikeBlog));
+  router.route("/report/:id").post(expressService.makeExpressCallback(controller.postAddBlogReport));
+  router
+    .route("/analytics/view/:id")
+    .get(expressService.makeExpressCallback(controller.getViewsByBlogId))
+    .post(expressService.makeExpressCallback(controller.postViewsAddNew));
+  router
+    .route("/analytics/view/")
+    .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getViewsByUserId));
 
-  router.route("/report/:id").post(makeExpressResponseCallback(controller.postAddBlogReport));
   return router;
 }

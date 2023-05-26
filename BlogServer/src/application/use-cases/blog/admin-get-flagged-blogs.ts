@@ -1,10 +1,11 @@
+import GetUtils from "dynotxt-common-services/build/utils";
 import flagsRepositoryInterface from "../../../adaptor/repositorys/flagsRepositoryInterface";
 
-const caseAdminGetFlaggeBlogs = async (flagsRepository: flagsRepositoryInterface, createError: any) => {
-  return await flagsRepository.getAllFlaggedBLogs().catch(() => {
-    throw createError(500, "Faild to get flagged blogs");
-  });
+const caseAdminGetFlaggedBlogs = async (flagsRepository: flagsRepositoryInterface, utilsService: GetUtils) => {
+  return await flagsRepository
+    .getAllFlaggedBLogs()
+    .catch(utilsService.throwInternalError("Faild to get flagged blogs"));
 };
 
-type caseAdminGetFlaggeBlogs = typeof caseAdminGetFlaggeBlogs;
-export default caseAdminGetFlaggeBlogs;
+type caseAdminGetFlaggedBlogs = typeof caseAdminGetFlaggedBlogs;
+export default caseAdminGetFlaggedBlogs;

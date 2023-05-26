@@ -3,6 +3,8 @@ export interface Blog {
   subtitle?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  trashedAt?: Date;
+  deletedAt?: Date;
   published?: boolean;
   blogId?: string;
   author?: string;
@@ -10,7 +12,7 @@ export interface Blog {
   bannerImgURL?: string;
   version?: number;
   body?: [any];
-  deleted?: boolean;
+  trashed?: boolean;
   disabled?: boolean;
 }
 
@@ -27,8 +29,10 @@ export class Blog {
     this.bannerImgURL = blogData.bannerImgURL;
     this.body = blogData.body;
     this.version = blogData.version;
-    this.deleted = blogData.deleted;
+    this.trashed = blogData.trashed;
     this.disabled = blogData.disabled;
+    this.trashedAt = blogData.trashedAt;
+    this.deletedAt = blogData.deletedAt;
   }
 }
 

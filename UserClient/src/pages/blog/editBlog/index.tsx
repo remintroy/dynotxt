@@ -24,6 +24,7 @@ import { Link, useParams } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
 import ImageUploadButtonComponent from "../../../components/blog/imageUploadButton";
 import { useGetBlogQuery, usePutCurrentStateMutation, usePutPublishBlogMutation } from "../../../lib/api/blogApi";
+import { NavigationProgress } from "@mantine/nprogress";
 
 const EditBlogPage = () => {
   const [title, setTitle] = useState("");
@@ -127,6 +128,7 @@ const EditBlogPage = () => {
 
   return (
     <Container className={`CreateBlog ${thisIsPc ? "" : "mb"}`}>
+      <NavigationProgress />
       <div className="titleBar">
         <div>
           <h2>Dynotxt</h2>

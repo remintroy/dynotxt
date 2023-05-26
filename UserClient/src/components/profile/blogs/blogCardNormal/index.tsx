@@ -6,7 +6,7 @@ const BlogCardNormalComponent = ({ blog, userId, span }: { blog: any; span?: num
   const { data: userData, isLoading: isUserDataLoading } = useGetUserDataWithUidQuery(userId, { skip: !userId });
 
   return (
-    <Grid.Col span={span ?? 6}>
+    <Grid.Col span={span ?? 12}>
       {/* p="lg" radius="md" withBorder */}
       <Box h={"100%"}>
         <Card.Section>
@@ -48,7 +48,7 @@ const BlogCardNormalComponent = ({ blog, userId, span }: { blog: any; span?: num
             </Grid.Col>
             <Grid.Col span={4}>
               <Image
-                radius={"sm"}
+                radius={"xs"}
                 src={blog?.bannerImgURL}
                 withPlaceholder
                 height={150}

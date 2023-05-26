@@ -1,6 +1,8 @@
+import GetUtils from "dynotxt-common-services/build/utils";
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { utilServiceImpl } from "../commonServices";
+
+const utilsService = new GetUtils();
 
 export const initializeFirebase = () => {
   initializeApp({
@@ -17,9 +19,6 @@ export const verifyIdToken = async (idToken: string) => {
     return await getAuth().getUser(uid);
   } catch (error) {
     // error handling
-    throw utilServiceImpl.createError(
-      400,
-      error.code?.split("/")[1]?.split("-")?.join(" ")
-    );
+    throw utilsService.createError(400, error.code?.split("/")[1]?.split("-")?.join(" "));
   }
 };

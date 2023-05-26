@@ -1,51 +1,37 @@
-import { IUser } from "../../../entities/user.normal";
+import GetUtils from "dynotxt-common-services/build/utils";
+import GetJwt from "dynotxt-common-services/build/jwt";
 import tokenRepositoryInteraface from "../../repository/tokensRepositoryInteraface";
 import userRepositoryInteraface from "../../repository/userRepositoryInteraface";
-import authServiceInterface from "../../services/authServices";
-import validatorInteraface from "../../services/validatorInteraface";
+import caseUserAccessCheck from "./user-access-checks";
 
 export default async function getUserFromRefreshToken(
-  userRepository: ReturnType<typeof userRepositoryInteraface>,
-  validator: ReturnType<typeof validatorInteraface>,
-  tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
-  authService: ReturnType<typeof authServiceInterface>,
-  createError,
-  refreshToken
+  userRepository: userRepositoryInteraface,
+  tokenRepository: tokenRepositoryInteraface,
+  jwtService: GetJwt,
+  utilsService: GetUtils,
+  refreshToken: string
 ) {
-  if (!refreshToken) throw createError(400, "Refresh token is required");
+  if (!refreshToken) throw utilsService.createError(400, "Refresh token is required");
 
-  // Check with validator
-  await validator.isValidJwt(refreshToken);
+  const tokenFromDb = await tokenRepository.getByToken(refreshToken).catch(utilsService.throwInternalError());
+  if (!tokenFromDb) throw utilsService.createError(400, "Refresh token is not valid");
 
-  try {
-    const tokenFromDb = await tokenRepository.getByToken(refreshToken);
-    if (!tokenFromDb) throw createError(400, "Refresh token is not valid");
-  } catch (error) {
-    throw createError(500, "Faild to fetch nessory data from server", error);
-  }
+  const { uid } = await jwtService.verifyRefreshToken(refreshToken);
+  const existingUserData = await caseUserAccessCheck(userRepository, utilsService, uid).catch(
+    utilsService.throwInternalError()
+  );
 
-  let existingData: IUser;
-
-  try {
-    const { uid } = await authService.getRefreshTokenPayload(refreshToken);
-    existingData = await userRepository.getById(uid);
-  } catch (error) {
-    throw createError(500, "Faild to fetch nessory data from server", error);
-  }
-
-  if (existingData.disabled) throw createError(401, "Your account is disabled");
-
-  const accessToken = authService.createAccessToken({ uid: existingData.uid });
+  const accessToken = jwtService.generateAccessToken({ uid: existingUserData.uid });
 
   return {
     accessToken,
-    email: existingData.email,
-    photoURL: existingData.photoURL,
-    name: existingData.name,
-    gender: existingData.gender,
-    privateAccount: existingData.privateAccount,
-    uid: existingData.uid,
-    dob: existingData.dob,
-    phone: existingData.phone,
+    email: existingUserData.email,
+    photoURL: existingUserData.photoURL,
+    name: existingUserData.name,
+    gender: existingUserData.gender,
+    privateAccount: existingUserData.privateAccount,
+    uid: existingUserData.uid,
+    dob: existingUserData.dob,
+    phone: existingUserData.phone,
   };
 }

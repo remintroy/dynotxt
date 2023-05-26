@@ -79,9 +79,6 @@ const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: 
                 </Button>
               </MediaQuery>
             )}
-            <MediaQuery largerThan="md" styles={{ display: "none" }}>
-              <IconSearch size={"25px"} />
-            </MediaQuery>
             {user && (
               <Link to={`/profile/${user.uid}`}>
                 <Avatar src={user.photoURL} radius={"xl"} />

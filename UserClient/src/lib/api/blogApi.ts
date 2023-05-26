@@ -101,7 +101,7 @@ const blogApiSlice = createApi({
       invalidatesTags: ["blogDisplay", "home"],
     }),
     getBlogDataDisplay: builder.query({
-      query: (uid) => `/user/${uid}`,
+      query: ({ uid, page }) => `/user/${uid}?page=${page}`,
       providesTags: ["blogDisplay"],
     }),
     deleteBlogWithBlogId: builder.mutation({
@@ -111,8 +111,15 @@ const blogApiSlice = createApi({
       }),
       invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
     }),
+    permenentlyDeleteBlog: builder.mutation({
+      query: (blogId) => ({
+        url: `/blog/${blogId}/permenent`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
+    }),
     getAllTrashedBlogs: builder.query({
-      query: () => `/trash`,
+      query: ({ page }) => `/trash?page=${page || 1}`,
       providesTags: ["deletedBlogs"],
     }),
     putRecoverTrashedBlog: builder.mutation({
@@ -165,6 +172,18 @@ const blogApiSlice = createApi({
         body: { message },
       }),
     }),
+    postBlogViewCount: builder.mutation({
+      query: (blogId) => ({
+        url: `/analytics/view/${blogId}`,
+        method: "POST",
+      }),
+    }),
+    getBlogViewCountByBlogId: builder.query({
+      query: (blogId) => `/analytics/view/${blogId}`,
+    }),
+    getBlogViewCountByUserId: builder.query({
+      query: () => `/analytics/view/`,
+    }),
   }),
 });
 
@@ -185,6 +204,7 @@ export const {
   useGetBlogDataDisplayQuery,
   usePutUnPublishBlogMutation,
   useDeleteBlogWithBlogIdMutation,
+  usePermenentlyDeleteBlogMutation,
   useGetAllTrashedBlogsQuery,
   usePutRecoverTrashedBlogMutation,
   useGetBlogsForHomeQuery,
@@ -194,4 +214,7 @@ export const {
   useDeleteBlogDislikeMutation,
   useGetBlogReactionStatusQuery,
   usePostBlogReportMutation,
+  usePostBlogViewCountMutation,
+  useGetBlogViewCountByBlogIdQuery,
+  useGetBlogViewCountByUserIdQuery,
 } = blogApiSlice;

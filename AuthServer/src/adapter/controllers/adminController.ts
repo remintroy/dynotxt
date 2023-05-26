@@ -1,46 +1,48 @@
 import { Request, Response } from "express";
-import { IAdminUser } from "../../frameworks/databases/mongoDb/models/admin.schema";
 import adminUserRepositoryImpl from "../../frameworks/databases/mongoDb/repository/adminRepositoryImpl";
 import authServiceInterface from "../../application/services/authServices";
 import validatorInteraface from "../../application/services/validatorInteraface";
-import signinAdmin from "../../application/use-cases/admin/signInAdmin";
+import signinAdmin from "../../application/use-cases/admin/admin-signin";
 import tokenRepositoryInteraface from "../../application/repository/tokensRepositoryInteraface";
-import getAdminFromRefreshToken from "../../application/use-cases/admin/admin-user-data-from-refresh-token";
+import getAdminFromRefreshToken from "../../application/use-cases/admin/admin-data-from-refresh-token";
 import userRepositoryInteraface from "../../application/repository/userRepositoryInteraface";
-import getAllUserforAdmin from "../../application/use-cases/admin/get-all-User";
-import disableUser from "../../application/use-cases/admin/disable-user";
-import enableUser from "../../application/use-cases/admin/enable-user";
-import getBlockedUsers from "../../application/use-cases/admin/get-blocked-users";
-import logoutAdmin from "../../application/use-cases/admin/logoutAdmin";
-import refreshAdmin from "../../application/use-cases/admin/refresh-access-token";
+import getAllUserforAdmin from "../../application/use-cases/admin/user-get-all";
+import disableUser from "../../application/use-cases/admin/user-disable-byid";
+import enableUser from "../../application/use-cases/admin/user-enable-byid";
+import getBlockedUsers from "../../application/use-cases/admin/user-get-blocked";
+import logoutAdmin from "../../application/use-cases/admin/admin-logout";
+import refreshAdmin from "../../application/use-cases/admin/admin-new-access-token";
+import GetUtils from "dynotxt-common-services/build/utils";
+import GetJwt from "dynotxt-common-services/build/jwt";
 
 export interface IRequest extends Request {
-  admin: IAdminUser;
+  admin: string;
 }
 
 const adminController = (
-  adminRepository: ReturnType<typeof adminUserRepositoryImpl>,
-  tokenRepository: ReturnType<typeof tokenRepositoryInteraface>,
-  userRepository: ReturnType<typeof userRepositoryInteraface>,
-  authService: ReturnType<typeof authServiceInterface>,
-  validator: ReturnType<typeof validatorInteraface>,
-  createError
+  adminRepository: adminUserRepositoryImpl,
+  tokenRepository: tokenRepositoryInteraface,
+  userRepository: userRepositoryInteraface,
+  authService: authServiceInterface,
+  validator: validatorInteraface,
+  utilsService: GetUtils,
+  jwtService: GetJwt
 ) => {
-  const signInAdminUser = async (req: IRequest, res: Response) => {
+  //
+  const postAdminSignin = async (req: IRequest, res: Response) => {
     const { email, password } = req.body;
     const response = await signinAdmin(
       adminRepository,
       tokenRepository,
       authService,
       validator,
-      createError,
+      jwtService,
+      utilsService,
       email,
       password
     );
     const currentdate = new Date();
-    const next3months = new Date(
-      currentdate.setMonth(currentdate.getMonth() + 3)
-    );
+    const next3months = new Date(currentdate.setMonth(currentdate.getMonth() + 3));
     res.cookie("suRefreshToken", response.refreshToken, {
       httpOnly: true,
       secure: true,
@@ -50,76 +52,46 @@ const adminController = (
     return response;
   };
 
-  const getAdminUserData = async (req: IRequest) => {
+  const getAdminDataFromRefreshToken = async (req: IRequest) => {
     const refreshToken = req.cookies.suRefreshToken;
-    const response = await getAdminFromRefreshToken(
-      adminRepository,
-      validator,
-      tokenRepository,
-      authService,
-      createError,
-      refreshToken
-    );
-    return response;
+    return await getAdminFromRefreshToken(adminRepository, tokenRepository, jwtService, utilsService, refreshToken);
   };
 
-  const getAdminAllUserDataAsPage = async (req: IRequest) => {
-    const pageNo = req.query.page;
-    const response = await getAllUserforAdmin(
-      userRepository,
-      createError,
-      pageNo
-    );
-    return response;
+  const getUsersDataPagewise = async (req: IRequest) => {
+    const pageNo = Number(req.query.page) || 1;
+    return await getAllUserforAdmin(userRepository, utilsService, pageNo);
   };
 
-  const putAdminChangeUserState = async (req: IRequest) => {
+  const putUserChangeState = async (req: IRequest) => {
     const { action, uid } = req.params;
-    const response =
-      action === "enable"
-        ? await enableUser(userRepository, createError, uid)
-        : await disableUser(userRepository, createError, uid);
-    return response;
+    return action === "enable"
+      ? await enableUser(userRepository, utilsService, uid)
+      : await disableUser(userRepository, utilsService, uid);
   };
 
-  const getAdminAllBlockedUsers = async (req: IRequest) => {
-    const pageNo = req.query.page;
-    const response = await getBlockedUsers(userRepository, createError, pageNo);
-    return response;
+  const getUsersAllBlocked = async (req: IRequest) => {
+    const pageNo = Number(req.query.page) || 1;
+    return await getBlockedUsers(userRepository, utilsService, pageNo);
   };
 
   const getAdminLogout = async (req: IRequest, res: Response) => {
-    const refreshToken = req.cookies.suRefreshToken;
-    const { email } = req.admin;
-    const response = await logoutAdmin(
-      tokenRepository,
-      createError,
-      refreshToken,
-      email
-    );
+    const refreshToken = req.cookies?.suRefreshToken;
+    const email = req.admin;
     res.cookie("suRefreshToken", "");
-    return response;
+    return await logoutAdmin(tokenRepository, utilsService, refreshToken, email);
   };
 
   const getNewAccessTokenFromRefreshToken = async (req: IRequest) => {
     const { suRefreshToken } = req.cookies;
-    const response = await refreshAdmin(
-      tokenRepository,
-      adminRepository,
-      authService,
-      validator,
-      createError,
-      suRefreshToken
-    );
-    return response;
+    return await refreshAdmin(tokenRepository, adminRepository, jwtService, utilsService, suRefreshToken);
   };
 
   return {
-    signInAdminUser,
-    getAdminUserData,
-    getAdminAllUserDataAsPage,
-    putAdminChangeUserState,
-    getAdminAllBlockedUsers,
+    postAdminSignin,
+    getAdminDataFromRefreshToken,
+    getUsersDataPagewise,
+    putUserChangeState,
+    getUsersAllBlocked,
     getAdminLogout,
     getNewAccessTokenFromRefreshToken,
   };
