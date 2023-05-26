@@ -104,7 +104,7 @@ const userController = (
     const response = await verifyEmail(
       userRepository,
       otpRepository,
-      authService,
+      emailService,
       tokenRepository,
       jwtService,
       utilsService,

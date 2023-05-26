@@ -78,6 +78,8 @@ export default async function userSignin(
     throw utilsService.createError(500, "Faild to login, Error updating login status");
   }
 
+  await emailService.sendNewLoginAlert(existingData?.email ?? user.email).catch(utilsService.throwInternalError());
+
   if (existingData) {
     return {
       ...tokens,
