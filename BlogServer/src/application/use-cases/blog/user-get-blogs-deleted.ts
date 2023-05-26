@@ -4,12 +4,13 @@ import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositor
 const caseUserBlogGetTrashed = async (
   blogRepository: blogRepositoryInteraface,
   utilsService: GetUtils,
-  userId: string
+  userId: string,
+  pageNumber: number
 ) => {
   if (!userId) throw utilsService.createError(401, "You must be logged in to get trashed blogs");
 
   const blogsOnTrash = await blogRepository
-    .getAllDeletedBlogs(userId)
+    .getAllDeletedBlogs(userId, pageNumber)
     .catch(utilsService.throwInternalError("Something went wrong while getting deleted blogs"));
 
   return blogsOnTrash;
