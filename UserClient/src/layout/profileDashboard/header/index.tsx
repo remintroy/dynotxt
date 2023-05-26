@@ -40,7 +40,7 @@ const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: 
     <Header height={{ base: 50, md: 70 }} p="xl">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
-          <MediaQuery largerThan="md" styles={{ display: "none" }}>
+          <MediaQuery largerThan="lg" styles={{ display: "none" }}>
             <Burger
               opened={opened}
               onClick={() => setOpened((o: any) => !o)}
@@ -79,9 +79,6 @@ const HeaderComponent = ({ navOpen: opened, setNavOpen: setOpened }: { navOpen: 
                 </Button>
               </MediaQuery>
             )}
-            <MediaQuery largerThan="md" styles={{ display: "none" }}>
-              <IconSearch size={"25px"} />
-            </MediaQuery>
             {user && (
               <Link to={`/profile/${user.uid}`}>
                 <Avatar src={user.photoURL} radius={"xl"} />

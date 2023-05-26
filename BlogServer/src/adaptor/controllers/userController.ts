@@ -94,7 +94,8 @@ const userController = (
 
   const getDeletedBlogs = async (req: RequestWithUser) => {
     const { user } = req;
-    return await caseUserBlogGetTrashed(blogRepository, utilsService, user);
+    const page = req.query.page ? Number(req.query.page) : 1;
+    return await caseUserBlogGetTrashed(blogRepository, utilsService, user, page);
   };
 
   const deleteUserBlog = async (req: RequestWithUser) => {

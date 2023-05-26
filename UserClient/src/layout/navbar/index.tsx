@@ -16,7 +16,7 @@ const NavBarComponent = () => {
       footer={<LayoutFooterMobile />}
     >
       <>
-        <Container size="xl" p={0}>
+        <Container size="xl">
           <Outlet />
         </Container>
         <div className="dummy"></div>

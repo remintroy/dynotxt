@@ -3,6 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: {
   allBlogsMetaData: any;
   allBlogs: any;
+  trashedBlogs: any;
+  trashedBlogsMetaData: any;
   privateBlogs: any;
   publicBlogs: any;
   user: any;
@@ -11,6 +13,8 @@ const initialState: {
 } = {
   allBlogsMetaData: {},
   allBlogs: {},
+  trashedBlogs: {},
+  trashedBlogsMetaData: {},
   privateBlogs: {},
   publicBlogs: {},
   user: null,
@@ -37,8 +41,20 @@ const profileSlice = createSlice({
     setAllBlogsMetaDataProfile: (state, action) => {
       state.allBlogsMetaData = action.payload;
     },
+    addBlogToTrashedBlogsProfile: (state, action) => {
+      state.trashedBlogs[action.payload?.blogId] = action.payload;
+    },
+    setTrashedBlogsMetaDataProfile: (state, action) => {
+      state.trashedBlogsMetaData = action.payload;
+    },
   },
 });
 
-export const { resetProfile, addBlogToAllBlogsProfile, setAllBlogsMetaDataProfile } = profileSlice.actions;
+export const {
+  resetProfile,
+  addBlogToAllBlogsProfile,
+  setAllBlogsMetaDataProfile,
+  addBlogToTrashedBlogsProfile,
+  setTrashedBlogsMetaDataProfile,
+} = profileSlice.actions;
 export default profileSlice.reducer;

@@ -14,12 +14,14 @@ import { useEffect } from "react";
 import { useAppDispatch } from "./lib/redux/hooks";
 import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
 import EditBlogPage from "./pages/blog/editBlog";
-import { Box } from "@mantine/core";
+import { Box, em } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import TestPage from "./pages/test";
 import PageInitialLoader from "./components/pageInitialLoader";
 import ProfileDashboardLayout from "./layout/profileDashboard";
 import ProfileBlogsPage from "./pages/profile/blogs";
+import ProfileCommentsPage from "./pages/profile/comments";
+import { setConfigThisIsPc } from "./lib/redux/configSlice";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/profile/:id/blogs",
         element: <ProfileBlogsPage />,
+      },
+      {
+        path: "/profile/:id/comments",
+        element: <ProfileCommentsPage />,
       },
     ],
   },
@@ -96,6 +102,12 @@ function App() {
       dispatch(setUser(data));
     }
   }, [data, isFetching, isLoading, isError]);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      dispatch(setConfigThisIsPc(window.innerWidth > 766));
+    });
+  }, []);
 
   return (
     <Box className="App">
