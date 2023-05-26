@@ -119,7 +119,7 @@ const blogApiSlice = createApi({
       invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
     }),
     getAllTrashedBlogs: builder.query({
-      query: () => `/trash`,
+      query: ({ page }) => `/trash?page=${page || 1}`,
       providesTags: ["deletedBlogs"],
     }),
     putRecoverTrashedBlog: builder.mutation({
@@ -216,5 +216,5 @@ export const {
   usePostBlogReportMutation,
   usePostBlogViewCountMutation,
   useGetBlogViewCountByBlogIdQuery,
-  useGetBlogViewCountByUserIdQuery
+  useGetBlogViewCountByUserIdQuery,
 } = blogApiSlice;

@@ -40,11 +40,11 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
         <Navbar
           p="xs"
           width={{
-            md: 300,
+            md: 0,
             lg: 300,
             base: 0,
           }}
-          hiddenBreakpoint="md"
+          hiddenBreakpoint="lg"
           hidden={hidden}
         >
           <Navbar.Section mt="xs">

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  thisIsPc: true,
+  thisIsPc: window.innerWidth > 766,
 };
 
 export const configSlice = createSlice({

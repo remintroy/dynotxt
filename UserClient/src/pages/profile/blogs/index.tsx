@@ -1,5 +1,5 @@
 import { Button, useMantineTheme } from "@mantine/core";
-import { useAppDispatch } from "../../../lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../lib/redux/hooks";
 import { useGetBlogDataDisplayQuery } from "../../../lib/api/blogApi";
 import { useEffect } from "react";
 import { addBlogToAllBlogsProfile, resetProfile, setAllBlogsMetaDataProfile } from "../../../lib/redux/profileSlice";
@@ -30,11 +30,11 @@ const ProfileBlogsPage = () => {
     };
   }, []);
 
-  const { colorScheme } = useMantineTheme();
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
 
   return (
     <>
-      {colorScheme == "dark" ? (
+      {thisIsPc ? (
         <>
           <PcProfileBlogsPageComponent />
         </>

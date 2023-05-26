@@ -38,6 +38,8 @@ const ProfileDashBoardPage = () => {
     };
   }, []);
 
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
+
   const { data: followersAnalyticsData } = useGetAnalyticsFollwersQuery({});
   const dataForListLables = followersAnalyticsData?.map((data: any) => data.date);
   const dataForList = followersAnalyticsData?.map((data: any) => data.count);
@@ -46,38 +48,49 @@ const ProfileDashBoardPage = () => {
   const viewsOfAllBlogsLables = viewsOfAllBlogsData?.map((data: any) => data.date);
   const viewsOfAllBlogs = viewsOfAllBlogsData?.map((data: any) => data.count);
 
+  const span = thisIsPc ? 6 : 12;
+
   return (
-    <div style={{ padding: "25px" }}>
+    <div style={{ padding: thisIsPc ? "20px" : 5 }}>
       <NavigationProgress />
-      <div className="porfileCont">
-        <Flex gap={"30px"} align={"center"} my={20}>
-          <Avatar size={"xl"} radius={"lg"} src={userData?.photoURL} />
+      <Box>
+        <Flex gap={thisIsPc?"30px":"15px"} align={"center"} my={20}>
+          <Avatar size={thisIsPc ? "xl" : "lg"} radius={"lg"} src={userData?.photoURL} />
           <div>
             <Flex mb={10} align={"center"} gap={20}>
-              <h1 style={{ margin: 0, padding: 0 }}>{userData?.name}</h1>
+              <Text fz={thisIsPc ? "28px" : "xl"} fw="bold" style={{ margin: 0, padding: 0 }}>
+                {userData?.name}
+              </Text>
             </Flex>
-            <Flex gap={10}>
-              <Chip checked={false}>{formatter.format(blogData?.totalDocs ?? 0)} Blogs</Chip>
-              <Chip checked={false}>{formatter.format(userData?.followers ?? 0)} Followers</Chip>
-              <Chip checked={false}>{formatter.format(userData?.following ?? 0)} Following</Chip>
+            <Flex gap={5}>
+              <Chip size={thisIsPc ? "md" : "xs"} checked={false}>
+                {formatter.format(blogData?.totalDocs ?? 0)} Blogs
+              </Chip>
+              <Chip size={thisIsPc ? "md" : "xs"} checked={false}>
+                {formatter.format(userData?.followers ?? 0)} Followers
+              </Chip>
+              <Chip size={thisIsPc ? "md" : "xs"} checked={false}>
+                {formatter.format(userData?.following ?? 0)} Following
+              </Chip>
             </Flex>
           </div>
         </Flex>
         <Text my={20}>{userData?.bio}</Text>
-      </div>
+      </Box>
       <Divider />
-      <Grid gutter={20}>
-        <Grid.Col span={6} mt={20}>
+      <Grid gutter={0} gutterLg={20} w={"100%"} m={0}>
+        <Grid.Col span={span} mt={20}>
           <Text fz={"xl"} fw="bold">
             Blogs views
           </Text>
+          <br />
           <Box sx={{ height: "300px", width: "100%" }}>
             <Line
               data={{
                 labels: viewsOfAllBlogsLables,
                 datasets: [
                   {
-                    label: "Followers",
+                    label: "Blog views",
                     data: viewsOfAllBlogs,
                     borderWidth: 1,
                     backgroundColor: colorScheme == "dark" ? "yellow" : "blue",
@@ -102,10 +115,11 @@ const ProfileDashBoardPage = () => {
             <Text mt={20}>Blogs views in last 10 days. which is caluclate taking total views of all blogs</Text>
           </Box>
         </Grid.Col>
-        <Grid.Col span={6} mt={20}>
+        <Grid.Col span={span} mt={thisIsPc ? 20 : 100}>
           <Text fz={"xl"} fw="bold">
             New Followers
           </Text>
+          <br />
           <Box sx={{ height: "300px", width: "100%" }}>
             <Line
               data={{
