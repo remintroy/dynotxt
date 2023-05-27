@@ -1,4 +1,4 @@
-import { AppShell, Navbar } from "@mantine/core";
+import { AppShell, Container, Navbar } from "@mantine/core";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
 import HeaderComponent from "./header";
@@ -12,7 +12,9 @@ const ProfileDashboardLayout = () => {
       header={<HeaderComponent navOpen={navbar} setNavOpen={setShowNav} />}
       navbar={<NavBarSubComponent hidden={!navbar} />}
     >
-      <Outlet />
+      <Container fluid p={0}>
+        <Outlet />
+      </Container>
     </AppShell>
   );
 };

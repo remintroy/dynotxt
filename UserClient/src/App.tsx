@@ -10,18 +10,19 @@ import UserProfilePage from "./pages/profile/";
 import BlogViewPage from "./pages/blog/viewBlog";
 import VerfiyEmailPage from "./pages/auth/verifyEmail";
 import { useGetUserDataQuery } from "./lib/api/authApi";
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useAppDispatch } from "./lib/redux/hooks";
 import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
 import EditBlogPage from "./pages/blog/editBlog";
-import { Box, em } from "@mantine/core";
+import { Box } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import TestPage from "./pages/test";
 import PageInitialLoader from "./components/pageInitialLoader";
-import ProfileDashboardLayout from "./layout/profileDashboard";
-import ProfileBlogsPage from "./pages/profile/blogs";
-import ProfileCommentsPage from "./pages/profile/comments";
 import { setConfigThisIsPc } from "./lib/redux/configSlice";
+import ProfileDashboardLayout from "./layout/profileDashboard";
+const ProfileCommentsPage = lazy(() => import("./pages/profile/comments"));
+const ProfileBlogsPage = lazy(() => import("./pages/profile/blogs"));
+const AccountProfilePage = lazy(() => import("./pages/profile/accountPage"));
 
 const router = createBrowserRouter([
   {
@@ -49,11 +50,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/profile/:id/blogs",
-        element: <ProfileBlogsPage />,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProfileBlogsPage />
+          </Suspense>
+        ),
       },
       {
         path: "/profile/:id/comments",
-        element: <ProfileCommentsPage />,
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProfileCommentsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/profile/:id/account",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <AccountProfilePage />
+          </Suspense>
+        ),
       },
     ],
   },
@@ -92,10 +109,10 @@ function App() {
 
   useEffect(() => {
     if (isError) {
-      dispatch(resetUserData());
+      // dispatch(resetUserData());
       dispatch(setUserStatus({ error: true }));
     } else if (isFetching || isLoading) {
-      dispatch(resetUserData());
+      // dispatch(resetUserData());
       dispatch(setUserStatus({ loading: true }));
     } else if (data) {
       dispatch(resetUserData());

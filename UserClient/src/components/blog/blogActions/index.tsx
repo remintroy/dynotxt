@@ -55,14 +55,14 @@ const BlogActionButtonComponent = ({ blogId }: { blogId?: string }) => {
           {data?.dislikes ?? 0} dislikes
         </Text>
       </Flex>
-      <Flex align={"center"} justify={"center"} direction={"column"}>
+      {/* <Flex align={"center"} justify={"center"} direction={"column"}>
         <ActionIcon>
           <IconBookmark />
         </ActionIcon>
         <Text fz={"sm"} color="dimmed">
           -
         </Text>
-      </Flex>
+      </Flex> */}
     </Flex>
   );
 };

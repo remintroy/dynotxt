@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Avatar, Box, Button, Chip, Flex, Grid, Loader, Tabs, Text } from "@mantine/core";
+import { Avatar, Box, Button, Chip, Container, Flex, Grid, Loader, Tabs, Text } from "@mantine/core";
 import { IconWorld, IconPhoto, IconLock } from "@tabler/icons-react";
 import { IconSettings } from "@tabler/icons-react";
 import { useGetUserDataWithUidQuery } from "../../../lib/api/authApi";
@@ -9,7 +9,6 @@ import { useGetBlogDataDisplayQuery } from "../../../lib/api/blogApi";
 import { NavigationProgress, nprogress } from "@mantine/nprogress";
 import { addBlogToAllBlogsProfile, resetProfile, setAllBlogsMetaDataProfile } from "../../../lib/redux/profileSlice";
 import FollowButtonComponent from "../../../components/profile/followButton";
-import SettingsComponent from "../../../components/profile/settings";
 import BlogCardWithSettingsComponent from "../../../components/profile/blogs/blogCardSettings";
 
 const AllBlogListComponent = () => {
@@ -79,27 +78,35 @@ const UserProfilePage = () => {
   const [tabsValue, setTabsValue] = useState<string | null>("all-blogs");
   const formatter = Intl.NumberFormat("us", { notation: "compact" });
   const { data: userData } = useGetUserDataWithUidQuery(userId);
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
 
   return (
-    <div style={{ padding: "25px" }}>
+    <Container p={0}>
       <NavigationProgress />
-      <div className="porfileCont">
-        <Flex gap={"30px"} align={"center"} my={20}>
-          <Avatar size={"xl"} radius={"lg"} src={userData?.photoURL} />
+      <Box>
+        <Flex gap={thisIsPc ? "30px" : "15px"} align={"center"} my={20}>
+          <Avatar size={thisIsPc ? "xl" : "lg"} radius={"lg"} src={userData?.photoURL} />
           <div>
             <Flex mb={10} align={"center"} gap={20}>
-              <h1 style={{ margin: 0, padding: 0 }}>{userData?.name}</h1>
-              {currentUser && currentUser?.uid != userId && <FollowButtonComponent userId={userData?.uid} />}
+              <Text fz={thisIsPc ? "28px" : "xl"} fw="bold" style={{ margin: 0, padding: 0 }}>
+                {userData?.name}
+              </Text>
             </Flex>
-            <Flex gap={10}>
-              <Chip checked={false}>{formatter.format(blogData?.totalDocs ?? 0)} Blogs</Chip>
-              <Chip checked={false}>{formatter.format(userData?.followers ?? 0)} Followers</Chip>
-              <Chip checked={false}>{formatter.format(userData?.following ?? 0)} Following</Chip>
+            <Flex gap={5}>
+              <Chip size={thisIsPc ? "md" : "xs"} checked={false}>
+                {formatter.format(blogData?.totalDocs ?? 0)} Blogs
+              </Chip>
+              <Chip size={thisIsPc ? "md" : "xs"} checked={false}>
+                {formatter.format(userData?.followers ?? 0)} Followers
+              </Chip>
+              <Chip size={thisIsPc ? "md" : "xs"} checked={false}>
+                {formatter.format(userData?.following ?? 0)} Following
+              </Chip>
             </Flex>
           </div>
         </Flex>
         <Text my={20}>{userData?.bio}</Text>
-      </div>
+      </Box>
 
       <Tabs value={tabsValue} onTabChange={setTabsValue}>
         <Tabs.List mb={15}>
@@ -126,20 +133,8 @@ const UserProfilePage = () => {
         <Tabs.Panel value="all-blogs" pt="xs">
           <AllBlogListComponent />
         </Tabs.Panel>
-
-        {/* <Tabs.Panel value="public" pt="xs">
-          <BlogsList data={publicBlogs} />
-        </Tabs.Panel>
-
-        <Tabs.Panel value="private" pt="xs">
-          <BlogsList data={privateBlogs} />
-        </Tabs.Panel> */}
-
-        <Tabs.Panel value="settings" pt="xs">
-          <SettingsComponent />
-        </Tabs.Panel>
       </Tabs>
-    </div>
+    </Container>
   );
 };
 

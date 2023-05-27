@@ -11,9 +11,7 @@ import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
 import { ActionIcon, Box, Chip, Flex, Image, Loader, Menu, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { IconMessage, IconRecycle, IconThumbUp } from "@tabler/icons-react";
-import { IconWorld } from "@tabler/icons-react";
-import { IconLock } from "@tabler/icons-react";
+import { IconRecycle } from "@tabler/icons-react";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { IconTrash } from "@tabler/icons-react";
 
@@ -79,6 +77,13 @@ const MbTrashedBLogsProfileComponent = () => {
   return (
     <div>
       <Flex direction={"column"} gap={15}>
+        {Object.keys(trashedBlogs).filter((key) => !trashedBlogs[key]?.recovered).length == 0 &&
+          !isLoading &&
+          !isFetching && (
+            <Text align="center" py={20}>
+              Your blogs will appear here
+            </Text>
+          )}
         {Object.keys(trashedBlogs)
           .filter((key) => !trashedBlogs[key]?.recovered)
           .map((key: string) => {

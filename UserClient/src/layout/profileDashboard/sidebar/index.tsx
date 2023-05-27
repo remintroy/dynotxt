@@ -92,7 +92,7 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
                 description="Manage your blogs"
               />
             </Link>
-            <Link to={`/profile/${user?.uid}/comments`} className="link">
+            {/* <Link to={`/profile/${user?.uid}/comments`} className="link">
               <NavLink
                 variant="light"
                 label="Comments"
@@ -100,7 +100,7 @@ const NavBarSubComponent = ({ hidden }: { hidden: boolean }) => {
                 description="New comments, all comments"
                 icon={<IconMessage />}
               />
-            </Link>
+            </Link> */}
           </Navbar.Section>
 
           <Navbar.Section>

@@ -122,6 +122,13 @@ const MBAllBLogsTableProfileComponent = () => {
   return (
     <div>
       <Flex direction={"column"} gap={15}>
+        {Object.keys(allBlogsData).filter((key) => !allBlogsData[key]?.trashed).length == 0 &&
+          !isLoading &&
+          !isFetching && (
+            <Text align="center" py={20}>
+              Your blogs will appear here
+            </Text>
+          )}
         {Object.keys(allBlogsData)
           .filter((key) => !allBlogsData[key]?.trashed)
           .map((key: string) => {

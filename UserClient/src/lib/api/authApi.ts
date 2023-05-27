@@ -80,7 +80,7 @@ const userApiSlice = createApi({
         method: "PUT",
         body: data,
       }),
-      // invalidatesTags: ["userData"],
+      invalidatesTags: ["userData", "allUserData", "userDataPublic"],
     }),
     putUserPersionalData: builder.mutation({
       query: (data) => ({
@@ -88,7 +88,7 @@ const userApiSlice = createApi({
         method: "PUT",
         body: data,
       }),
-      // invalidatesTags: ["userData"],
+      invalidatesTags: ["userData", "allUserData", "userDataPublic"],
     }),
     postFollowUser: builder.mutation({
       query: (uid) => ({
@@ -132,5 +132,5 @@ export const {
   useGetFollowUserQuery,
   useDeleteFollowUserMutation,
   useLogOutMutation,
-  useGetAnalyticsFollwersQuery
+  useGetAnalyticsFollwersQuery,
 } = userApiSlice;

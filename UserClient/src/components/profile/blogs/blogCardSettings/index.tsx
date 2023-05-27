@@ -42,6 +42,7 @@ const BlogCardWithSettingsComponent = ({
 }) => {
   const { data: userData, isLoading: isUserDataLoading } = useGetUserDataWithUidQuery(userId, { skip: !userId });
   const user = useAppSelector((state) => state.user.data);
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
 
   const [makePublicApi] = usePutPublishBlogMutation();
   const [makePrivateApi] = usePutUnPublishBlogMutation();

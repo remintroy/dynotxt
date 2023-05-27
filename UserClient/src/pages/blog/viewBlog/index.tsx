@@ -19,6 +19,7 @@ import BlogCardNormalComponent from "../../../components/profile/blogs/blogCardN
 
 const BlogViewPage = () => {
   const user = useAppSelector((state) => state.user.data);
+  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
   const { id: blogId } = useParams();
   const [postViewCountApi] = usePostBlogViewCountMutation();
   const {
@@ -75,7 +76,7 @@ const BlogViewPage = () => {
   }, [blogData]);
 
   return (
-    <Container className="BlogViewPage">
+    <Container className="BlogViewPage" p={0}>
       <NavigationProgress />
       {!isError && (
         <Grid>
@@ -91,34 +92,42 @@ const BlogViewPage = () => {
               <Text color="dimmed" size={"sm"}>
                 Created at : {new Date(blogData?.createdAt).toDateString()}
               </Text>
-              <Box className="user" my={20}>
-                <Flex mt={20} align={"center"} justify={"space-between"}>
-                  <Flex align={"center"} gap={10}>
-                    {isAuthorLoading || isAuthorFetching ? (
-                      <Skeleton radius={"xl"} w={40} h={40} />
-                    ) : (
+              <Box className="user" w={"100%"} my={20}>
+                {/* <Flex mt={20} align={"center"} w={"100%"} justify={"space-between"}> */}
+                <Grid align="center">
+                  <Grid.Col span={thisIsPc ? 6 : 12}>
+                    <Flex align={"center"} gap={10}>
+                      {isAuthorLoading || isAuthorFetching ? (
+                        <Skeleton radius={"xl"} w={40} h={40} />
+                      ) : (
+                        <Link className="link" to={`/profile/${authorData?.uid}`}>
+                          <Avatar radius={"xl"} src={authorData?.photoURL} />
+                        </Link>
+                      )}
                       <Link className="link" to={`/profile/${authorData?.uid}`}>
-                        <Avatar radius={"xl"} src={authorData?.photoURL} />
+                        <div>
+                          {isAuthorLoading || isAuthorFetching ? (
+                            <Skeleton w={150} h={20} />
+                          ) : (
+                            <Text>{authorData?.name}</Text>
+                          )}
+                          {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
+                        </div>
                       </Link>
-                    )}
-                    <Link className="link" to={`/profile/${authorData?.uid}`}>
-                      <div>
-                        {isAuthorLoading || isAuthorFetching ? (
-                          <Skeleton w={150} h={20} />
-                        ) : (
-                          <Text>{authorData?.name}</Text>
-                        )}
-                        {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
-                      </div>
-                    </Link>
-                    {isAuthorLoading || isAuthorFetching ? (
-                      <Skeleton w={100} h={40} />
-                    ) : (
-                      <>{user && <FollowButtonComponent userId={authorData?.uid} />}</>
-                    )}
-                  </Flex>
-                  <BlogActionButtonComponent blogId={blogId} />
-                </Flex>
+                      {isAuthorLoading || isAuthorFetching ? (
+                        <Skeleton w={100} h={40} />
+                      ) : (
+                        <>{user && <FollowButtonComponent userId={authorData?.uid} />}</>
+                      )}
+                    </Flex>
+                  </Grid.Col>
+                  <Grid.Col span={thisIsPc ? 6 : 12}>
+                    <Flex justify={"end"}>
+                      <BlogActionButtonComponent blogId={blogId} />
+                    </Flex>
+                  </Grid.Col>
+                </Grid>
+                {/* </Flex> */}
               </Box>
               <Image width="100%" height={400} src={blogData?.bannerImgURL} withPlaceholder radius={5} />
               <br />

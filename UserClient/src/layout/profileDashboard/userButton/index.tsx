@@ -1,15 +1,5 @@
-import {
-  UnstyledButton,
-  UnstyledButtonProps,
-  Group,
-  Avatar,
-  Text,
-  createStyles,
-  ActionIcon,
-  Loader,
-  Skeleton,
-} from "@mantine/core";
-import { IconChevronRight } from "@tabler/icons-react";
+import { UnstyledButton, UnstyledButtonProps, Group, Avatar, Text, createStyles, Skeleton } from "@mantine/core";
+import { IconSettings } from "@tabler/icons-react";
 import { useAppSelector } from "../../../lib/redux/hooks";
 
 const useStyles = createStyles((theme) => ({
@@ -58,7 +48,7 @@ export function UserButton({ image, name, email, icon, ...others }: UserButtonPr
           )}
         </div>
 
-        {!userLoading && (icon || <IconChevronRight size="0.9rem" stroke={1.5} />)}
+        {!userLoading && (icon || <IconSettings size="1.5rem" stroke={1.5} />)}
       </Group>
     </UnstyledButton>
   );

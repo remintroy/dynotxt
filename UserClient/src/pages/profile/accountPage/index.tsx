@@ -3,15 +3,15 @@ import {
   useGetFullUserDataQuery,
   usePutUserDataMutation,
   usePutUserPersionalDataMutation,
-} from "../../../../lib/api/authApi";
+} from "../../../lib/api/authApi";
 import { Avatar, Box, Button, Container, Divider, Flex, Grid, Input, Loader, Select, Text } from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storageConfig } from "../../../../lib/firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"; 
 import { nprogress, NavigationProgress } from "@mantine/nprogress";
+import { storageConfig } from "../../../lib/firebase";
 
-const UserPublicProfileDataManagerComponent = () => {
+const AccountProfilePage = () => {
   const { data: user, isLoading, isFetching } = useGetFullUserDataQuery({});
   const openRef = useRef<() => void>(null);
 
@@ -152,7 +152,7 @@ const UserPublicProfileDataManagerComponent = () => {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <NavigationProgress />
       {(isLoading || isFetching) && (
         <Box>
@@ -160,7 +160,7 @@ const UserPublicProfileDataManagerComponent = () => {
         </Box>
       )}
       {user && !isLoading && !isFetching && (
-        <Box w={"100%"} >
+        <Box w={"100%"}>
           <Text fz={"20px"} fw={"bold"}>
             Public Profile
           </Text>
@@ -258,4 +258,4 @@ const UserPublicProfileDataManagerComponent = () => {
   );
 };
 
-export default UserPublicProfileDataManagerComponent;
+export default AccountProfilePage;

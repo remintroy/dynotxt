@@ -1,7 +1,6 @@
-import { Box, Button, Paper, Tabs } from "@mantine/core";
+import { Box, Button, Container, Paper, Tabs } from "@mantine/core";
 import { IconAccessPoint, IconLock, IconLogout, IconUser } from "@tabler/icons-react";
 import UserPublicProfileDataManagerComponent from "./profile";
-import TrashedBlogsComponent from "./trash";
 import { IconTrash } from "@tabler/icons-react";
 import { useLogOutMutation } from "../../../lib/api/authApi";
 import { useAppDispatch } from "../../../lib/redux/hooks";
@@ -21,7 +20,7 @@ const SettingsComponent = () => {
   };
 
   return (
-    <div>
+    <Container>
       <Box py={10}>
         <Paper w={"100%"}>
           <Tabs defaultValue="profile" orientation="vertical">
@@ -43,9 +42,6 @@ const SettingsComponent = () => {
               <Tabs.Panel value="profile">
                 <UserPublicProfileDataManagerComponent />
               </Tabs.Panel>
-              <Tabs.Panel value="trash">
-                <TrashedBlogsComponent />
-              </Tabs.Panel>
               <Tabs.Panel value="security">Settings tab content</Tabs.Panel>
               <Tabs.Panel value="account">
                 <Button leftIcon={<IconLogout size={"20px"} />} variant="default" onClick={() => logoutHandler()}>
@@ -56,7 +52,7 @@ const SettingsComponent = () => {
           </Tabs>
         </Paper>
       </Box>
-    </div>
+    </Container>
   );
 };
 
