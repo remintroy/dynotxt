@@ -1,11 +1,19 @@
-import { Flex, Progress, Text } from "@mantine/core";
+import { Flex, Progress, Text, useMantineTheme } from "@mantine/core";
 
 /**
  * @returns React component with simple progress bar loader for application
  */
 const AppLoaderComponent = () => {
+  const { colorScheme } = useMantineTheme();
   return (
-    <Flex sx={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0 }} align={"center"} justify={"center"} direction={"column"} gap={10}>
+    <Flex
+      bg={colorScheme == "dark" ? "black" : "white"}
+      sx={{ position: "fixed", zIndex: 1000, top: 0, bottom: 0, left: 0, right: 0 }}
+      align={"center"}
+      justify={"center"}
+      direction={"column"}
+      gap={10}
+    >
       <Text fz={20} fw="bold">
         DYNOTXT
       </Text>

@@ -116,7 +116,7 @@ const ProfileSettingsDashboardSubPage = () => {
             </Box>
           </Card>
         </Grid.Col>
-        <Grid.Col span={12} mt={thisIsPc ? 20 : 100}>
+        <Grid.Col span={12}>
           <Card>
             <Text fz={"xl"} fw="bold">
               New Followers
