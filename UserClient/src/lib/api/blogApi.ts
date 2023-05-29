@@ -1,4 +1,4 @@
-import { logout, refresh } from "../redux/userSlice";
+import { logout, refresh } from "../redux/slices/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 
 const baseQuery = fetchBaseQuery({
