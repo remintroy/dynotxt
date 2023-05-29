@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { logout, refresh } from "../redux/userSlice";
+import { logout, refresh } from "../redux/slices/user";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://server.dynotxt.com/auth/api/v1",
@@ -31,7 +31,7 @@ const userApiSlice = createApi({
   tagTypes: ["userData", "allUserData", "singleFollow", "userDataPublic"],
   endpoints: (builder) => ({
     signin: builder.mutation({
-      query: ({ idToken }) => ({
+      query: (idToken) => ({
         url: "/signin",
         method: "POST",
         body: {
@@ -80,7 +80,7 @@ const userApiSlice = createApi({
         method: "PUT",
         body: data,
       }),
-      // invalidatesTags: ["userData"],
+      invalidatesTags: ["userData", "allUserData", "userDataPublic"],
     }),
     putUserPersionalData: builder.mutation({
       query: (data) => ({
@@ -88,7 +88,7 @@ const userApiSlice = createApi({
         method: "PUT",
         body: data,
       }),
-      // invalidatesTags: ["userData"],
+      invalidatesTags: ["userData", "allUserData", "userDataPublic"],
     }),
     postFollowUser: builder.mutation({
       query: (uid) => ({
@@ -132,5 +132,5 @@ export const {
   useGetFollowUserQuery,
   useDeleteFollowUserMutation,
   useLogOutMutation,
-  useGetAnalyticsFollwersQuery
+  useGetAnalyticsFollwersQuery,
 } = userApiSlice;
