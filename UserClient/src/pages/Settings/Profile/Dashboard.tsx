@@ -50,8 +50,6 @@ const ProfileSettingsDashboardSubPage = () => {
   const viewsOfAllBlogsLables = viewsOfAllBlogsData?.map((data: any) => data.date);
   const viewsOfAllBlogs = viewsOfAllBlogsData?.map((data: any) => data.count);
 
-  const span = thisIsPc ? 6 : 12;
-
   return (
     <div style={{ padding: thisIsPc ? "20px" : 5 }}>
       <NavigationProgress progressLabel="Page progress bar" />
@@ -81,7 +79,7 @@ const ProfileSettingsDashboardSubPage = () => {
       </Box>
       <Divider />
       <Grid gutter={0} gutterLg={20} w={"100%"} m={0}>
-        <Grid.Col span={"auto"} mt={20}>
+        <Grid.Col span={12} mt={20}>
           <Card>
             <Text fz={"xl"} fw="bold">
               Blogs views
@@ -118,7 +116,7 @@ const ProfileSettingsDashboardSubPage = () => {
             </Box>
           </Card>
         </Grid.Col>
-        <Grid.Col span={"auto"} mt={thisIsPc ? 20 : 100}>
+        <Grid.Col span={12} mt={thisIsPc ? 20 : 100}>
           <Card>
             <Text fz={"xl"} fw="bold">
               New Followers
