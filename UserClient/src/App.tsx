@@ -9,6 +9,7 @@ import NavbarLayout from "./layout/Navbar";
 import AppLoaderComponent from "./components/AppLoader";
 import AuthLayout from "./layout/Navbar/Auth";
 import ProfileSettingsPage from "./pages/Settings/Profile";
+import BlogsSettingsPage from "./pages/Settings/Blogs";
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
 const SignUpPage = lazy(() => import("./pages/Auth/Signup"));
 
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
       {
         path: "profile/:id",
         element: <ProfileSettingsPage />,
+      },
+      {
+        path: "profile/:id/blogs",
+        element: <BlogsSettingsPage />,
       },
     ],
   },

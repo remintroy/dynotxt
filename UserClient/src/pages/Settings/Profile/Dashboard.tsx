@@ -78,7 +78,7 @@ const ProfileSettingsDashboardSubPage = () => {
         <Text my={20}>{userData?.bio}</Text>
       </Box>
       <Divider />
-      <Grid gutter={0} gutterLg={20} w={"100%"} m={0}>
+      <Grid gutter={0} w={"100%"} m={0}>
         <Grid.Col span={12} mt={20}>
           <Card>
             <Text fz={"xl"} fw="bold">
@@ -116,7 +116,7 @@ const ProfileSettingsDashboardSubPage = () => {
             </Box>
           </Card>
         </Grid.Col>
-        <Grid.Col span={12} mt={thisIsPc ? 20 : 100}>
+        <Grid.Col span={12} mt={20}>
           <Card>
             <Text fz={"xl"} fw="bold">
               New Followers
