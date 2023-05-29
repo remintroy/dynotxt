@@ -42,7 +42,7 @@ const getConfigs = () => {
       },
     },
     cors: {
-      origin: ["*", "https://dynotxt.com", "https://admin.dynotxt.com"],
+      origin: ["*", "https://dynotxt.com", "https://admin.dynotxt.com", "https://dynotxt.pages.dev"],
       credentials: true,
     },
     colors: {

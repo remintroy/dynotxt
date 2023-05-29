@@ -199,7 +199,7 @@ const blogRepositoryImpl = () => {
 
   const getAllBlogsDisplayWithUid = async (userId: string, page: number) => {
     const aggrigate = BlogModel.aggregate([
-      { $match: { author: userId, trashed: false } },
+      { $match: { author: userId, trashed: false, published: true } },
       {
         $group: {
           _id: "$blogId",
