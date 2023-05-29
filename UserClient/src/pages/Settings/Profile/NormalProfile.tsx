@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Container, Divider, Flex, Grid, Text, useMantineColorScheme } from "@mantine/core";
+import { Avatar, Box, Chip, Container, Divider, Flex, Grid, Text } from "@mantine/core";
 import { NavigationProgress } from "@mantine/nprogress";
 import usePathHook from "../../../hooks/usePath";
 import useUserDataHook from "../../../hooks/useUserData";
@@ -9,12 +9,10 @@ import { useEffect } from "react";
 import { addBlogToAllBlogsProfile, resetProfile, setAllBlogsMetaDataProfile } from "../../../lib/redux/slices/profile";
 import useThisIsPcHook from "../../../hooks/useThisIsPc";
 import BlogCardComponent from "../../../components/BlogCardSimple";
-import useUserDataLoadingHook from "../../../hooks/useUserDataLoading";
 
 const NormalProfileSubPage = () => {
   const path = usePathHook();
   const user = useUserDataHook();
-  const userDataLoading = useUserDataLoadingHook();
   const { data: userData } = useGetUserDataWithUidQuery(path[1]);
   const blogData = useAppSelector((state) => state.profile?.allBlogsMetaData);
   const formatter = Intl.NumberFormat("us", { notation: "compact" });
