@@ -55,7 +55,14 @@ const NormalSidebarLayoutComponent = () => {
           <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconHome />} active={path.length == 0} label="Home" description="Home sweet home" />
         </Link>
         <Link to={`/profile/${user?.uid}/blogs`} className="link" aria-label="Manage blogs button">
-          <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconFileAnalytics />} label="Blogs" description="view and manage your blogs" />
+          <NavLink
+            sx={{ borderRadius: 5 }}
+            variant="filled"
+            icon={<IconFileAnalytics />}
+            active={path[0] == "profile" && path[1] == `${user?.uid}` && path[2] == "blogs"}
+            label="Blogs"
+            description="view and manage your blogs"
+          />
         </Link>
         <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconCompass />} label="Explore" description="New arrivals " />
       </Navbar.Section>
