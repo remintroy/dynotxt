@@ -3,7 +3,77 @@ import BlogModel from "../models/blog";
 
 const blogRepositoryImpl = () => {
   const getBlogById = async (blogId: string) => {
-    return await BlogModel.findOne({ blogId, trashed: false, disabled: false });
+    const response = await BlogModel.aggregate([
+      {
+        $match: { blogId, trashed: false, disabled: false },
+      },
+      {
+        $lookup: {
+          from: "reactions",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "reactions",
+          pipeline: [
+            {
+              $facet: {
+                likes: [
+                  { $match: { value: "like" } },
+                  { $group: { _id: "$blogId", count: { $sum: 1 } } },
+                  { $project: { _id: 0 } },
+                ],
+                dislikes: [
+                  { $match: { value: "dislike" } },
+                  { $group: { _id: "$blogId", count: { $sum: 1 } } },
+                  { $project: { _id: 0 } },
+                ],
+              },
+            },
+            {
+              $project: {
+                likes: { $arrayElemAt: ["$likes.count", 0] },
+                dislikes: { $arrayElemAt: ["$dislikes.count", 0] },
+              },
+            },
+          ],
+        },
+      },
+      { $addFields: { reactions: { $arrayElemAt: ["$reactions", 0] } } },
+      { $addFields: { "reactions.likes": { $ifNull: ["$reactions.likes", 0] } } },
+      { $addFields: { "reactions.dislikes": { $ifNull: ["$reactions.dislikes", 0] } } },
+      {
+        $project: {
+          _id: 0,
+          __v: 0,
+          version: 0,
+          trashedAt: 0,
+          trashed: 0,
+          deleted: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "comments",
+          pipeline: [{ $project: { count: { $size: "$comment" } } }, { $project: { _id: 0 } }],
+        },
+      },
+      { $addFields: { comments: { $arrayElemAt: ["$comments.count", 0] } } },
+      { $addFields: { comments: { $ifNull: ["$comments", 0] } } },
+      {
+        $lookup: {
+          from: "views",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "views",
+          pipeline: [{ $group: { _id: "$blogId", count: { $sum: 1 } } }, { $project: { _id: 0 } }],
+        },
+      },
+      { $addFields: { views: { $arrayElemAt: ["$views.count", 0] } } },
+      { $addFields: { views: { $ifNull: ["$views", 0] } } },
+    ]);
+    return response[0];
   };
 
   const getBlogByIdPrivate = async (blogId: string, authorId: string) => {
