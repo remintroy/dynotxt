@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import { useHotkeys, useLocalStorage } from "@mantine/hooks";
+import { useFullscreen, useHotkeys, useLocalStorage } from "@mantine/hooks";
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from "@mantine/core";
 import { Provider } from "react-redux";
 import store from "./lib/redux/store.ts";
@@ -17,11 +17,20 @@ const Main = () => {
     getInitialValueInEffect: true,
   });
   const toggleColorScheme = (value?: ColorScheme) => setColorScheme(value || (colorScheme === "dark" ? "light" : "dark"));
+
+  /**
+   * Toggle full screen view mode
+   */
+  const { toggle: toggleFulScreenMode } = useFullscreen();
+
   /**
    * short cut for changing the color scheme
    * Used keybord sortcuts for toggle dark and light color schemes
    */
-  useHotkeys([["mod+J", () => toggleColorScheme()]]);
+  useHotkeys([
+    ["mod+J", () => toggleColorScheme()],
+    ["mod+f", () => toggleFulScreenMode()],
+  ]);
 
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
