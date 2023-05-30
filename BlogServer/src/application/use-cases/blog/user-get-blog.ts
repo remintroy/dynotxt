@@ -1,6 +1,5 @@
 import GetUtils from "dynotxt-common-services/build/utils";
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
-import { Blog } from "../../../entities/blog";
 
 const caseUserBlogGet = async (
   blogrepository: ReturnType<typeof blogRepositoryInteraface>,
@@ -25,18 +24,7 @@ const caseUserBlogGet = async (
     }
   }
 
-  const output: Blog = {
-    author: blogDataFromDb.author,
-    title: blogDataFromDb.title,
-    subtitle: blogDataFromDb.subtitle,
-    bannerImgURL: blogDataFromDb.bannerImgURL,
-    createdAt: blogDataFromDb.createdAt,
-    published: blogDataFromDb.published,
-    body: blogDataFromDb.body?.[0],
-    disabled: blogDataFromDb.disabled,
-  };
-
-  return output;
+  return blogDataFromDb;
 };
 
 export default caseUserBlogGet;
