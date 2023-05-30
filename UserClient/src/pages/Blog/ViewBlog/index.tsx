@@ -2,7 +2,7 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import parse from "html-react-parser";
 import { Link, useParams } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
-import { Alert, Avatar, Box, Container, Divider, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
+import { Alert, Avatar, Box, Card, Container, Divider, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import { useGetBlogQuery, useGetBlogsForHomeQuery, usePostBlogViewCountMutation } from "../../../lib/api/blogApi";
 import { useGetAuthorDataQuery } from "../../../lib/api/authApi";
@@ -11,6 +11,7 @@ import { IconExclamationCircle } from "@tabler/icons-react";
 import ErrorImage from "../../../assets/error.png";
 import { NavigationProgress, nprogress } from "@mantine/nprogress";
 import BlogCardNormalComponent from "../../../components/BlogCardSimple";
+import "./style.scss";
 
 const ReportBlogComponet = lazy(() => import("../../../components/ReportBlog"));
 const BlogReactionsComponent = lazy(() => import("../../../components/BlogReactions"));
@@ -19,7 +20,6 @@ const CommentSectionComponent = lazy(() => import("../../../components/CommentSe
 
 const ViewBlogPage = () => {
   const user = useAppSelector((state) => state.user.data);
-  const thisIsPc = useAppSelector((state) => state.config.thisIsPc);
   const { id: blogId } = useParams();
   const [postViewCountApi] = usePostBlogViewCountMutation();
   const { data: blogData, isError, isLoading: isBlogDataLoading, isFetching: isBlogDataFetching, error }: any = useGetBlogQuery({ blogId });
@@ -48,7 +48,7 @@ const ViewBlogPage = () => {
 
   useEffect(() => {
     if (blogData?.body) {
-      const htmlOfDelta = new QuillDeltaToHtmlConverter(blogData.body?.ops);
+      const htmlOfDelta = new QuillDeltaToHtmlConverter(blogData.body?.[0]?.ops);
       const reactBody = parse(htmlOfDelta.convert(), {
         replace: (domNode: any) => {
           if (domNode.name === "pre" && domNode.children?.[0]?.data) {
@@ -82,43 +82,32 @@ const ViewBlogPage = () => {
               </Text>
               <Box className="user" w={"100%"} my={20}>
                 {/* <Flex mt={20} align={"center"} w={"100%"} justify={"space-between"}> */}
-                <Grid align="center">
-                  <Grid.Col span={thisIsPc ? 6 : 12}>
-                    <Flex align={"center"} gap={10}>
-                      {isAuthorLoading || isAuthorFetching ? (
-                        <Skeleton radius={"xl"} w={40} h={40} />
-                      ) : (
-                        <Link className="link" to={`/profile/${authorData?.uid}`}>
-                          <Avatar radius={"xl"} src={authorData?.photoURL} />
-                        </Link>
+                <Flex align={"center"} gap={10}>
+                  {isAuthorLoading || isAuthorFetching ? (
+                    <Skeleton radius={"xl"} w={40} h={40} />
+                  ) : (
+                    <Link className="link" to={`/profile/${authorData?.uid}`}>
+                      <Avatar radius={"xl"} src={authorData?.photoURL} />
+                    </Link>
+                  )}
+                  <Link className="link" to={`/profile/${authorData?.uid}`}>
+                    <div>
+                      {isAuthorLoading || isAuthorFetching ? <Skeleton w={150} h={20} /> : <Text>{authorData?.name}</Text>}
+                      {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
+                    </div>
+                  </Link>
+                  {isAuthorLoading || isAuthorFetching ? (
+                    <Skeleton w={100} h={40} />
+                  ) : (
+                    <>
+                      {user && (
+                        <Suspense fallback={<></>}>
+                          <FollowButtonComponent userId={authorData?.uid} />
+                        </Suspense>
                       )}
-                      <Link className="link" to={`/profile/${authorData?.uid}`}>
-                        <div>
-                          {isAuthorLoading || isAuthorFetching ? <Skeleton w={150} h={20} /> : <Text>{authorData?.name}</Text>}
-                          {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
-                        </div>
-                      </Link>
-                      {isAuthorLoading || isAuthorFetching ? (
-                        <Skeleton w={100} h={40} />
-                      ) : (
-                        <>
-                          {user && (
-                            <Suspense fallback={<></>}>
-                              <FollowButtonComponent userId={authorData?.uid} />
-                            </Suspense>
-                          )}
-                        </>
-                      )}
-                    </Flex>
-                  </Grid.Col>
-                  <Grid.Col span={thisIsPc ? 6 : 12}>
-                    <Flex justify={"end"}>
-                      <Suspense fallback={<></>}>
-                        <BlogReactionsComponent blogId={blogId} />
-                      </Suspense>
-                    </Flex>
-                  </Grid.Col>
-                </Grid>
+                    </>
+                  )}
+                </Flex>
                 {/* </Flex> */}
               </Box>
               <Image width="100%" height={400} src={blogData?.bannerImgURL} withPlaceholder radius={5} />
@@ -126,6 +115,15 @@ const ViewBlogPage = () => {
               <Text fw="bold" fz="xl">
                 {blogData?.subtitle}
               </Text>
+              <Card withBorder my={10}>
+                <Text size={"sm"} mb={10}>
+                  {blogData?.views} views. {blogData?.comments} Comments
+                </Text>
+                <Suspense fallback={<></>}>
+                  <BlogReactionsComponent blogId={blogId} />
+                </Suspense>
+              </Card>
+              <Divider />
               <div className="body">{blogDataToShow ? blogDataToShow : <Skeleton w="100%" h={100} />}</div>
               <Divider my={20} />
               <Suspense fallback={<></>}>

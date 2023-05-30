@@ -26,7 +26,7 @@ const BlogReactionsComponent = ({ blogId }: { blogId?: string }) => {
   };
 
   return (
-    <Flex align={"center"} py={10} gap={10}>
+    <Flex align={"center"} gap={10}>
       <Flex align={"center"} justify={"center"} direction={"column"}>
         {data?.status == "LIKED" ? (
           <ActionIcon onClick={() => changeStatus(removeLikeApi)}>
