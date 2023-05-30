@@ -35,6 +35,10 @@ const profileSlice = createSlice({
       state.publicBlogs = {};
       state.user = null;
     },
+    resetProfileBlogs: (state) => {
+      state.allBlogs = {};
+      state.allBlogsMetaData = {};
+    },
     addBlogToAllBlogsProfile: (state, action) => {
       state.allBlogs[action.payload?.blogId] = action.payload;
     },
@@ -50,6 +54,12 @@ const profileSlice = createSlice({
   },
 });
 
-export const { resetProfile, addBlogToAllBlogsProfile, setAllBlogsMetaDataProfile, addBlogToTrashedBlogsProfile, setTrashedBlogsMetaDataProfile } =
-  profileSlice.actions;
+export const {
+  resetProfile,
+  resetProfileBlogs,
+  addBlogToAllBlogsProfile,
+  setAllBlogsMetaDataProfile,
+  addBlogToTrashedBlogsProfile,
+  setTrashedBlogsMetaDataProfile,
+} = profileSlice.actions;
 export default profileSlice.reducer;

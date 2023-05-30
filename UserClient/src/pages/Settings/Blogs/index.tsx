@@ -1,7 +1,4 @@
-import { useAppDispatch } from "../../../lib/redux/hooks";
-import { useGetBlogDataDisplayQuery } from "../../../lib/api/blogApi";
 import { useEffect } from "react";
-import { addBlogToAllBlogsProfile, resetProfile, setAllBlogsMetaDataProfile } from "../../../lib/redux/slices/profile";
 import usePathHook from "../../../hooks/usePath";
 import { Box, Tabs } from "@mantine/core";
 import { IconFileAnalytics, IconTrash } from "@tabler/icons-react";
@@ -12,32 +9,17 @@ import BlogMbTrashedBlogsSubPage from "./BlogMbTrashedView";
 import BlogMbAllBlogsSubPage from "./BlogMbAllView";
 import useUserDataHook from "../../../hooks/useUserData";
 import { useNavigate } from "react-router-dom";
+import useUserDataLoadingHook from "../../../hooks/useUserDataLoading";
 
 const BlogsSettingsPage = () => {
   const path = usePathHook();
   const thisIsPc = useThisIsPcHook();
-  const dispatch = useAppDispatch();
   const user = useUserDataHook();
+  const userDataLoading = useUserDataLoadingHook();
   const navigate = useNavigate();
-  const { data: blogsData } = useGetBlogDataDisplayQuery({ uid: path[1], page: 1 });
-  useEffect(() => {
-    // assignig AllBlogs data to redux
-    if (blogsData) {
-      blogsData?.docs?.forEach((blog: any) => {
-        dispatch(addBlogToAllBlogsProfile(blog));
-      });
-      let allBlogsMetaData: any = JSON.stringify(blogsData);
-      allBlogsMetaData = JSON.parse(allBlogsMetaData);
-      allBlogsMetaData.docs = null;
-      dispatch(setAllBlogsMetaDataProfile(allBlogsMetaData));
-    }
-  }, [blogsData]);
 
   useEffect(() => {
-    if (user?.uid !== path[1]) navigate(`/profile/${path[1]}`);
-    return () => {
-      dispatch(resetProfile());
-    };
+    if (!userDataLoading && user?.uid !== path[1]) navigate(`/profile/${path[1]}`);
   }, [user]);
 
   return (

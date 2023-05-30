@@ -10,6 +10,8 @@ import AppLoaderComponent from "./components/AppLoader";
 import AuthLayout from "./layout/Navbar/Auth";
 import ProfileSettingsPage from "./pages/Settings/Profile";
 import BlogsSettingsPage from "./pages/Settings/Blogs";
+import ViewBlogPage from "./pages/Blog/ViewBlog";
+const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
 const SignUpPage = lazy(() => import("./pages/Auth/Signup"));
 
@@ -19,6 +21,10 @@ const router = createBrowserRouter([
     element: <NavbarLayout />,
     children: [
       {
+        path: "blog/:id",
+        element: <ViewBlogPage />,
+      },
+      {
         path: "profile/:id",
         element: <ProfileSettingsPage />,
       },
@@ -27,6 +33,14 @@ const router = createBrowserRouter([
         element: <BlogsSettingsPage />,
       },
     ],
+  },
+  {
+    path: "blog/edit/:id",
+    element: (
+      <Suspense fallback={<AppLoaderComponent />}>
+        <EditBlogPage />
+      </Suspense>
+    ),
   },
   {
     path: "/auth/",
