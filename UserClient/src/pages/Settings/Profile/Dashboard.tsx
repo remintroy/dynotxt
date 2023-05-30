@@ -80,7 +80,7 @@ const ProfileSettingsDashboardSubPage = () => {
       <Divider />
       <Grid gutter={0} w={"100%"} m={0}>
         <Grid.Col span={12} mt={20}>
-          <Card>
+          <Card withBorder>
             <Text fz={"xl"} fw="bold">
               Blogs views
             </Text>
@@ -117,7 +117,7 @@ const ProfileSettingsDashboardSubPage = () => {
           </Card>
         </Grid.Col>
         <Grid.Col span={12} mt={20}>
-          <Card>
+          <Card withBorder>
             <Text fz={"xl"} fw="bold">
               New Followers
             </Text>

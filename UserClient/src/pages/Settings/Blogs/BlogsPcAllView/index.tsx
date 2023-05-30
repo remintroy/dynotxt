@@ -6,7 +6,7 @@ import { IconTrash } from "@tabler/icons-react";
 import { IconExternalLink } from "@tabler/icons-react";
 import { IconDotsVertical } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-import { addBlogToAllBlogsProfile, setAllBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
+import { addBlogToAllBlogsProfile, resetProfileBlogs, setAllBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
 import { modals } from "@mantine/modals";
 import { nprogress } from "@mantine/nprogress";
 import { useAppDispatch, useAppSelector } from "../../../../lib/redux/hooks";
@@ -28,7 +28,6 @@ const ProfilePcAllBlogsTableSubPage = () => {
   const [makePrivateApi] = usePutUnPublishBlogMutation();
   const [deleteBlogApi] = useDeleteBlogWithBlogIdMutation();
   const formatter = Intl.NumberFormat("us", { notation: "compact" });
-
   const { data: blogsData } = useGetBlogDataDisplayQuery({ uid: path[1], page: 1 });
   useEffect(() => {
     // assignig AllBlogs data to redux
@@ -56,19 +55,12 @@ const ProfilePcAllBlogsTableSubPage = () => {
       notifications.show({
         color: "red",
         title: "Oops something went wrong",
-        message:
-          error?.data?.error ?? "There was an error diring updating blog visiblity. Consier trying agter sometime",
+        message: error?.data?.error ?? "There was an error diring updating blog visiblity. Consier trying agter sometime",
       });
     }
   };
 
-  const handleConfirmation = async (
-    actionApi: any,
-    blogId: string,
-    message: string,
-    button: string,
-    color?: string
-  ) => {
+  const handleConfirmation = async (actionApi: any, blogId: string, message: string, button: string, color?: string) => {
     modals.openConfirmModal({
       centered: true,
       title: "Are you sure?",
@@ -105,9 +97,7 @@ const ProfilePcAllBlogsTableSubPage = () => {
       centered: true,
       title: "Are you sure?",
       confirmProps: { color: "red" },
-      children: (
-        <Text size="sm">This will move your blog to trash and you can recover blog from trash at any time.</Text>
-      ),
+      children: <Text size="sm">This will move your blog to trash and you can recover blog from trash at any time.</Text>,
       labels: { confirm: "Move to trash", cancel: "Cancel" },
       onConfirm: async () => {
         const response = await blogActionHandler(deleteBlogApi, blogId);
@@ -117,6 +107,12 @@ const ProfilePcAllBlogsTableSubPage = () => {
       },
     });
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetProfileBlogs());
+    };
+  }, []);
   return (
     <ScrollArea>
       <Table highlightOnHover verticalSpacing="xs">
@@ -185,11 +181,7 @@ const ProfilePcAllBlogsTableSubPage = () => {
                                 </Tooltip>
                               </Menu.Target>
                               <Menu.Dropdown>
-                                <Menu.Item
-                                  color="red"
-                                  icon={<IconTrash size={14} />}
-                                  onClick={() => trashBlog(blog?.blogId)}
-                                >
+                                <Menu.Item color="red" icon={<IconTrash size={14} />} onClick={() => trashBlog(blog?.blogId)}>
                                   Trash blog
                                 </Menu.Item>
                               </Menu.Dropdown>
@@ -272,9 +264,7 @@ const ProfilePcAllBlogsTableSubPage = () => {
                   <td>
                     <Tooltip
                       withArrow
-                      label={`Your blog has ${formatter.format(blog?.reactions?.likes)} likes and ${formatter.format(
-                        blog?.reactions?.dislikes
-                      )} dislikes`}
+                      label={`Your blog has ${formatter.format(blog?.reactions?.likes)} likes and ${formatter.format(blog?.reactions?.dislikes)} dislikes`}
                     >
                       <Box>
                         <Text align="end">{likePercent}%</Text>

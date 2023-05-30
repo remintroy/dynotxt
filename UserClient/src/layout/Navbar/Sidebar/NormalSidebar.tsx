@@ -1,6 +1,6 @@
 import usePathHook from "../../../hooks/usePath";
-import { ActionIcon, Box, Flex, Kbd, NavLink, Navbar, ScrollArea, Switch, Text, Tooltip, useMantineColorScheme, useMantineTheme } from "@mantine/core";
-import { IconCompass, IconFileAnalytics, IconMaximize, IconMinimize } from "@tabler/icons-react";
+import { ActionIcon, Box, Divider, Flex, Kbd, NavLink, Navbar, ScrollArea, Switch, Text, Tooltip, useMantineColorScheme, useMantineTheme } from "@mantine/core";
+import { IconDashboard, IconFileAnalytics, IconMaximize, IconMinimize, IconSearch } from "@tabler/icons-react";
 import { IconHome } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { IconSun } from "@tabler/icons-react";
@@ -54,17 +54,32 @@ const NormalSidebarLayoutComponent = () => {
         <Link to="/" className="link" aria-label="Go to home page button">
           <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconHome />} active={path.length == 0} label="Home" description="Home sweet home" />
         </Link>
-        <Link to={`/profile/${user?.uid}/blogs`} className="link" aria-label="Manage blogs button">
-          <NavLink
-            sx={{ borderRadius: 5 }}
-            variant="filled"
-            icon={<IconFileAnalytics />}
-            active={path[0] == "profile" && path[1] == `${user?.uid}` && path[2] == "blogs"}
-            label="Blogs"
-            description="view and manage your blogs"
-          />
-        </Link>
-        <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconCompass />} label="Explore" description="New arrivals " />
+        <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconSearch />} label="Explore" description="New arrivals " />
+        <Divider my={10} />
+        {user && (
+          <>
+            <Link to={`/profile/${user?.uid}/`} className="link" aria-label="Account Dashboard button">
+              <NavLink
+                sx={{ borderRadius: 5 }}
+                variant="filled"
+                icon={<IconDashboard />}
+                active={path[0] == "profile" && path[1] == `${user?.uid}` && !path[2]}
+                label="Dashboard"
+                description="Know your account"
+              />
+            </Link>
+            <Link to={`/profile/${user?.uid}/blogs`} className="link" aria-label="Manage blogs button">
+              <NavLink
+                sx={{ borderRadius: 5 }}
+                variant="filled"
+                icon={<IconFileAnalytics />}
+                active={path[0] == "profile" && path[1] == `${user?.uid}` && path[2] == "blogs"}
+                label="Your Blogs"
+                description="view and manage your blogs"
+              />
+            </Link>
+          </>
+        )}
       </Navbar.Section>
     </>
   );
