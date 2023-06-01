@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { addBlogToAllBlogsProfile, resetProfile, setAllBlogsMetaDataProfile } from "../../../lib/redux/slices/profile";
 import useThisIsPcHook from "../../../hooks/useThisIsPc";
 import BlogCardComponent from "../../../components/BlogCardSimple";
-import { useNavigate } from "react-router-dom";
 
 const NormalProfilePage = () => {
   const path = usePathHook();
