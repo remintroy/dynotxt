@@ -12,6 +12,7 @@ import ProfilePage from "./pages/Settings/Profile";
 import BlogsSettingsPage from "./pages/Settings/Blogs";
 import ViewBlogPage from "./pages/Blog/ViewBlog";
 import ProfileSettingsDashboardPage from "./pages/Settings/Dashboard";
+import useSocketHook from "./hooks/useSocket";
 const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
 const SignUpPage = lazy(() => import("./pages/Auth/Signup"));
@@ -86,6 +87,8 @@ function App() {
       dispatch(setUser(data));
     }
   }, [data, isFetching, isLoading, isError]);
+
+  useSocketHook();
 
   return (
     <div>
