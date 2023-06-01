@@ -1,6 +1,6 @@
 import { Avatar, Box, Burger, Button, Code, Header, Input, Loader, MediaQuery, Text, Tooltip, useMantineTheme } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
-import { useCreateNewBlogMutation } from "../../../lib/api/blogApi";
+import { useCreateNewBlogMutation, useGetSearchResultsMutation } from "../../../lib/api/blogApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
 
@@ -23,6 +23,17 @@ const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
     }
   };
 
+  const [searchApi] = useGetSearchResultsMutation();
+
+  const handleSearch = async (query: string) => {
+    try {
+      const reponse: any = await searchApi(query?.trim());
+      console.log(reponse?.data);
+    } catch (error) {
+      console.log("Error => ", error);
+    }
+  };
+
   return (
     <Header height={{ base: 50, md: 70 }} p="xl">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "100%" }}>
@@ -42,6 +53,7 @@ const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
               <Input
                 placeholder="Search"
                 icon={<IconSearch size={"15px"} />}
+                onChange={(e) => handleSearch(e.target.value)}
                 rightSection={
                   <Tooltip label="Search shortcut" withArrow>
                     <Code sx={{ cursor: "default" }}>/</Code>

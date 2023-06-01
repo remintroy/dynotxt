@@ -71,7 +71,7 @@ const CommentComponent = ({ data, skip, blogId }: { data: any; skip?: boolean; b
   );
 };
 
-const CommentSectionComponent = ({ blogId, skip }: { blogId: string | undefined; skip?: boolean }) => {
+const CommentSectionComponent = ({ blogId, skip, blog }: { blogId: string | undefined; skip?: boolean; blog?: any }) => {
   const { data, isLoading, isFetching } = useGetCommentsQuery(blogId, { skip });
   const [uploadNewComment] = usePostNewCommentMutation();
   const user = useUserDataHook();
@@ -93,56 +93,60 @@ const CommentSectionComponent = ({ blogId, skip }: { blogId: string | undefined;
   };
 
   return (
-    <Paper withBorder p={25} px={30} mt={20} sx={{ position: "relative" }}>
-      <Flex align={"center"} justify={"space-between"}>
-        <Flex align={"end"} gap={20}>
-          <h2 style={{ padding: 0, margin: 0 }}>Comments</h2>
-        </Flex>
-      </Flex>
-      <Text color="dimmed">{data?.length ? data?.length : 0} comments</Text>
-      {user && (
-        <Grid mt="xs" sx={{ position: "sticky", bottom: 0 }}>
-          <Grid.Col span={11}>
-            {" "}
-            <Input
-              value={comment}
-              onKeyUp={(e) => {
-                if (e.key == "Enter") postNewComment();
-              }}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Type your comments here"
-            />
-          </Grid.Col>
-          <Grid.Col span={1} display={"flex"} sx={{ alignItems: "center", justifyContent: "center" }}>
-            <Button onClick={() => postNewComment()} variant="default">
-              {uploadLoading ? <Loader size={"sm"} /> : <IconSend size={"20px"} />}
+    <>
+      {(data?.length > 0 || !blog?.disabled) && (
+        <Paper withBorder p={25} px={30} mt={20} sx={{ position: "relative" }}>
+          <Flex align={"center"} justify={"space-between"}>
+            <Flex align={"end"} gap={20}>
+              <h2 style={{ padding: 0, margin: 0 }}>Comments</h2>
+            </Flex>
+          </Flex>
+          <Text color="dimmed">{data?.length ? data?.length : 0} comments</Text>
+          {user && !blog?.disabled && (
+            <Grid mt="xs" sx={{ position: "sticky", bottom: 0 }}>
+              <Grid.Col span={11}>
+                {" "}
+                <Input
+                  value={comment}
+                  onKeyUp={(e) => {
+                    if (e.key == "Enter") postNewComment();
+                  }}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Type your comments here"
+                />
+              </Grid.Col>
+              <Grid.Col span={1} display={"flex"} sx={{ alignItems: "center", justifyContent: "center" }}>
+                <Button onClick={() => postNewComment()} variant="default">
+                  {uploadLoading ? <Loader size={"sm"} /> : <IconSend size={"20px"} />}
+                </Button>
+              </Grid.Col>
+            </Grid>
+          )}
+
+          <br />
+
+          {(isLoading || isFetching) && (
+            <Flex>
+              <Loader />
+            </Flex>
+          )}
+
+          {data
+            ?.slice(0)
+            ?.reverse()
+            ?.slice(0, !showAllComments ? 1 : data?.length ?? -1)
+            ?.map((comment: any) => {
+              return <CommentComponent key={comment?._id} data={comment} skip={skip} blogId={blogId} />;
+            })}
+
+          <Flex justify={"end"} mt={25}>
+            <Button variant="default" rightIcon={!showAllComments ? <IconChevronRight /> : <IconChevronUp />} onClick={() => setShowAllComments((pre) => !pre)}>
+              {showAllComments ? "Hide all comments" : "Show all comments"}
             </Button>
-          </Grid.Col>
-        </Grid>
+          </Flex>
+        </Paper>
       )}
-
-      <br />
-
-      {(isLoading || isFetching) && (
-        <Flex>
-          <Loader />
-        </Flex>
-      )}
-
-      {data
-        ?.slice(0)
-        ?.reverse()
-        ?.slice(0, !showAllComments ? 1 : data?.length ?? -1)
-        ?.map((comment: any) => {
-          return <CommentComponent key={comment?._id} data={comment} skip={skip} blogId={blogId} />;
-        })}
-
-      <Flex justify={"end"} mt={25}>
-        <Button variant="default" rightIcon={!showAllComments ? <IconChevronRight /> : <IconChevronUp />} onClick={() => setShowAllComments((pre) => !pre)}>
-          {showAllComments ? "Hide all comments" : "Show all comments"}
-        </Button>
-      </Flex>
-    </Paper>
+    </>
   );
 };
 
