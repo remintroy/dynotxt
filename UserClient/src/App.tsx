@@ -8,9 +8,10 @@ import { Suspense, lazy, useEffect } from "react";
 import NavbarLayout from "./layout/Navbar";
 import AppLoaderComponent from "./components/AppLoader";
 import AuthLayout from "./layout/Navbar/Auth";
-import ProfileSettingsPage from "./pages/Settings/Profile";
+import ProfilePage from "./pages/Settings/Profile";
 import BlogsSettingsPage from "./pages/Settings/Blogs";
 import ViewBlogPage from "./pages/Blog/ViewBlog";
+import ProfileSettingsDashboardPage from "./pages/Settings/Dashboard";
 const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
 const SignUpPage = lazy(() => import("./pages/Auth/Signup"));
@@ -26,7 +27,11 @@ const router = createBrowserRouter([
       },
       {
         path: "profile/:id",
-        element: <ProfileSettingsPage />,
+        element: <ProfilePage />,
+      },
+      {
+        path: "profile/:id/dashboard",
+        element: <ProfileSettingsDashboardPage />,
       },
       {
         path: "profile/:id/blogs",

@@ -101,6 +101,7 @@ export default function userRouter(express: typeof ExpressApp) {
   router
     .route("/analytics/view/")
     .get(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.getViewsByUserId));
+  router.route("/search").get(expressService.makeExpressCallback(controller.getBlogSearchByQuery));
 
   return router;
 }

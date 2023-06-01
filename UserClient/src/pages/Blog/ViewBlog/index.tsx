@@ -22,6 +22,7 @@ const ViewBlogPage = () => {
   const user = useAppSelector((state) => state.user.data);
   const { id: blogId } = useParams();
   const [postViewCountApi] = usePostBlogViewCountMutation();
+  const formatter = Intl.NumberFormat("us", { notation: "compact" });
   const { data: blogData, isError, isLoading: isBlogDataLoading, isFetching: isBlogDataFetching, error }: any = useGetBlogQuery({ blogId });
   const { data: blogsListData } = useGetBlogsForHomeQuery({});
   const { data: authorData, isLoading: isAuthorLoading, isFetching: isAuthorFetching } = useGetAuthorDataQuery(blogData?.author, { skip: !blogData });
@@ -65,7 +66,7 @@ const ViewBlogPage = () => {
   }, [blogData]);
 
   return (
-    <Container className="BlogViewPage" p={0}>
+    <Container className="BlogViewPage" p={10}>
       <NavigationProgress />
       {!isError && (
         <Grid>
@@ -117,7 +118,7 @@ const ViewBlogPage = () => {
               </Text>
               <Card withBorder my={10}>
                 <Text size={"sm"} mb={10}>
-                  {blogData?.views} views. {blogData?.comments} Comments
+                  {formatter.format(blogData?.views)} views . {formatter.format(blogData?.comments)} Comments
                 </Text>
                 <Suspense fallback={<></>}>
                   <BlogReactionsComponent blogId={blogId} />
@@ -127,7 +128,7 @@ const ViewBlogPage = () => {
               <div className="body">{blogDataToShow ? blogDataToShow : <Skeleton w="100%" h={100} />}</div>
               <Divider my={20} />
               <Suspense fallback={<></>}>
-                <CommentSectionComponent blogId={blogId} skip={!blogData} />
+                <CommentSectionComponent blog={blogData} blogId={blogId} skip={!blogData} />
               </Suspense>
               {!blogData?.disabled && (
                 <Box my={20}>

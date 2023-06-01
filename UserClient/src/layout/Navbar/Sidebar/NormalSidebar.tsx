@@ -58,12 +58,12 @@ const NormalSidebarLayoutComponent = () => {
         <Divider my={10} />
         {user && (
           <>
-            <Link to={`/profile/${user?.uid}/`} className="link" aria-label="Account Dashboard button">
+            <Link to={`/profile/${user?.uid}/dashboard`} className="link" aria-label="Account Dashboard button">
               <NavLink
                 sx={{ borderRadius: 5 }}
                 variant="filled"
                 icon={<IconDashboard />}
-                active={path[0] == "profile" && path[1] == `${user?.uid}` && !path[2]}
+                active={path[0] == "profile" && path[1] == `${user?.uid}` && path[2] == "dashboard"}
                 label="Dashboard"
                 description="Know your account"
               />

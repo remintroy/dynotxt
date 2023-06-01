@@ -53,7 +53,7 @@ const EditBlogPage = () => {
     if (blogData?.title) setTitle(blogData.title);
     if (blogData?.subtitle) setSubTitle(blogData.subtitle);
     if (blogData?.bannerImgURL) setBannerImg(blogData.bannerImgURL);
-    if (blogData?.body) setBodyValue((pre) => ({ ...pre, value: blogData.body }));
+    if (blogData?.body) setBodyValue((pre) => ({ ...pre, value: blogData?.body?.[0] }));
 
     // set loading state with response loading and fetching state from rtk query
     setLoadingForBlogData((isBlogDataFetching || isBlogDataLoading) == true);

@@ -5,6 +5,12 @@
     gap: 20px;
   }
 
+  .ql-editor {
+    img {
+      padding: 20px 0;
+    }
+  }
+
   .ql-snow .ql-tooltip {
     z-index: 100;
     border: 1px solid var(--borderCommon);

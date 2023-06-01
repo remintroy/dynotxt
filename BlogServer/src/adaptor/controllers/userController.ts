@@ -31,6 +31,7 @@ import caseUserViewsAddNew from "../../application/use-cases/views/user-views-ad
 import viewsRepositoryInterface from "../repositorys/viewsRepositoryInterface";
 import caseUserViewsGetByBlogId from "../../application/use-cases/views/user-views-blog-get-views";
 import caseUserVIewsGetByUserId from "../../application/use-cases/views/user-views-get-all-by-userId";
+import caseUserBlogsSearch from "../../application/use-cases/blog/user-get-blogs-search";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -147,6 +148,11 @@ const userController = (
     return await caseUserFlagsAdd(flagsRepository, utilsService, user, blogId, message);
   };
 
+  const getBlogSearchByQuery = async (req: RequestWithUser) => {
+    const searchQuery = req.query?.query;
+    return await caseUserBlogsSearch(blogRepository, utilsService, searchQuery as string);
+  };
+
   const putUserLikeBlog = async (req: RequestWithUser) => {
     const { user } = req;
     const blogId = req.params.id;
@@ -202,6 +208,7 @@ const userController = (
     putUserPublishBlog,
     putUserComment,
     getUserBlogComments,
+    getBlogSearchByQuery,
     deleteUserBlogComment,
     getAllBlogsDisplay,
     putUserUnpublishBlog,
