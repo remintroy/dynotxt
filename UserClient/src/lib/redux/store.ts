@@ -3,6 +3,7 @@ import userSlice from "./slices/user";
 import navBarSlice from "./slices/navbar";
 import profileSlice from "./slices//profile";
 import configSlice from "./slices/config";
+import notificationSlice from "./slices/notification";
 import { userApiMiddleware, userApiReducer, userApiReducerPath } from "../api/authApi";
 import { blogApiMiddleware, blogApiReducer, blogApiReducerPath } from "../api/blogApi";
 
@@ -12,6 +13,7 @@ const store = configureStore({
     navbar: navBarSlice,
     config: configSlice,
     profile: profileSlice,
+    notification: notificationSlice,
     [userApiReducerPath]: userApiReducer,
     [blogApiReducerPath]: blogApiReducer,
   },
