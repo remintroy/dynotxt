@@ -77,7 +77,77 @@ const blogRepositoryImpl = () => {
   };
 
   const getBlogByIdPrivate = async (blogId: string, authorId: string) => {
-    return await BlogModel.findOne({ blogId, author: authorId });
+    const response = await BlogModel.aggregate([
+      {
+        $match: { blogId, author: authorId },
+      },
+      {
+        $lookup: {
+          from: "reactions",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "reactions",
+          pipeline: [
+            {
+              $facet: {
+                likes: [
+                  { $match: { value: "like" } },
+                  { $group: { _id: "$blogId", count: { $sum: 1 } } },
+                  { $project: { _id: 0 } },
+                ],
+                dislikes: [
+                  { $match: { value: "dislike" } },
+                  { $group: { _id: "$blogId", count: { $sum: 1 } } },
+                  { $project: { _id: 0 } },
+                ],
+              },
+            },
+            {
+              $project: {
+                likes: { $arrayElemAt: ["$likes.count", 0] },
+                dislikes: { $arrayElemAt: ["$dislikes.count", 0] },
+              },
+            },
+          ],
+        },
+      },
+      { $addFields: { reactions: { $arrayElemAt: ["$reactions", 0] } } },
+      { $addFields: { "reactions.likes": { $ifNull: ["$reactions.likes", 0] } } },
+      { $addFields: { "reactions.dislikes": { $ifNull: ["$reactions.dislikes", 0] } } },
+      {
+        $project: {
+          _id: 0,
+          __v: 0,
+          version: 0,
+          trashedAt: 0,
+          trashed: 0,
+          deleted: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "comments",
+          pipeline: [{ $project: { count: { $size: "$comment" } } }, { $project: { _id: 0 } }],
+        },
+      },
+      { $addFields: { comments: { $arrayElemAt: ["$comments.count", 0] } } },
+      { $addFields: { comments: { $ifNull: ["$comments", 0] } } },
+      {
+        $lookup: {
+          from: "views",
+          localField: "blogId",
+          foreignField: "blogId",
+          as: "views",
+          pipeline: [{ $group: { _id: "$blogId", count: { $sum: 1 } } }, { $project: { _id: 0 } }],
+        },
+      },
+      { $addFields: { views: { $arrayElemAt: ["$views.count", 0] } } },
+      { $addFields: { views: { $ifNull: ["$views", 0] } } },
+    ]);
+    return response[0];
   };
 
   const getBlogByIdAdmin = async (blogId: string) => {
@@ -198,6 +268,7 @@ const blogRepositoryImpl = () => {
           updatedAt: { $first: "$updatedAt" },
           published: { $first: "$published" },
           bannerImgURL: { $first: "$bannerImgURL" },
+          author: { $first: "$author" },
         },
       },
       {
@@ -281,6 +352,7 @@ const blogRepositoryImpl = () => {
           updatedAt: { $first: "$updatedAt" },
           published: { $first: "$published" },
           bannerImgURL: { $first: "$bannerImgURL" },
+          author: { $first: "$author" },
         },
       },
       {
@@ -392,7 +464,37 @@ const blogRepositoryImpl = () => {
     return await blogData.save();
   };
 
-  const viewsInLastNDays = async (blogId: string, lastNDays: number) => {};
+  const searchBlogs = async (searchQuery: string) => {
+    const regex = new RegExp(searchQuery, "ig");
+    try {
+      const resp_a = BlogModel.aggregate([
+        {
+          $match: {
+            published: true,
+            trashed: false,
+            disabled: false,
+            $text: { $search: searchQuery },
+          },
+        },
+      ]);
+      const resp_A = await BlogModel.aggregatePaginate(resp_a, { page: 1, limit: 10 });
+      if (resp_A.totalDocs > 0) return resp_A;
+      const resp_b = BlogModel.aggregate([
+        {
+          $match: {
+            published: true,
+            trashed: false,
+            disabled: false,
+            // $text: { $search: searchQuery },
+            $or: [{ title: { $regex: regex } }, { subtitle: { $regex: regex } }],
+          },
+        },
+      ]);
+      return await BlogModel.aggregatePaginate(resp_b, { page: 1, limit: 10 });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return {
     getBlogById,
@@ -412,6 +514,7 @@ const blogRepositoryImpl = () => {
     adminGetAllDisabledBlogs,
     getAllPublicBlogs,
     softDeleteBlogs,
+    searchBlogs,
   };
 };
 

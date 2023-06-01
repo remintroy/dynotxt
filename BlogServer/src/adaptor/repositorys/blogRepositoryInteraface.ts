@@ -18,6 +18,7 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
   const adminGetAllDisabledBlogs = repository.adminGetAllDisabledBlogs;
   const getBlogByIdAdmin = repository.getBlogByIdAdmin;
   const softDeleteBlogs = repository.softDeleteBlogs;
+  const searchBlogs = repository.searchBlogs;
 
   return {
     getBlogById,
@@ -37,6 +38,7 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
     adminGetAllDisabledBlogs,
     getAllPublicBlogs,
     softDeleteBlogs,
+    searchBlogs,
   };
 };
 
