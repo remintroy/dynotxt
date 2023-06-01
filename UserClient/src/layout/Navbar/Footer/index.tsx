@@ -1,7 +1,7 @@
 import { ActionIcon, Footer, Grid, MediaQuery, useMantineTheme } from "@mantine/core";
 import useUserDataHook from "../../../hooks/useUserData";
 import { Link } from "react-router-dom";
-import { IconBell, IconHome, IconHome2, IconNotification, IconSearch, IconSettings } from "@tabler/icons-react";
+import { IconBell, IconHome, IconHome2, IconSearch, IconSettings } from "@tabler/icons-react";
 import usePathHook from "../../../hooks/usePath";
 import { useMediaQuery } from "@mantine/hooks";
 

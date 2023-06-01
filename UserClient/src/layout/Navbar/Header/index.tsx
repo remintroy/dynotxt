@@ -1,9 +1,8 @@
-import { ActionIcon, Avatar, Box, Burger, Button, Code, Header, Indicator, Input, Loader, MediaQuery, Text, Tooltip, useMantineTheme } from "@mantine/core";
+import { Avatar, Box, Burger, Button, Code, Header, Input, Loader, MediaQuery, Text, Tooltip, useMantineTheme } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
 import { useCreateNewBlogMutation, useGetSearchResultsMutation } from "../../../lib/api/blogApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
-import { IconBell } from "@tabler/icons-react";
 import NotificationPopupComponent from "../../../components/NotificationPopup";
 
 const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
