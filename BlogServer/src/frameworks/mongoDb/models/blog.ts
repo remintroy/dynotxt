@@ -7,5 +7,7 @@ import BlogSchema from "./blog.schema";
 BlogSchema.plugin(paginate);
 BlogSchema.plugin(aggregatePaginate);
 
+BlogSchema.index({ title: "text", subtitle: "text" });
+
 export const BlogModel = model<Blog, PaginateModel<Blog> & AggregatePaginateModel<Blog>>("blogs", BlogSchema);
 export default BlogModel;

@@ -184,6 +184,9 @@ const blogApiSlice = createApi({
     getBlogViewCountByUserId: builder.query({
       query: () => `/analytics/view/`,
     }),
+    getSearchResults: builder.mutation({
+      query: (searchQuery: string) => `/search?query=${searchQuery}`,
+    }),
   }),
 });
 
@@ -217,4 +220,5 @@ export const {
   usePostBlogViewCountMutation,
   useGetBlogViewCountByBlogIdQuery,
   useGetBlogViewCountByUserIdQuery,
+  useGetSearchResultsMutation,
 } = blogApiSlice;

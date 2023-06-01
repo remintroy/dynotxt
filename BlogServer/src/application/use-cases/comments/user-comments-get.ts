@@ -12,7 +12,9 @@ const caseUserCommentsGet = async (
   if (!blogId) throw utilsService.createError(400, "Blog is is required to add comment");
   if (user && typeof user !== "string") throw utilsService.createError(400, "User must be a string");
 
-  const blogData = await blogRepository.getBlogById(blogId).catch(utilsService.throwInternalError());
+  let blogData = await blogRepository.getBlogById(blogId).catch(utilsService.throwInternalError());
+  if (!blogData)
+    blogData = await blogRepository.getBlogByIdPrivate(blogId, user).catch(utilsService.throwInternalError());
   const comment = await commentRepository.getCommentByBlogId(blogId).catch(utilsService.throwInternalError());
 
   if (!blogData) throw utilsService.createError(400, "Blog not exist");

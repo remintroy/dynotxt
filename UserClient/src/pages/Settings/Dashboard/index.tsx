@@ -12,7 +12,7 @@ import useUserDataHook from "../../../hooks/useUserData";
 
 ChartJS.register(LinearScale, CategoryScale, LineElement, PointElement, Tooltip);
 
-const ProfileSettingsDashboardSubPage = () => {
+const ProfileSettingsDashboardPage = () => {
   const path = usePathHook();
   const user = useUserDataHook();
   const { colorScheme } = useMantineColorScheme();
@@ -158,4 +158,4 @@ const ProfileSettingsDashboardSubPage = () => {
   );
 };
 
-export default ProfileSettingsDashboardSubPage;
+export default ProfileSettingsDashboardPage;
