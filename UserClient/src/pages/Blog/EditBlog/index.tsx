@@ -14,6 +14,7 @@ import BlogEditorComponent from "../../../components/BlogEditor";
 import BannerImageButtonComponent from "../../../components/BannerImageButton";
 import useUserDataHook from "../../../hooks/useUserData";
 import useThisIsPcHook from "../../../hooks/useThisIsPc";
+import { useDebouncedValue } from "@mantine/hooks";
 
 const EditBlogPage = () => {
   const [title, setTitle] = useState("");
@@ -30,6 +31,12 @@ const EditBlogPage = () => {
   const dispatch = useAppDispatch();
   const [putCurrentState] = usePutCurrentStateMutation();
   const [putPublishBlog] = usePutPublishBlogMutation();
+
+  const debounceDelayInMilliseconds = 1000;
+
+  const [debouncedBlogBodyData] = useDebouncedValue(bodyValue.value, debounceDelayInMilliseconds);
+  const [debouncedBlogTitle] = useDebouncedValue(title, debounceDelayInMilliseconds);
+  const [debouncedBlogSubtitle] = useDebouncedValue(subtitle, debounceDelayInMilliseconds);
 
   const { id: blogId } = useParams();
   const {
@@ -70,11 +77,11 @@ const EditBlogPage = () => {
         body: bodyValue.value,
       };
       await putCurrentState({ blogId, data: dataToSend }).unwrap();
-      notifications.show({
-        color: "green",
-        title: "Blog data saved",
-        message: "Your current state is saved. You can safely close the browser window now",
-      });
+      // notifications.show({
+      //   color: "green",
+      //   title: "Blog data saved",
+      //   message: "Your current state is saved. You can safely close the browser window now",
+      // });
       setLoadingForSaveChanges(false);
       //...
     } catch (error: any) {
@@ -114,6 +121,10 @@ const EditBlogPage = () => {
       dispatch(setNavbarShowState({ showHeader: true }));
     };
   }, []);
+
+  useEffect(() => {
+    blogData && (debouncedBlogBodyData || debouncedBlogTitle || debouncedBlogSubtitle) && uploadCurrentState();
+  }, [debouncedBlogBodyData, debouncedBlogTitle, debouncedBlogSubtitle]);
 
   return (
     <Container className={`CreateBlog ${thisIsPc ? "" : "mb"}`}>

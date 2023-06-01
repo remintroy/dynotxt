@@ -12,13 +12,29 @@ const notificationRepositoryImpl = () => {
   const getAllUnreadedNotifications = async (userId: string) => {
     return await NotificationModel.aggregate([
       { $match: { userId } },
-      { $unset: "$notifications" },
+      { $unwind: "$notifications" },
       { $match: { "notifications.readed": false } },
+    ]);
+  };
+
+  const getAllNotifications = async (userId: string) => {
+    return await NotificationModel.aggregate([
+      { $match: { userId } },
+      {
+        $unwind: "$notifications",
+      },
+      {
+        $project: {
+          data: "$notifications",
+        },
+      },
+      { $replaceRoot: { newRoot: "$data" } },
     ]);
   };
 
   return {
     addNotification,
+    getAllNotifications,
     getAllUnreadedNotifications,
   };
 };

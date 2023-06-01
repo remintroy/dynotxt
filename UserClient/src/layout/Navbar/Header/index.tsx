@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCreateNewBlogMutation, useGetSearchResultsMutation } from "../../../lib/api/blogApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
 import { IconPlus, IconSearch } from "@tabler/icons-react";
+import NotificationPopupComponent from "../../../components/NotificationPopup";
 
 const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
   const theme = useMantineTheme();
@@ -49,7 +50,7 @@ const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
         </div>
         <div className="right" style={{ display: "flex", alignItems: "center" }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <MediaQuery smallerThan="md" styles={{ display: "none" }}>
+            <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
               <Input
                 placeholder="Search"
                 icon={<IconSearch size={"15px"} />}
@@ -62,20 +63,28 @@ const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
               />
             </MediaQuery>
             {(user || userLoading) && (
-              <MediaQuery smallerThan="md" styles={{ display: "none" }}>
-                <Button
-                  onClick={() => !userLoading && handleCreateNewBlog()}
-                  variant="default"
-                  leftIcon={userLoading ? <Loader size="20px" /> : <IconPlus size="20px" />}
-                >
-                  Create Blog
-                </Button>
-              </MediaQuery>
+              <>
+                <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+                  <Button
+                    onClick={() => !userLoading && handleCreateNewBlog()}
+                    variant="default"
+                    leftIcon={userLoading ? <Loader size="20px" /> : <IconPlus size="20px" />}
+                  >
+                    Create Blog
+                  </Button>
+                </MediaQuery>
+                <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
+                  <NotificationPopupComponent />
+                </MediaQuery>
+              </>
             )}
+
             {user && (
-              <Link to={`/profile/${user.uid}`}>
-                <Avatar alt="Profile photo" src={user.photoURL} radius={"xl"} />
-              </Link>
+              <>
+                <Link to={`/profile/${user.uid}`}>
+                  <Avatar alt="Profile photo" src={user.photoURL} radius={"xl"} />
+                </Link>
+              </>
             )}
 
             {!user && (

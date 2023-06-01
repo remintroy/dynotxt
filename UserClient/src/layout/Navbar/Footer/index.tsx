@@ -1,7 +1,7 @@
 import { ActionIcon, Footer, Grid, MediaQuery, useMantineTheme } from "@mantine/core";
 import useUserDataHook from "../../../hooks/useUserData";
 import { Link } from "react-router-dom";
-import { IconHome, IconHome2, IconNotification, IconSearch, IconSettings } from "@tabler/icons-react";
+import { IconBell, IconHome, IconHome2, IconSearch, IconSettings } from "@tabler/icons-react";
 import usePathHook from "../../../hooks/usePath";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -23,7 +23,7 @@ const FooterNavbarLayout = () => {
   return (
     <>
       <MediaQuery
-        largerThan={"md"}
+        largerThan={"sm"}
         styles={{
           display: "none",
         }}
@@ -47,12 +47,12 @@ const FooterNavbarLayout = () => {
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
                 <Link aria-label="Go to notifications page" to={"#"} style={linkStyle}>
                   <ActionIcon aria-label="Go to notifications page" w={"100%"} h={"90%"} p={0}>
-                    <IconNotification color={buttonColor} />
+                    <IconBell color={buttonColor} />
                   </ActionIcon>
                 </Link>
               </Grid.Col>
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
-                <Link aria-label="Go to settings page" to={`/profile/${user?.uid}`} style={linkStyle}>
+                <Link aria-label="Go to settings page" to={`/profile/${user?.uid}/dashboard`} style={linkStyle}>
                   <ActionIcon aria-label="Go to settings page" w={"100%"} h={"90%"} p={0}>
                     <IconSettings color={buttonColor} />
                   </ActionIcon>
