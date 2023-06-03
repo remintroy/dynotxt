@@ -27,6 +27,9 @@ const getConfigs = () => {
       serverIdColor: "yellow",
       mainLogColor: "white",
     },
+    rabbitmq: {
+      url: process.env.RABBITMQ_URL,
+    },
     blog: {
       blogIdLength: 22,
       authorLength: 28,

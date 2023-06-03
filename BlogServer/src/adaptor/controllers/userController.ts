@@ -32,6 +32,7 @@ import viewsRepositoryInterface from "../repositorys/viewsRepositoryInterface";
 import caseUserViewsGetByBlogId from "../../application/use-cases/views/user-views-blog-get-views";
 import caseUserVIewsGetByUserId from "../../application/use-cases/views/user-views-get-all-by-userId";
 import caseUserBlogsSearch from "../../application/use-cases/blog/user-get-blogs-search";
+import rabbitMqConnection from "../../frameworks/rabbitmq";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -40,13 +41,15 @@ const userController = (
   flagsRepository: flagsRepositoryInterface,
   commentRepository: commentRepositoryInterface,
   viewsRepository: viewsRepositoryInterface,
-  utilsService: GetUtils
+  utilsService: GetUtils,
+  rabbitmq: rabbitMqConnection
 ) => {
   // create new blog which is currently a draft
   const postUserNewBlog = async (req: RequestWithUser) => {
     const userId = req.user;
     const blogData = req.body;
-    return await caseUserBlogAddNew(blogRepository, blogService, utilsService, blogData, userId);
+    const response = await caseUserBlogAddNew(blogRepository, blogService, utilsService, blogData, userId);
+    return response;
   };
 
   const getUserBlogUploadUrl = async (req: RequestWithUser) => {

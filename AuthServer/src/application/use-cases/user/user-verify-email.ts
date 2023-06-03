@@ -19,10 +19,10 @@ export default async function verifyEmail(
 ) {
   try {
     const config = getConfigs();
-  
+
     if (!otp) throw utilService.createError(400, "OTP is required");
     if (!userId) throw utilService.createError(400, "UID is required");
-  
+
     const otpDataFromDb = await otpRepository
       .getByData({
         otp,
@@ -30,36 +30,37 @@ export default async function verifyEmail(
         reason: config.actions.VERIFY_EMAIL_AT_SIGNIN,
       })
       .catch(utilService.throwInternalError());
-  
+
     if (!otpDataFromDb) throw utilService.createError(400, "Invalid otp");
-  
+
     const existingData = await caseUserAccessCheck(userRepository, utilService, userId);
-  
+
     if (existingData.emailVerified) throw utilService.createError(400, "Email already verified");
-  
+
     existingData.emailVerified = true;
-  
+
     await existingData.save().catch(utilService.throwInternalError());
-  
+
     // ----- TOKENS -----
     const tokens = jwtService.generateTokens({ uid: existingData.uid });
-  
+
     try {
       await tokernRepository.add(existingData.uid, tokens.refreshToken);
       await userRepository.update(existingData.uid, { lastLogin: new Date() });
     } catch (error) {
       throw utilService.createError(500, "Faild to login, Error updating login status");
     }
-  
+
     await emailService.sendWelcomeEmail(existingData?.email).catch(utilService.throwInternalError());
-  
+
     return {
       ...tokens,
       email: existingData.email,
       photoURL: existingData.photoURL,
       name: existingData.name,
+      uid: existingData.uid,
     };
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
