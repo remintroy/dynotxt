@@ -19,9 +19,20 @@ const useSocketHook = () => {
     server.on("connect", () => {
       console.log("Socket connected");
 
+      /**
+       * Sends the connection is about to be closed
+       */
+      window.addEventListener("beforeunload", () => {
+        server.emit("disconnecting");
+      });
+
       /** Initial adding or notifications from server */
       server.emit("notification:get_all", (notifications: any) => {
         dispatch(setNotifications(notifications));
+      });
+
+      server.on("notification:set_new", (dataToSet) => {
+        dispatch(setNotifications(dataToSet));
       });
       //
     });
