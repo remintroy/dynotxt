@@ -16,6 +16,7 @@ import getConfigs from "../../../configs";
 import GetExpress from "dynotxt-common-services/build/express";
 import viewsRepositoryInterface from "../../../adaptor/repositorys/viewsRepositoryInterface";
 import viewsRepositoryImpl from "../../mongoDb/repository/viewsRepositoryImpl";
+import rabbitMqConnection from "../../rabbitmq";
 
 export default function userRouter(express: typeof ExpressApp) {
   const router = express.Router();
@@ -34,6 +35,8 @@ export default function userRouter(express: typeof ExpressApp) {
   const flagsRepository = flagsRepositoryInterface(flagsRepositoryImpl());
   const viewsRepository = viewsRepositoryInterface(viewsRepositoryImpl());
 
+  const rabbitmq = rabbitMqConnection();
+
   const controller = userController(
     blogRepository,
     blogService,
@@ -41,7 +44,8 @@ export default function userRouter(express: typeof ExpressApp) {
     flagsRepository,
     commentRepository,
     viewsRepository,
-    utilsService
+    utilsService,
+    rabbitmq
   );
 
   router.use(expressService.createAuthInit({ userJwt: jwtService }));

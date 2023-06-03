@@ -23,6 +23,7 @@ import GetJwt from "dynotxt-common-services/build/jwt";
 import GetUtils from "dynotxt-common-services/build/utils";
 import GetEmail from "dynotxt-common-services/build/email";
 import caseUserAnalyticsFollowersInNDays from "../../application/use-cases/user/user-analytics-followers-in-n-days";
+import rabbitMqConnection from "../../frameworks/rabbitmq";
 
 export interface IRequest extends Request {
   user: string;
@@ -37,7 +38,8 @@ const userController = (
   validator: validatorInteraface,
   jwtService: GetJwt,
   emailService: GetEmail,
-  utilsService: GetUtils
+  utilsService: GetUtils,
+  rabbitmq: rabbitMqConnection
 ) => {
   const userPostSignin = async (req: IRequest, res?: Response) => {
     const { idToken } = req.body;
@@ -60,6 +62,12 @@ const userController = (
       expires: next3months,
     });
     response.refreshToken = null;
+    rabbitmq.sendNotification({
+      userId: response.uid,
+      data: {
+        noti_type: "new_login",
+      },
+    });
     return response;
   };
 
@@ -119,6 +127,12 @@ const userController = (
       expires: next3months,
     });
     response.refreshToken = null;
+    rabbitmq.sendNotification({
+      userId: response.uid,
+      data: {
+        noti_type: "email_verified",
+      },
+    });
     return response;
   };
 

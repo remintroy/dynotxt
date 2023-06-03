@@ -10,6 +10,9 @@ const getConfigs = () => {
       serverId: "3",
       logoUrl: "https://remintroy.github.io/dynotxt/userClient/public/logo.png",
     },
+    rabbitmq: {
+      url: process.env.RABBITMQ_URL,
+    },
     jwt: {
       user: process.env.ACCESS_TOKEN_SECRET,
       admin: process.env.ADMIN_ACCESS_TOKEN_SECRET,
