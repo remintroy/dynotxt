@@ -1,32 +1,36 @@
 import { Schema } from "mongoose";
 
 interface notificationBase {
-  createAt: Date;
+  createdAt: Date;
   data: any;
   readed: boolean;
 }
 
 interface newBlog extends notificationBase {
-  type: "new_blog";
+  noti_type: "new_blog";
 }
 
 interface withoutAction extends notificationBase {
-  type: "without_action";
+  noti_type: "without_action";
 }
 
 interface newLogin extends notificationBase {
-  type: "new_login";
+  noti_type: "new_login";
 }
 
 interface newFollow extends notificationBase {
-  type: "new_follow";
+  noti_type: "new_follow";
 }
 
 interface newFollowRequest extends notificationBase {
-  type: "new_follow_request";
+  noti_type: "new_follow_request";
 }
 
-export type notificationContent = newBlog | newLogin | withoutAction | newFollow | newFollowRequest;
+interface emailVerified extends notificationBase {
+  noti_type: "email_verified";
+}
+
+export type notificationContent = emailVerified | newBlog | newLogin | withoutAction | newFollow | newFollowRequest;
 
 interface notificationSchema {
   userId: string;
@@ -39,9 +43,13 @@ const notificationSchema = new Schema({
   createdAt: Date,
   notifications: [
     {
-      type: String,
+      noti_type: String,
       readed: Boolean,
       data: {},
+      createdAt: {
+        type: Date,
+        default: new Date(),
+      },
     },
   ],
 });

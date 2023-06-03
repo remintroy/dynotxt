@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import useNotificationsHook from "../../hooks/useNotifications";
 
 const NotificationPopupComponent = () => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const ref = useClickOutside(() => setOpen(false));
 
   const notificationsData = useNotificationsHook();
@@ -18,7 +18,7 @@ const NotificationPopupComponent = () => {
     return (
       <Flex gap={10} align={"center"} justify={"space-between"}>
         <Flex gap={10} align={"start"}>
-          <Avatar src={notificationData.data?.bannerImgURL} color="green">
+          <Avatar src={notificationData.data?.bannerImgURL} alt="Blog image" color="green">
             <IconNotification />
           </Avatar>
           <Box>
@@ -53,7 +53,7 @@ const NotificationPopupComponent = () => {
     return (
       <Flex gap={10} align={"center"} justify={"space-between"}>
         <Flex gap={10} align={"start"}>
-          <Avatar src={notificationData.data?.bannerImgURL} color="blue">
+          <Avatar src={notificationData.data?.bannerImgURL} alt="Login Icon" color="blue">
             <IconAlertCircle />
           </Avatar>
           <Box>
@@ -75,7 +75,7 @@ const NotificationPopupComponent = () => {
     return (
       <Flex gap={10} align={"center"} justify={"space-between"}>
         <Flex gap={10} align={"start"}>
-          <Avatar src={notificationData.data?.photoURL} color="orange">
+          <Avatar src={notificationData.data?.photoURL} alt="User icon" color="orange">
             <IconUser />
           </Avatar>
           <Box>
@@ -106,13 +106,13 @@ const NotificationPopupComponent = () => {
   return (
     <>
       {notificationsData?.filter((e) => !e.readed)?.length > 0 ? (
-        <ActionIcon onClick={() => setOpen(true)}>
+        <ActionIcon onClick={() => setOpen(true)} aria-label="Notification button">
           <Indicator>
             <IconBell />
           </Indicator>
         </ActionIcon>
       ) : (
-        <ActionIcon onClick={() => setOpen(true)}>
+        <ActionIcon onClick={() => setOpen(true)} aria-label="Notification button">
           <IconBell />
         </ActionIcon>
       )}
@@ -127,9 +127,9 @@ const NotificationPopupComponent = () => {
           <ScrollArea h={400} offsetScrollbars>
             <Flex direction={"column"} gap={15}>
               {notificationsData?.map((notification) => {
-                if (notification.type == "new_blog") return <NewBlogNotification key={notification.data?._id} data={notification} />;
-                if (notification.type == "new_login") return <NewLoginNotification key={notification.data?._id} data={notification} />;
-                if (notification.type == "new_follow") return <NewFollowNotification key={notification.data?._id} data={notification} />;
+                if (notification.noti_type == "new_blog") return <NewBlogNotification key={notification?._id} data={notification} />;
+                if (notification.noti_type == "new_login") return <NewLoginNotification key={notification?._id} data={notification} />;
+                if (notification.noti_type == "new_follow") return <NewFollowNotification key={notification?._id} data={notification} />;
                 else return <>-</>;
               })}
             </Flex>

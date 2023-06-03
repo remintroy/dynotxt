@@ -74,7 +74,9 @@ const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
                   </Button>
                 </MediaQuery>
                 <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-                  <NotificationPopupComponent />
+                  <Box>
+                    <NotificationPopupComponent />
+                  </Box>
                 </MediaQuery>
               </>
             )}

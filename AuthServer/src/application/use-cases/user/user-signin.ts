@@ -85,6 +85,7 @@ export default async function userSignin(
       ...tokens,
       email: existingData.email,
       photoURL: existingData.photoURL,
+      uid: existingData.uid,
       name: existingData.name,
     };
   }
@@ -93,6 +94,7 @@ export default async function userSignin(
     ...tokens,
     email: user.email,
     photoURL: user.photoURL,
+    uid: user.uid,
     name: user.displayName,
   };
 }

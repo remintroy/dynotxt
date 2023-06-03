@@ -7,11 +7,13 @@
     "authserverBuild": "cd AuthServer && npm run build",
     "blogserver": "cd BlogServer && npm start",
     "blogserverBuild": "cd BlogServer && npm run build",
+    "realtimeserver": "cd RealtimeServer && npm start",
+    "realtimeserverBuild": "cd RealtimeServer && npm run build",
     "userapp": "cd UserClient && npm run dev",
     "adminApp": "cd AdminClient && npm run dev",
-    "backend": "concurrently \"npm run authserver\" \"npm run blogserver\"",
+    "backend": "concurrently \"npm run authserver\" \"npm run blogserver\" \"npm run realtimeserver\"",
     "client": "concurrently \"npm run userapp\" \"npm run adminApp\"",
-    "build": "concurrently \"npm run authserverBuild\" \"npm run blogserverBuild\""
+    "build": "concurrently \"npm run authserverBuild\" \"npm run blogserverBuild\" \"npm run realtimeserverBuild\""
   },
   "author": "",
   "license": "ISC",
