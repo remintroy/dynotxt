@@ -2,7 +2,7 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import parse from "html-react-parser";
 import { Link, useParams } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
-import { Alert, Avatar, Box, Card, Container, Divider, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
+import { Alert, Avatar, Box, Card, Container, Divider, Flex, Grid, Image, Skeleton, Text, Transition } from "@mantine/core";
 import { Prism } from "@mantine/prism";
 import { useGetBlogQuery, useGetBlogsForHomeQuery, usePostBlogViewCountMutation } from "../../../lib/api/blogApi";
 import { useGetAuthorDataQuery } from "../../../lib/api/authApi";
@@ -65,105 +65,114 @@ const ViewBlogPage = () => {
     }
   }, [blogData]);
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <Container className="BlogViewPage" p={10}>
-      <NavigationProgress />
-      {!isError && (
-        <Grid>
-          <Grid.Col span={12}>
-            <>
-              <h1 style={{ marginBottom: 0 }}>{blogData?.title}</h1>
-              {blogData?.disabled && (
-                <Alert my={20} icon={<IconExclamationCircle />} color="red" variant="outline">
-                  This blog has been disabled due to discovery of issues with the content and will be hidden for other users
-                </Alert>
-              )}
-              <Text color="dimmed" size={"sm"}>
-                Created at : {new Date(blogData?.createdAt).toDateString()}
-              </Text>
-              <Box className="user" w={"100%"} my={20}>
-                {/* <Flex mt={20} align={"center"} w={"100%"} justify={"space-between"}> */}
-                <Flex align={"center"} gap={10}>
-                  {isAuthorLoading || isAuthorFetching ? (
-                    <Skeleton radius={"xl"} w={40} h={40} />
-                  ) : (
-                    <Link className="link" to={`/profile/${authorData?.uid}`}>
-                      <Avatar radius={"xl"} src={authorData?.photoURL} />
-                    </Link>
+    <Transition mounted={mounted} transition="fade" duration={400} timingFunction="ease">
+      {(styles) => (
+        <Container style={{ ...styles }} className="BlogViewPage" p={10}>
+          <NavigationProgress />
+          {!isError && (
+            <Grid>
+              <Grid.Col span={12}>
+                <>
+                  <h1 style={{ marginBottom: 0 }}>{blogData?.title}</h1>
+                  {blogData?.disabled && (
+                    <Alert my={20} icon={<IconExclamationCircle />} color="red" variant="outline">
+                      This blog has been disabled due to discovery of issues with the content and will be hidden for other users
+                    </Alert>
                   )}
-                  <Link className="link" to={`/profile/${authorData?.uid}`}>
-                    <div>
-                      {isAuthorLoading || isAuthorFetching ? <Skeleton w={150} h={20} /> : <Text>{authorData?.name}</Text>}
-                      {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
-                    </div>
-                  </Link>
-                  {isAuthorLoading || isAuthorFetching ? (
-                    <Skeleton w={100} h={40} />
-                  ) : (
-                    <>
-                      {user && (
-                        <Suspense fallback={<></>}>
-                          <FollowButtonComponent userId={authorData?.uid} />
-                        </Suspense>
+                  <Text color="dimmed" size={"sm"}>
+                    Created at : {new Date(blogData?.createdAt).toDateString()}
+                  </Text>
+                  <Box className="user" w={"100%"} my={20}>
+                    {/* <Flex mt={20} align={"center"} w={"100%"} justify={"space-between"}> */}
+                    <Flex align={"center"} gap={10}>
+                      {isAuthorLoading || isAuthorFetching ? (
+                        <Skeleton radius={"xl"} w={40} h={40} />
+                      ) : (
+                        <Link className="link" to={`/profile/${authorData?.uid}`}>
+                          <Avatar radius={"xl"} src={authorData?.photoURL} />
+                        </Link>
                       )}
-                    </>
-                  )}
-                </Flex>
-                {/* </Flex> */}
-              </Box>
-              <Image width="100%" height={400} src={blogData?.bannerImgURL} withPlaceholder radius={5} />
-              <br />
-              <Text fw="bold" fz="xl">
-                {blogData?.subtitle}
-              </Text>
-              <Card withBorder my={10}>
-                <Text size={"sm"} mb={10}>
-                  {formatter.format(blogData?.views)} views . {formatter.format(blogData?.comments)} Comments
-                </Text>
-                <Suspense fallback={<></>}>
-                  <BlogReactionsComponent blogId={blogId} />
-                </Suspense>
-              </Card>
-              <Divider />
-              <div className="body">{blogDataToShow ? blogDataToShow : <Skeleton w="100%" h={100} />}</div>
-              <Divider my={20} />
-              <Suspense fallback={<></>}>
-                <CommentSectionComponent blog={blogData} blogId={blogId} skip={!blogData} />
-              </Suspense>
-              {!blogData?.disabled && (
-                <Box my={20}>
+                      <Link className="link" to={`/profile/${authorData?.uid}`}>
+                        <div>
+                          {isAuthorLoading || isAuthorFetching ? <Skeleton w={150} h={20} /> : <Text>{authorData?.name}</Text>}
+                          {isAuthorLoading || isAuthorFetching ? <Skeleton mt={10} w={150} h={10} /> : ""}
+                        </div>
+                      </Link>
+                      {isAuthorLoading || isAuthorFetching ? (
+                        <Skeleton w={100} h={40} />
+                      ) : (
+                        <>
+                          {user && (
+                            <Suspense fallback={<></>}>
+                              <FollowButtonComponent userId={authorData?.uid} />
+                            </Suspense>
+                          )}
+                        </>
+                      )}
+                    </Flex>
+                    {/* </Flex> */}
+                  </Box>
+                  <Image width="100%" height={400} src={blogData?.bannerImgURL} withPlaceholder radius={5} />
+                  <br />
+                  <Text fw="bold" fz="xl">
+                    {blogData?.subtitle}
+                  </Text>
+                  <Card withBorder my={10}>
+                    <Text size={"sm"} mb={10}>
+                      {formatter.format(blogData?.views)} views . {formatter.format(blogData?.comments)} Comments
+                    </Text>
+                    <Suspense fallback={<></>}>
+                      <BlogReactionsComponent blogId={blogId} />
+                    </Suspense>
+                  </Card>
+                  <Divider />
+                  <div className="body">{blogDataToShow ? blogDataToShow : <Skeleton w="100%" h={100} />}</div>
+                  <Divider my={20} />
                   <Suspense fallback={<></>}>
-                    <ReportBlogComponet blogId={blogId} />
+                    <CommentSectionComponent blog={blogData} blogId={blogId} skip={!blogData} />
                   </Suspense>
-                </Box>
-              )}
-              {!blogData?.disabled && (
-                <Box>
-                  <h2>Related Blogs</h2>
-                  <Grid gutter={"lg"}>
-                    {blogsListData?.map((blog: any) => {
-                      return <BlogCardNormalComponent span={12} key={blog?.blogId} blog={blog} />;
-                    })}
-                    {blogsListData?.length === 0 && <h3 style={{ padding: 10 }}>Yay.. There is nothing private here</h3>}
-                  </Grid>
-                </Box>
-              )}
+                  {!blogData?.disabled && (
+                    <Box my={20}>
+                      <Suspense fallback={<></>}>
+                        <ReportBlogComponet blogId={blogId} />
+                      </Suspense>
+                    </Box>
+                  )}
+                  {!blogData?.disabled && (
+                    <Box>
+                      <h2>Related Blogs</h2>
+                      <Grid gutter={"lg"}>
+                        {blogsListData?.map((blog: any) => {
+                          return <BlogCardNormalComponent span={12} key={blog?.blogId} blog={blog} />;
+                        })}
+                        {blogsListData?.length === 0 && <h3 style={{ padding: 10 }}>Yay.. There is nothing private here</h3>}
+                      </Grid>
+                    </Box>
+                  )}
+                </>
+              </Grid.Col>
+            </Grid>
+          )}
+          {isError && (
+            <>
+              <Image mt={100} src={ErrorImage} maw={500} mx={"auto"} />
+              <Flex align={"start"} gap={10} justify={"center"}>
+                <IconExclamationCircle style={{ marginTop: 8 }} size={"30px"} />{" "}
+                <Text mt={0} sx={{ lineHeight: 1.5 }} fz={"30px"} fw={"bold"}>
+                  {error?.data?.error ?? "Oops something went wrong !"}
+                </Text>
+              </Flex>
             </>
-          </Grid.Col>
-        </Grid>
+          )}
+        </Container>
       )}
-      {isError && (
-        <>
-          <Image mt={100} src={ErrorImage} maw={500} mx={"auto"} />
-          <Flex align={"start"} gap={10} justify={"center"}>
-            <IconExclamationCircle style={{ marginTop: 8 }} size={"30px"} />{" "}
-            <Text mt={0} sx={{ lineHeight: 1.5 }} fz={"30px"} fw={"bold"}>
-              {error?.data?.error ?? "Oops something went wrong !"}
-            </Text>
-          </Flex>
-        </>
-      )}
-    </Container>
+    </Transition>
   );
 };
 
