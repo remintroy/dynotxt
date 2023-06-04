@@ -1,15 +1,15 @@
-import { Drawer, MediaQuery, Navbar } from "@mantine/core";
+import { MediaQuery, Navbar } from "@mantine/core";
 import useSidebarHook from "../../../hooks/useSidebar";
 import NormalSidebarLayoutComponent from "./NormalSidebar";
 
-const SidebarNavbarLayout = ({ hidden, setHidden }: any) => {
+const SidebarNavbarLayout = ({ hidden }: any) => {
   const { showSidebar } = useSidebarHook();
 
   return (
     <>
       {showSidebar && (
         <>
-          <MediaQuery
+          {/* <MediaQuery
             largerThan={"md"}
             styles={{ display: "none" }}
             children={
@@ -24,11 +24,11 @@ const SidebarNavbarLayout = ({ hidden, setHidden }: any) => {
                   hiddenBreakpoint="md"
                   hidden={hidden}
                 >
-                  <NormalSidebarLayoutComponent />
+                  <NormalSidebarLayoutComponent setClose={setHidden} />
                 </Navbar>
               </Drawer>
             }
-          />
+          /> */}
           <MediaQuery
             smallerThan={"md"}
             styles={{ display: "none" }}

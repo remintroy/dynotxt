@@ -13,6 +13,10 @@ import BlogsSettingsPage from "./pages/Settings/Blogs";
 import ViewBlogPage from "./pages/Blog/ViewBlog";
 import ProfileSettingsDashboardPage from "./pages/Settings/Dashboard";
 import useSocketHook from "./hooks/useSocket";
+import NotificationsTabPage from "./pages/Tabs/Notifications";
+import SettingsTabPage from "./pages/Tabs/Settings";
+import AccountProfilePage from "./pages/Settings/Account";
+
 const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
 const SignUpPage = lazy(() => import("./pages/Auth/Signup"));
@@ -37,6 +41,18 @@ const router = createBrowserRouter([
       {
         path: "profile/:id/blogs",
         element: <BlogsSettingsPage />,
+      },
+      {
+        path: "profile/:id/account",
+        element: <AccountProfilePage />,
+      },
+      {
+        path: "tab/notifications",
+        element: <NotificationsTabPage />,
+      },
+      {
+        path: "tab/settings",
+        element: <SettingsTabPage />,
       },
     ],
   },
