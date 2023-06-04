@@ -1,6 +1,21 @@
 import usePathHook from "../../../hooks/usePath";
-import { ActionIcon, Box, Divider, Flex, Kbd, NavLink, Navbar, ScrollArea, Switch, Text, Tooltip, useMantineColorScheme, useMantineTheme } from "@mantine/core";
-import { IconDashboard, IconFileAnalytics, IconMaximize, IconMinimize, IconSearch } from "@tabler/icons-react";
+import {
+  ActionIcon,
+  Avatar,
+  Box,
+  Divider,
+  Flex,
+  Kbd,
+  NavLink,
+  Navbar,
+  ScrollArea,
+  Switch,
+  Text,
+  Tooltip,
+  useMantineColorScheme,
+  useMantineTheme,
+} from "@mantine/core";
+import { IconDashboard, IconFileAnalytics, IconMaximize, IconMinimize, IconSearch, IconSettings } from "@tabler/icons-react";
 import { IconHome } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { IconSun } from "@tabler/icons-react";
@@ -8,7 +23,7 @@ import { IconMoonStars } from "@tabler/icons-react";
 import { useFullscreen } from "@mantine/hooks";
 import useUserDataHook from "../../../hooks/useUserData";
 
-const NormalSidebarLayoutComponent = () => {
+const NormalSidebarLayoutComponent = ({ setClose }: any) => {
   const user = useUserDataHook();
   const path = usePathHook();
   const theme = useMantineTheme();
@@ -51,14 +66,14 @@ const NormalSidebarLayoutComponent = () => {
         </Box>
       </Navbar.Section>
       <Navbar.Section grow component={ScrollArea} mx="-xs" px="xs">
-        <Link to="/" className="link" aria-label="Go to home page button">
+        <Link to="/" onClick={() => setClose && setClose(false)} className="link" aria-label="Go to home page button">
           <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconHome />} active={path.length == 0} label="Home" description="Home sweet home" />
         </Link>
         <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconSearch />} label="Explore" description="New arrivals " />
         <Divider my={10} />
         {user && (
           <>
-            <Link to={`/profile/${user?.uid}/dashboard`} className="link" aria-label="Account Dashboard button">
+            <Link onClick={() => setClose && setClose(false)} to={`/profile/${user?.uid}/dashboard`} className="link" aria-label="Account Dashboard button">
               <NavLink
                 sx={{ borderRadius: 5 }}
                 variant="filled"
@@ -68,7 +83,7 @@ const NormalSidebarLayoutComponent = () => {
                 description="Know your account"
               />
             </Link>
-            <Link to={`/profile/${user?.uid}/blogs`} className="link" aria-label="Manage blogs button">
+            <Link onClick={() => setClose && setClose(false)} to={`/profile/${user?.uid}/blogs`} className="link" aria-label="Manage blogs button">
               <NavLink
                 sx={{ borderRadius: 5 }}
                 variant="filled"
@@ -79,6 +94,22 @@ const NormalSidebarLayoutComponent = () => {
               />
             </Link>
           </>
+        )}
+      </Navbar.Section>
+
+      <Navbar.Section>
+        {user && (
+          <Link to={`/profile/${user?.uid}/account`} className="link">
+            <NavLink
+              sx={{ borderRadius: 5 }}
+              active={path[0] == "profile" && path[1] == `${user?.uid}` && path[2] == "account"}
+              label={user?.name}
+              description={user?.email}
+              variant="filled"
+              icon={<Avatar src={user?.photoURL} radius="xl" />}
+              rightSection={<IconSettings size={'20px'}/>}
+            />
+          </Link>
         )}
       </Navbar.Section>
     </>

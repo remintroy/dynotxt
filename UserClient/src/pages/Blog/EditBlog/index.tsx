@@ -2,7 +2,7 @@ import "./style.scss";
 import { useEffect, useState } from "react";
 import { setNavbarShowState } from "../../../lib/redux/slices/navbar";
 import { useAppDispatch } from "../../../lib/redux/hooks";
-import { Button, Card, Container, Flex, Image, Loader, LoadingOverlay, Overlay, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
+import { Button, Card, Container, Flex, Image, Input, Loader, LoadingOverlay, Overlay, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
 import { IconEdit, IconEye, IconFile, IconGlobe, IconInfoHexagon } from "@tabler/icons-react";
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
@@ -191,6 +191,7 @@ const EditBlogPage = () => {
               onChange={(e) => setSubTitle(e.target.value)}
               sx={{ textarea: { fontSize: "1.3rem", fontWeight: "bold" } }}
             ></Textarea>
+            <Input placeholder="Your blog categorys"/>
             <br />
             <BlogEditorComponent value={bodyValue} setValue={setBodyValue} />
           </ScrollArea>

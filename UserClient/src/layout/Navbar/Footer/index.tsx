@@ -1,5 +1,4 @@
 import { ActionIcon, Footer, Grid, MediaQuery, useMantineTheme } from "@mantine/core";
-import useUserDataHook from "../../../hooks/useUserData";
 import { Link } from "react-router-dom";
 import { IconBell, IconHome, IconHome2, IconSearch, IconSettings } from "@tabler/icons-react";
 import usePathHook from "../../../hooks/usePath";
@@ -14,7 +13,6 @@ const FooterNavbarLayout = () => {
     height: "100%",
   };
   const linkStyle = { width: "100%", height: "100%", padding: "0" };
-  const user = useUserDataHook();
   const theme = useMantineTheme();
   const buttonColor = theme.colorScheme == "dark" ? "#fff" : "#000";
   const path = usePathHook();
@@ -45,14 +43,14 @@ const FooterNavbarLayout = () => {
                 </Link>
               </Grid.Col>
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
-                <Link aria-label="Go to notifications page" to={"#"} style={linkStyle}>
+                <Link aria-label="Go to notifications page" to={"/tab/notifications"} style={linkStyle}>
                   <ActionIcon aria-label="Go to notifications page" w={"100%"} h={"90%"} p={0}>
                     <IconBell color={buttonColor} />
                   </ActionIcon>
                 </Link>
               </Grid.Col>
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
-                <Link aria-label="Go to settings page" to={`/profile/${user?.uid}/dashboard`} style={linkStyle}>
+                <Link aria-label="Go to settings page" to={`/tab/settings`} style={linkStyle}>
                   <ActionIcon aria-label="Go to settings page" w={"100%"} h={"90%"} p={0}>
                     <IconSettings color={buttonColor} />
                   </ActionIcon>

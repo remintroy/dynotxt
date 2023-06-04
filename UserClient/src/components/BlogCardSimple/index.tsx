@@ -54,7 +54,14 @@ const BlogCardComponent = ({ blog, span }: { blog: any; span?: number }) => {
               </Box>
             </Grid.Col>
             <Grid.Col span={4}>
-              <Image radius={"xs"} src={blog?.bannerImgURL} withPlaceholder height={150} alt={`Image for ${blog?.title}`} />
+              <Image
+                radius={"xs"}
+                caption={<Text>{new Date(blog?.createdAt).toDateString()}</Text>}
+                src={blog?.bannerImgURL}
+                withPlaceholder
+                height={150}
+                alt={`Image for ${blog?.title}`}
+              />
             </Grid.Col>
           </Grid>
         </Card.Section>
