@@ -128,7 +128,7 @@ const EditBlogPage = () => {
 
   const [searchCategoryApi] = useGetSearchBlogCategoryMutation();
 
-  const [data, setData] = useState([
+  const [data] = useState([
     { value: "react", label: "React" },
     { value: "ng", label: "Angular" },
     { value: "svelte", label: "Svelte" },
