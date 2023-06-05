@@ -1,6 +1,6 @@
 import { ActionIcon, Footer, Grid, MediaQuery, useMantineTheme } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { IconBell, IconHome, IconHome2, IconSearch, IconSettings } from "@tabler/icons-react";
+import { IconBell, IconBellFilled, IconHome, IconHome2, IconSearch, IconSettings, IconSettingsFilled, IconZoomFilled } from "@tabler/icons-react";
 import usePathHook from "../../../hooks/usePath";
 import { useMediaQuery } from "@mantine/hooks";
 
@@ -36,23 +36,23 @@ const FooterNavbarLayout = () => {
                 </Link>
               </Grid.Col>
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
-                <Link aria-label="Go to search page" to={"#"} style={linkStyle}>
+                <Link aria-label="Go to search page" to={"/tab/search"} style={linkStyle}>
                   <ActionIcon aria-label="Go to search page" w={"100%"} h={"90%"} p={0}>
-                    <IconSearch color={buttonColor} />
+                    {path[0] == "tab" && path[1] == "search" ? <IconZoomFilled color={buttonColor} /> : <IconSearch color={buttonColor} />}
                   </ActionIcon>
                 </Link>
               </Grid.Col>
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
                 <Link aria-label="Go to notifications page" to={"/tab/notifications"} style={linkStyle}>
                   <ActionIcon aria-label="Go to notifications page" w={"100%"} h={"90%"} p={0}>
-                    <IconBell color={buttonColor} />
+                    {path[0] == "tab" && path[1] == "notifications" ? <IconBellFilled color={buttonColor} /> : <IconBell color={buttonColor} />}
                   </ActionIcon>
                 </Link>
               </Grid.Col>
               <Grid.Col span={3} display="flex" sx={innerStyleButton}>
                 <Link aria-label="Go to settings page" to={`/tab/settings`} style={linkStyle}>
                   <ActionIcon aria-label="Go to settings page" w={"100%"} h={"90%"} p={0}>
-                    <IconSettings color={buttonColor} />
+                    {path[0] == "tab" && path[1] == "settings" ? <IconSettingsFilled color={buttonColor} /> : <IconSettings color={buttonColor} />}
                   </ActionIcon>
                 </Link>
               </Grid.Col>

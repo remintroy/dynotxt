@@ -6,6 +6,7 @@ import configSlice from "./slices/config";
 import notificationSlice from "./slices/notification";
 import { userApiMiddleware, userApiReducer, userApiReducerPath } from "../api/authApi";
 import { blogApiMiddleware, blogApiReducer, blogApiReducerPath } from "../api/blogApi";
+import searchSlice from "./slices/search";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     config: configSlice,
     profile: profileSlice,
     notification: notificationSlice,
+    search: searchSlice,
     [userApiReducerPath]: userApiReducer,
     [blogApiReducerPath]: blogApiReducer,
   },

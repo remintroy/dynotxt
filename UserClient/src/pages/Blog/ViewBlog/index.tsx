@@ -73,7 +73,7 @@ const ViewBlogPage = () => {
   return (
     <Transition mounted={mounted} transition="fade" duration={400} timingFunction="ease">
       {(styles) => (
-        <Container style={{ ...styles }} className="BlogViewPage" p={10}>
+        <Container style={{ ...styles }} className="BlogViewPage" p={5}>
           <NavigationProgress />
           {!isError && (
             <Grid>
@@ -118,7 +118,7 @@ const ViewBlogPage = () => {
                     </Flex>
                     {/* </Flex> */}
                   </Box>
-                  <Image width="100%" height={400} src={blogData?.bannerImgURL} withPlaceholder radius={5} />
+                  <Image width="100%" src={blogData?.bannerImgURL} withPlaceholder radius={5} />
                   <br />
                   <Text fw="bold" fz="xl">
                     {blogData?.subtitle}
