@@ -2,7 +2,7 @@ import { ActionIcon, Box, Chip, Flex, Image, Loader, Menu, Text } from "@mantine
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { nprogress } from "@mantine/nprogress";
-import { IconDotsVertical, IconMessage } from "@tabler/icons-react";
+import { IconDotsVertical, IconEdit, IconMessage } from "@tabler/icons-react";
 import { IconTrash } from "@tabler/icons-react";
 import { IconLock } from "@tabler/icons-react";
 import { IconWorld } from "@tabler/icons-react";
@@ -164,6 +164,9 @@ const BlogMbAllBlogsSubPage = () => {
                             Make public
                           </Menu.Item>
                         )}
+                        <Link to={`/blog/edit/${blog?.blogId}`} className="link">
+                          <Menu.Item icon={<IconEdit size={14} />}>Edit Blog</Menu.Item>
+                        </Link>
                         <Menu.Item color="red" icon={<IconTrash size={14} />} onClick={() => trashBlog(blog?.blogId)}>
                           Trash blog
                         </Menu.Item>
