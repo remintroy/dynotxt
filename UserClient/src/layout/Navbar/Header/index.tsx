@@ -1,11 +1,12 @@
-import { Avatar, Box, Button, Code, Header, Input, Loader, MediaQuery, Text, Tooltip } from "@mantine/core";
+import { Avatar, Box, Burger, Button, Header, Loader, MediaQuery, Text, useMantineTheme } from "@mantine/core";
 import { Link, useNavigate } from "react-router-dom";
-import { useCreateNewBlogMutation, useGetSearchResultsMutation } from "../../../lib/api/blogApi";
+import { useCreateNewBlogMutation } from "../../../lib/api/blogApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
-import { IconPlus, IconSearch } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import NotificationPopupComponent from "../../../components/NotificationPopup";
 
-const HeaderNavbarLayout = () => {
+const HeaderNavbarLayout = ({ opened, setNavOpen }: any) => {
+  const theme = useMantineTheme();
   const user = useAppSelector((state) => state.user.data);
   const userLoading = useAppSelector((state) => state.user.loading);
 
@@ -23,21 +24,17 @@ const HeaderNavbarLayout = () => {
     }
   };
 
-  const [searchApi] = useGetSearchResultsMutation();
-
-  const handleSearch = async (query: string) => {
-    try {
-      const reponse: any = await searchApi(query?.trim());
-      console.log(reponse?.data);
-    } catch (error) {
-      console.log("Error => ", error);
-    }
-  };
-
   return (
     <Header height={{ base: 50, md: 70 }} p="xl">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
+          <MediaQuery smallerThan={"sm"} styles={{ display: "none" }}>
+            <MediaQuery largerThan="md" styles={{ display: "none" }}>
+              <Box>
+                <Burger aria-label="Open sidebar" opened={opened} onClick={() => setNavOpen((o: any) => !o)} size="sm" color={theme.colors.gray[7]} mr="xl" />
+              </Box>
+            </MediaQuery>
+          </MediaQuery>
           <Link className="link" to="/">
             <Text fw={700} fz="md" tt="uppercase">
               Dynotxt
@@ -46,18 +43,6 @@ const HeaderNavbarLayout = () => {
         </div>
         <div className="right" style={{ display: "flex", alignItems: "center" }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-              <Input
-                placeholder="Search"
-                icon={<IconSearch size={"15px"} />}
-                onChange={(e) => handleSearch(e.target.value)}
-                rightSection={
-                  <Tooltip label="Search shortcut" withArrow>
-                    <Code sx={{ cursor: "default" }}>/</Code>
-                  </Tooltip>
-                }
-              />
-            </MediaQuery>
             {(user || userLoading) && (
               <>
                 <MediaQuery smallerThan="sm" styles={{ display: "none" }}>

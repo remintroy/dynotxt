@@ -7,7 +7,7 @@ import usePathHook from "../../hooks/usePath";
 const SidebarNavbarLayout = lazy(() => import("./Sidebar"));
 
 const NavbarLayout = () => {
-  const [showNav] = useState(false);
+  const [showNav, setShowNav] = useState(false);
 
   /**
    * TO remove unnecessary routes that comes as a sideffect of logout or missing data of user
@@ -21,10 +21,10 @@ const NavbarLayout = () => {
   return (
     <AppShell
       padding="xs"
-      header={<HeaderNavbarLayout />}
+      header={<HeaderNavbarLayout opened={showNav} setNavOpen={setShowNav} />}
       navbar={
         <Suspense fallback={<div>Loading...</div>}>
-          <SidebarNavbarLayout hidden={!showNav} />
+          <SidebarNavbarLayout hidden={!showNav} setHidden={setShowNav} />
         </Suspense>
       }
       footer={<FooterNavbarLayout />}

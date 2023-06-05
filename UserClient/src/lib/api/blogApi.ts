@@ -185,7 +185,22 @@ const blogApiSlice = createApi({
       query: () => `/analytics/view/`,
     }),
     getSearchResults: builder.mutation({
-      query: (searchQuery: string) => `/search?query=${searchQuery}`,
+      query: ({ query, page }: any) => {
+        let encodedQuery = encodeURIComponent(query);
+        return `/search?query=${encodedQuery}&page=${page}`;
+      },
+    }),
+    getBlogSearch: builder.query({
+      query: ({ query, page }: any) => {
+        let encodedQuery = encodeURIComponent(query);
+        return `/search?query=${encodedQuery}&page=${page}`;
+      },
+    }),
+    getSearchBlogCategory: builder.mutation({
+      query: (searchQuery: string) => {
+        let encodedQuery = encodeURIComponent(searchQuery);
+        return `/search/category?query=${encodedQuery}`;
+      },
     }),
   }),
 });
@@ -221,4 +236,6 @@ export const {
   useGetBlogViewCountByBlogIdQuery,
   useGetBlogViewCountByUserIdQuery,
   useGetSearchResultsMutation,
+  useGetBlogSearchQuery,
+  useGetSearchBlogCategoryMutation,
 } = blogApiSlice;

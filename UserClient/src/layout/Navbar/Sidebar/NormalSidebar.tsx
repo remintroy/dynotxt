@@ -99,7 +99,7 @@ const NormalSidebarLayoutComponent = ({ setClose }: any) => {
 
       <Navbar.Section>
         {user && (
-          <Link to={`/profile/${user?.uid}/account`} className="link">
+          <Link onClick={() => setClose && setClose(false)} to={`/profile/${user?.uid}/account`} className="link">
             <NavLink
               sx={{ borderRadius: 5 }}
               active={path[0] == "profile" && path[1] == `${user?.uid}` && path[2] == "account"}
@@ -107,7 +107,7 @@ const NormalSidebarLayoutComponent = ({ setClose }: any) => {
               description={user?.email}
               variant="filled"
               icon={<Avatar src={user?.photoURL} radius="xl" />}
-              rightSection={<IconSettings size={'20px'}/>}
+              rightSection={<IconSettings size={"20px"} />}
             />
           </Link>
         )}

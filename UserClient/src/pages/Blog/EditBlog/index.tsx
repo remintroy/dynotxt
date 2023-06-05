@@ -2,13 +2,13 @@ import "./style.scss";
 import { useEffect, useState } from "react";
 import { setNavbarShowState } from "../../../lib/redux/slices/navbar";
 import { useAppDispatch } from "../../../lib/redux/hooks";
-import { Button, Card, Container, Flex, Image, Input, Loader, LoadingOverlay, Overlay, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
+import { Button, Card, Container, Flex, Image, Loader, LoadingOverlay, MultiSelect, Overlay, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
 import { IconEdit, IconEye, IconFile, IconGlobe, IconInfoHexagon } from "@tabler/icons-react";
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
 import { useParams } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
-import { useGetBlogQuery, usePutCurrentStateMutation, usePutPublishBlogMutation } from "../../../lib/api/blogApi";
+import { useGetBlogQuery, useGetSearchBlogCategoryMutation, usePutCurrentStateMutation, usePutPublishBlogMutation } from "../../../lib/api/blogApi";
 import { NavigationProgress } from "@mantine/nprogress";
 import BlogEditorComponent from "../../../components/BlogEditor";
 import BannerImageButtonComponent from "../../../components/BannerImageButton";
@@ -126,6 +126,27 @@ const EditBlogPage = () => {
     blogData && (debouncedBlogBodyData || debouncedBlogTitle || debouncedBlogSubtitle) && uploadCurrentState();
   }, [debouncedBlogBodyData, debouncedBlogTitle, debouncedBlogSubtitle]);
 
+  const [searchCategoryApi] = useGetSearchBlogCategoryMutation();
+
+  const [data, setData] = useState([
+    { value: "react", label: "React" },
+    { value: "ng", label: "Angular" },
+    { value: "svelte", label: "Svelte" },
+    { value: "vue", label: "Vue" },
+    { value: "riot", label: "Riot" },
+    { value: "next", label: "Next.js" },
+    { value: "blitz", label: "Blitz.js" },
+  ]);
+
+  const searchCategory = async (searchQuery: any) => {
+    try {
+      const result = await searchCategoryApi(searchQuery);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Container className={`CreateBlog ${thisIsPc ? "" : "mb"}`}>
       <NavigationProgress />
@@ -191,7 +212,14 @@ const EditBlogPage = () => {
               onChange={(e) => setSubTitle(e.target.value)}
               sx={{ textarea: { fontSize: "1.3rem", fontWeight: "bold" } }}
             ></Textarea>
-            <Input placeholder="Your blog categorys"/>
+            <br />
+            <MultiSelect
+              data={data}
+              onKeyUp={(e: any) => searchCategory(e.target.value)}
+              searchable
+              nothingFound="Nothing found"
+              placeholder="Pick Categorys where your blog belongs to"
+            />
             <br />
             <BlogEditorComponent value={bodyValue} setValue={setBodyValue} />
           </ScrollArea>
