@@ -16,6 +16,7 @@ import useSocketHook from "./hooks/useSocket";
 import NotificationsTabPage from "./pages/Tabs/Notifications";
 import SettingsTabPage from "./pages/Tabs/Settings";
 import AccountProfilePage from "./pages/Settings/Account";
+import SearchTabPage from "./pages/Tabs/Search";
 
 const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "tab/settings",
         element: <SettingsTabPage />,
+      },
+      {
+        path: "tab/search",
+        element: <SearchTabPage />,
       },
     ],
   },
