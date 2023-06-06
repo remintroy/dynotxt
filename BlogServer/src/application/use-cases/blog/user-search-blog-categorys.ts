@@ -1,12 +1,12 @@
 import GetUtils from "dynotxt-common-services/build/utils";
 import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositoryInteraface";
 
-const caseUserBlogsGetForHomeFeed = async (
+const caseUserSearchBlogCategoryList = async (
   blogRepository: blogRepositoryInteraface,
   utilsService: GetUtils,
-  page: number
+  searchQuery: string
 ) => {
-  return await blogRepository.getAllPublicBlogs(page).catch(utilsService.throwInternalError("Faild to get blogs"));
+  return await blogRepository.searchBlogCategoryTags(searchQuery).catch(utilsService.throwInternalError());
 };
 
-export default caseUserBlogsGetForHomeFeed;
+export default caseUserSearchBlogCategoryList;

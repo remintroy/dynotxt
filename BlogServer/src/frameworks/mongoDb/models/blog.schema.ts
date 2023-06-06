@@ -2,7 +2,6 @@ import { Schema } from "mongoose";
 
 export const BlogSchema = new Schema({
   version: { type: Number, default: 0 },
-  views: { type: Number, default: 0 },
   disabled: { type: Boolean, default: false },
   trashed: { type: Boolean, default: false },
   createdAt: { type: Date, default: new Date() },
@@ -10,6 +9,12 @@ export const BlogSchema = new Schema({
   deletedAt: Date,
   trashedAt: Date,
   published: { type: Boolean, default: false },
+  category: [
+    {
+      value: String,
+      createdAt: { type: Date, default: new Date() },
+    },
+  ],
   subtitle: String,
   blogId: String,
   author: String,

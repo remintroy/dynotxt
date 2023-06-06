@@ -27,6 +27,7 @@ const caseUserBlogUpdate = async (
     subtitle: validBlogData.subtitle,
     body: validBlogData.body,
     bannerImgURL: validBlogData.bannerImgURL,
+    category: validBlogData.category,
   };
 
   return blogRepository.updateBlog(blogId, dataToSave).catch(utilsService.throwInternalError());

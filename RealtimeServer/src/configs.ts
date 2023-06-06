@@ -18,7 +18,12 @@ const getConfigs = () => {
       admin: process.env.ADMIN_ACCESS_TOKEN_SECRET,
     },
     cors: {
-      origin: ["https://dynotxt.com", "https://admin.dynotxt.com"],
+      origin: [
+        "https://dynotxt.com",
+        "https://admin.dynotxt.com",
+        "https://master.dynotxt.pages.dev",
+        "https://dynotxt.pages.dev",
+      ],
       credentials: true,
     },
     mongo: {
