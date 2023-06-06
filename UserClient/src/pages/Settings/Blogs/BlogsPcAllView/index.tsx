@@ -1,10 +1,9 @@
 import { ActionIcon, Box, Flex, Image, Menu, Progress, ScrollArea, Table, Text, Tooltip } from "@mantine/core";
-import { IconChevronDown, IconPencil } from "@tabler/icons-react";
+import { IconChevronDown, IconPencil, IconReportAnalytics } from "@tabler/icons-react";
 import { IconWorld } from "@tabler/icons-react";
 import { IconLock } from "@tabler/icons-react";
 import { IconTrash } from "@tabler/icons-react";
-import { IconExternalLink } from "@tabler/icons-react";
-import { IconDotsVertical } from "@tabler/icons-react";
+import { IconExternalLink } from "@tabler/icons-react"; 
 import { Link } from "react-router-dom";
 import { addBlogToAllBlogsProfile, resetProfileBlogs, setAllBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
 import { modals } from "@mantine/modals";
@@ -172,20 +171,18 @@ const ProfilePcAllBlogsTableSubPage = () => {
                                 </ActionIcon>
                               </Link>
                             </Tooltip>
-                            <Menu>
-                              <Menu.Target>
-                                <Tooltip withArrow label="Actions and more options for your blog">
-                                  <ActionIcon>
-                                    <IconDotsVertical size={"20px"} />
-                                  </ActionIcon>
-                                </Tooltip>
-                              </Menu.Target>
-                              <Menu.Dropdown>
-                                <Menu.Item color="red" icon={<IconTrash size={14} />} onClick={() => trashBlog(blog?.blogId)}>
-                                  Trash blog
-                                </Menu.Item>
-                              </Menu.Dropdown>
-                            </Menu>
+                            <Tooltip label="Move to trash" withArrow>
+                              <ActionIcon onClick={() => trashBlog(blog?.blogId)}>
+                                <IconTrash size={"20px"} />
+                              </ActionIcon>
+                            </Tooltip>
+                            <Tooltip label="Blog analytics" withArrow>
+                              <Link to={`/blog/analytics/${blog?.blogId}`}>
+                                <ActionIcon>
+                                  <IconReportAnalytics size={"20px"} />
+                                </ActionIcon>
+                              </Link>
+                            </Tooltip>
                           </Flex>
                         </Box>
                       </Flex>

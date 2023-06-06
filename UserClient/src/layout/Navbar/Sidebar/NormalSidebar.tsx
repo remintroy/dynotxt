@@ -22,6 +22,7 @@ import { IconSun } from "@tabler/icons-react";
 import { IconMoonStars } from "@tabler/icons-react";
 import { useFullscreen } from "@mantine/hooks";
 import useUserDataHook from "../../../hooks/useUserData";
+import { spotlight } from "@mantine/spotlight";
 
 const NormalSidebarLayoutComponent = ({ setClose }: any) => {
   const user = useUserDataHook();
@@ -69,7 +70,7 @@ const NormalSidebarLayoutComponent = ({ setClose }: any) => {
         <Link to="/" onClick={() => setClose && setClose(false)} className="link" aria-label="Go to home page button">
           <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconHome />} active={path.length == 0} label="Home" description="Home sweet home" />
         </Link>
-        <NavLink sx={{ borderRadius: 5 }} variant="filled" icon={<IconSearch />} label="Explore" description="New arrivals " />
+        <NavLink onClick={() => spotlight.open()} sx={{ borderRadius: 5 }} variant="filled" icon={<IconSearch />} label="Explore" description="New arrivals " />
         <Divider my={10} />
         {user && (
           <>

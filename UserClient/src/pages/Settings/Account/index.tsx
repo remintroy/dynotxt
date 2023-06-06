@@ -6,8 +6,22 @@ import { notifications } from "@mantine/notifications";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { nprogress, NavigationProgress } from "@mantine/nprogress";
 import { storageConfig } from "../../../lib/firebase";
+import { IconLogout } from "@tabler/icons-react";
+import useAuthHook from "../../../hooks/useAuth";
+import { modals } from "@mantine/modals";
+import useUserDataHook from "../../../hooks/useUserData";
+import useUserDataLoadingHook from "../../../hooks/useUserDataLoading";
+import { useNavigate } from "react-router-dom";
 
 const AccountProfilePage = () => {
+  const loggedInUserData = useUserDataHook();
+  const loggedInUserDataLoading = useUserDataLoadingHook();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loggedInUserDataLoading && !loggedInUserData) navigate("/auth/signin");
+  }, [loggedInUserDataLoading, loggedInUserData]);
+
   const { data: user, isLoading, isFetching } = useGetFullUserDataQuery({});
   const openRef = useRef<() => void>(null);
 
@@ -148,6 +162,21 @@ const AccountProfilePage = () => {
     setMounted(true);
   }, []);
 
+  const { logout } = useAuthHook();
+
+  const handleLogout = () => {
+    modals.openConfirmModal({
+      centered: true,
+      title: "Are you sure?",
+      confirmProps: { color: "red" },
+      children: <Text size="sm">This will logout you current session</Text>,
+      labels: { confirm: "Logout", cancel: "Cancel" },
+      onConfirm: async () => {
+        logout();
+      },
+    });
+  };
+
   return (
     <Transition mounted={mounted} transition="fade" duration={300} timingFunction="ease">
       {(styles) => (
@@ -240,6 +269,11 @@ const AccountProfilePage = () => {
               </Flex>
             </Box>
           )}
+          <Flex>
+            <Button onClick={handleLogout} leftIcon={<IconLogout />}>
+              Logout
+            </Button>
+          </Flex>
         </Container>
       )}
     </Transition>
