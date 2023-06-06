@@ -1,6 +1,6 @@
 import { Box, Divider, Flex, NavLink, Switch, Text, Transition, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 import { useFullscreen } from "@mantine/hooks";
-import { IconSun } from "@tabler/icons-react";
+import { IconLogout, IconSun } from "@tabler/icons-react";
 import { IconMinimize } from "@tabler/icons-react";
 import { IconMaximize } from "@tabler/icons-react";
 import { IconMoonStars } from "@tabler/icons-react";
@@ -8,6 +8,8 @@ import { IconFileAnalytics, IconHome2, IconUser } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useUserDataHook from "../../../hooks/useUserData";
+import { modals } from "@mantine/modals";
+import useAuthHook from "../../../hooks/useAuth";
 
 const SettingsTabPage = () => {
   const user = useUserDataHook();
@@ -19,6 +21,21 @@ const SettingsTabPage = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const { logout } = useAuthHook();
+
+  const handleLogout = () => {
+    modals.openConfirmModal({
+      centered: true,
+      title: "Are you sure?",
+      confirmProps: { color: "red" },
+      children: <Text size="sm">This will logout you current session</Text>,
+      labels: { confirm: "Logout", cancel: "Cancel" },
+      onConfirm: async () => {
+        logout();
+      },
+    });
+  };
 
   return (
     <Transition mounted={mounted} transition="fade" duration={300} timingFunction="ease">
@@ -80,6 +97,9 @@ const SettingsTabPage = () => {
                 />
               }
             />
+            {user && (
+              <NavLink onClick={handleLogout} label="Logout" description="Logout of your account in this device" variant="light" icon={<IconLogout />} />
+            )}
           </Flex>
         </Box>
       )}

@@ -130,7 +130,7 @@ const blogApiSlice = createApi({
       invalidatesTags: ["deletedBlogs", "blogDisplay"],
     }),
     getBlogsForHome: builder.query({
-      query: () => `/public/all`,
+      query: ({ page }) => `/public/all?page=${page}`,
       providesTags: ["home"],
     }),
     getBlogReactionStatus: builder.query({

@@ -4,6 +4,7 @@ import { useLogOutMutation, useSigninMutation } from "../lib/api/authApi";
 import { resetUserData, setUser } from "../lib/redux/slices/user";
 import { useAppDispatch } from "../lib/redux/hooks";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const reThrowFirebaseError = (err: any) => {
   throw err?.code.split("/").pop().split("-").join(" ");
@@ -14,6 +15,7 @@ const useAuthHook = () => {
   const dispatch = useAppDispatch();
   const [signInApi] = useSigninMutation();
   const [logoutApi] = useLogOutMutation();
+  const navigate = useNavigate();
 
   const signInUser = async (responseFromFirebase: UserCredential) => {
     setStatus("Loading...");
@@ -26,6 +28,9 @@ const useAuthHook = () => {
     const data = await signInApi(idToken)
       .unwrap()
       .catch((err) => {
+        if (err?.data?.action && err?.data?.action == "VRFYMIL") {
+          navigate(`/auth/verify-email/${responseFromFirebase.user.uid}`);
+        }
         throw err?.data.error ?? "Oops someting went wrong";
       });
 
@@ -74,10 +79,10 @@ const useAuthHook = () => {
   };
 
   const logout = async () => {
+    // clearing userdata from redux
+    dispatch(resetUserData());
     // sending logout request to server
     await logoutApi({});
-    // clearing userdata from loredux
-    dispatch(resetUserData());
     return true;
   };
 

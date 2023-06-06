@@ -1,9 +1,11 @@
-import { AppShell, Container } from "@mantine/core";
+import { AppShell, Avatar, Container } from "@mantine/core";
 import HeaderNavbarLayout from "./Header";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
 import FooterNavbarLayout from "./Footer";
 import usePathHook from "../../hooks/usePath";
+import { SpotlightProvider } from "@mantine/spotlight";
+import useBlogSearchHook from "../../hooks/useBlogSearch";
 const SidebarNavbarLayout = lazy(() => import("./Sidebar"));
 
 const NavbarLayout = () => {
@@ -18,24 +20,45 @@ const NavbarLayout = () => {
     if (path[0] == "profile" && path[1] == "undefined") navigate("/");
   }, []);
 
+  const { data, setQuery } = useBlogSearchHook();
+  const onTrigger = (event: any) => {
+    navigate(`/blog/${event?.id}`);
+  };
+  const actions = data?.map((blog: any) => {
+    return {
+      id: blog?.blogId,
+      title: blog?.title,
+      onTrigger,
+      icon: <Avatar src={blog?.bannerImgURL} />,
+    };
+  });
+
   return (
-    <AppShell
-      padding="xs"
-      header={<HeaderNavbarLayout opened={showNav} setNavOpen={setShowNav} />}
-      navbar={
-        <Suspense fallback={<div>Loading...</div>}>
-          <SidebarNavbarLayout hidden={!showNav} setHidden={setShowNav} />
-        </Suspense>
-      }
-      footer={<FooterNavbarLayout />}
+    <SpotlightProvider
+      shortcut={["mod + K", "/"]}
+      onChange={(e: any) => setQuery(e.target.value)}
+      searchPlaceholder="Search blogs"
+      actions={actions}
+      nothingFoundMessage="No blogs found "
     >
-      <>
-        <Container fluid p={0}>
-          <Outlet />
-        </Container>
-        <div className="dummy"></div>
-      </>
-    </AppShell>
+      <AppShell
+        padding="xs"
+        header={<HeaderNavbarLayout opened={showNav} setNavOpen={setShowNav} />}
+        navbar={
+          <Suspense fallback={<div>Loading...</div>}>
+            <SidebarNavbarLayout hidden={!showNav} setHidden={setShowNav} />
+          </Suspense>
+        }
+        footer={<FooterNavbarLayout />}
+      >
+        <>
+          <Container fluid p={0}>
+            <Outlet />
+          </Container>
+          <div className="dummy"></div>
+        </>
+      </AppShell>
+    </SpotlightProvider>
   );
 };
 

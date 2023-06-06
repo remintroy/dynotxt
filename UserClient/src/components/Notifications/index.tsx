@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
-import { IconNotification } from "@tabler/icons-react";
+import { IconNotification, IconRecordMail } from "@tabler/icons-react";
 import { IconAlertCircle } from "@tabler/icons-react";
 import { IconUser } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
@@ -49,6 +49,28 @@ export const NewLoginNotification = ({ data: notificationData }: any) => {
         <Box>
           <Text sx={{ lineHeight: 1.5 }} lineClamp={1} color={notificationData?.readed ? "dimmed" : ""}>
             New login success
+          </Text>
+          <Flex>
+            <Text sx={{ lineHeight: 1.3 }} w={130} lineClamp={1} color="dimmed" fz={"xs"}>
+              {new Date(notificationData?.createdAt).toDateString()}
+            </Text>
+          </Flex>
+        </Box>
+      </Flex>
+    </Flex>
+  );
+};
+
+export const EmailVerifiedNotification = ({ data: notificationData }: any) => {
+  return (
+    <Flex gap={10} align={"center"} justify={"space-between"}>
+      <Flex gap={10} align={"start"}>
+        <Avatar src={notificationData.data?.bannerImgURL} alt="Login Icon" color="blue">
+          <IconRecordMail />
+        </Avatar>
+        <Box>
+          <Text sx={{ lineHeight: 1.5 }} lineClamp={1} color={notificationData?.readed ? "dimmed" : ""}>
+            You email is successfully verified
           </Text>
           <Flex>
             <Text sx={{ lineHeight: 1.3 }} w={130} lineClamp={1} color="dimmed" fz={"xs"}>

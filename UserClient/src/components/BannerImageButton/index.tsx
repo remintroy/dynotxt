@@ -62,7 +62,7 @@ const BannerImageButtonComponent = ({ value, setValue, blogId }: { value: string
                     setUploaded(true);
                     setLoading(false);
                     notifications.show({
-                      title: "Profile photo updated successfully",
+                      title: "Banner photo updated successfully",
                       message: "It may take some time to reflect changes to every pages",
                     });
                   } catch (error: any) {

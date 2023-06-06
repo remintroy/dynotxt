@@ -74,7 +74,7 @@ const ViewBlogPage = () => {
     <Transition mounted={mounted} transition="fade" duration={400} timingFunction="ease">
       {(styles) => (
         <Container style={{ ...styles }} className="BlogViewPage" p={5}>
-          <NavigationProgress />
+          <NavigationProgress color="red" />
           {!isError && (
             <Grid>
               <Grid.Col span={12}>
@@ -148,10 +148,10 @@ const ViewBlogPage = () => {
                     <Box>
                       <h2>Related Blogs</h2>
                       <Grid gutter={"lg"}>
-                        {blogsListData?.map((blog: any) => {
+                        {blogsListData?.docs?.map((blog: any) => {
                           return <BlogCardNormalComponent span={12} key={blog?.blogId} blog={blog} />;
                         })}
-                        {blogsListData?.length === 0 && <h3 style={{ padding: 10 }}>Yay.. There is nothing private here</h3>}
+                        {blogsListData?.length === 0 && <h3 style={{ padding: 10 }}>Yay.. There is nothing here to show</h3>}
                       </Grid>
                     </Box>
                   )}

@@ -26,7 +26,7 @@ const BlogCardComponent = ({ blog, span }: { blog: any; span?: number }) => {
                   </Text>
                 </Box>
               </Link>
-              <Flex>#Private #Google #NodeJs</Flex>
+              {/* <Flex>#Private #Google #NodeJs</Flex> */}
               <Box sx={{ marginTop: 20 }}>
                 {isUserDataLoading && (
                   <Flex gap={15} align={"center"}>

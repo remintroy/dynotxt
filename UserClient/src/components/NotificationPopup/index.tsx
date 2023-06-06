@@ -3,7 +3,7 @@ import { useClickOutside } from "@mantine/hooks";
 import { IconBell } from "@tabler/icons-react";
 import { useState } from "react";
 import useNotificationsHook from "../../hooks/useNotifications";
-import { NewBlogNotification, NewFollowNotification, NewLoginNotification } from "../Notifications";
+import { EmailVerifiedNotification, NewBlogNotification, NewFollowNotification, NewLoginNotification } from "../Notifications";
 
 const NotificationPopupComponent = () => {
   const [open, setOpen] = useState(false);
@@ -33,12 +33,13 @@ const NotificationPopupComponent = () => {
             </Text>
           </Flex>
           <ScrollArea h={400} offsetScrollbars>
-            <Flex direction={"column"} gap={15}>
+            <Flex direction={"column"} gap={15} mt={20}>
               {notificationsData?.map((notification) => {
-                if (notification.noti_type == "new_blog") return <NewBlogNotification setOpen={setOpen} key={notification?._id} data={notification} />;
+                if (notification.noti_type == "new_blog") return <NewBlogNotification key={notification?._id} data={notification} />;
                 if (notification.noti_type == "new_login") return <NewLoginNotification key={notification?._id} data={notification} />;
-                if (notification.noti_type == "new_follow") return <NewFollowNotification setOpen={setOpen} key={notification?._id} data={notification} />;
-                else return <>-</>;
+                if (notification.noti_type == "new_follow") return <NewFollowNotification key={notification?._id} data={notification} />;
+                if (notification.noti_type == "email_verified") return <EmailVerifiedNotification key={notification?._id} data={notification} />;
+                else return <div key={notification?._id}>-</div>;
               })}
             </Flex>
           </ScrollArea>
