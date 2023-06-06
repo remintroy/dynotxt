@@ -8,12 +8,17 @@ export interface Blog {
   published?: boolean;
   blogId?: string;
   author?: string;
-  views?: number;
   bannerImgURL?: string;
   version?: number;
   body?: [any];
   trashed?: boolean;
   disabled?: boolean;
+  category?: [
+    {
+      value: string;
+      createdAt: Date;
+    }
+  ];
 }
 
 export class Blog {
@@ -25,7 +30,6 @@ export class Blog {
     this.updatedAt = blogData.updatedAt;
     this.published = blogData.published;
     this.blogId = blogData.blogId;
-    this.views = blogData.views;
     this.bannerImgURL = blogData.bannerImgURL;
     this.body = blogData.body;
     this.version = blogData.version;
@@ -33,6 +37,7 @@ export class Blog {
     this.disabled = blogData.disabled;
     this.trashedAt = blogData.trashedAt;
     this.deletedAt = blogData.deletedAt;
+    this.category = blogData.category;
   }
 }
 

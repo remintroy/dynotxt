@@ -45,7 +45,13 @@ const getConfigs = () => {
       url: process.env.RABBITMQ_URL,
     },
     cors: {
-      origin: ["*", "https://dynotxt.com", "https://admin.dynotxt.com", "https://dynotxt.pages.dev"],
+      origin: [
+        "*",
+        "https://dynotxt.com",
+        "https://admin.dynotxt.com",
+        "https://master.dynotxt.pages.dev",
+        "https://dynotxt.pages.dev",
+      ],
       credentials: true,
     },
     colors: {

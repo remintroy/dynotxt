@@ -5,7 +5,7 @@ import getConfigs from "../../../configs";
 const authServiceImpl = () => {
   const config = getConfigs();
 
-  const verifyIdToken = (idToken: string) => firebase.verifyIdToken(idToken);
+  const verifyIdToken = firebase.verifyIdToken;
 
   const createOtp = async () => "67F24G";
 
