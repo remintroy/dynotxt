@@ -15,14 +15,14 @@ const SignInPage = () => {
   const handleLogin = async () => {
     setStatusDisp((pre) => ({ ...pre, show: true, error: false, errorMessage: "" }));
     await signinWithEmail(email, password).catch((err) => {
-      setStatusDisp((pre) => ({ ...pre, error: true, errorMessage: err }));
+      setStatusDisp((pre) => ({ ...pre, error: true, errorMessage: typeof err == "string" ? err : "Something went wrong" }));
     });
   };
 
   const handleGoogleLogin = async () => {
     setStatusDisp((pre) => ({ ...pre, show: true, error: false, errorMessage: "" }));
     await loginWithGoogle().catch((err) => {
-      setStatusDisp((pre) => ({ ...pre, error: true, errorMessage: err }));
+      setStatusDisp((pre) => ({ ...pre, error: true, errorMessage: typeof err == "string" ? err : "Something went wrong" }));
     });
   };
 

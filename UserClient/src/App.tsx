@@ -17,6 +17,9 @@ import NotificationsTabPage from "./pages/Tabs/Notifications";
 import SettingsTabPage from "./pages/Tabs/Settings";
 import AccountProfilePage from "./pages/Settings/Account";
 import SearchTabPage from "./pages/Tabs/Search";
+import VerfiyEmailPage from "./pages/Auth/VerifyEmail";
+import HomePage from "./pages/Home";
+import BlogAnalyticsSettingsPage from "./pages/Settings/BlogAnalytics";
 
 const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
@@ -28,8 +31,16 @@ const router = createBrowserRouter([
     element: <NavbarLayout />,
     children: [
       {
+        path: "/",
+        element: <HomePage />,
+      },
+      {
         path: "blog/:id",
         element: <ViewBlogPage />,
+      },
+      {
+        path: "/blog/analytics/:id",
+        element: <BlogAnalyticsSettingsPage />,
       },
       {
         path: "profile/:id",
@@ -89,6 +100,14 @@ const router = createBrowserRouter([
           </Suspense>
         ),
       },
+      {
+        path: "verify-email/:uid",
+        element: (
+          <Suspense fallback={<AppLoaderComponent />}>
+            <VerfiyEmailPage />
+          </Suspense>
+        ),
+      },
     ],
   },
 ]);
@@ -103,7 +122,7 @@ function App() {
    */
   useEffect(() => {
     dispatch(setUserStatus({ error: isError, loading: isLoading || isFetching }));
-    if (data) {
+    if (data && !isError && !isLoading && !isFetching) {
       dispatch(resetUserData());
       dispatch(setUser(data));
     }
