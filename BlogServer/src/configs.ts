@@ -20,7 +20,13 @@ const getConfigs = () => {
       admin: process.env.ADMIN_ACCESS_TOKEN_SECRET,
     },
     cors: {
-      origin: ["*", "https://dynotxt.com", "https://admin.dynotxt.com", "https://dynotxt.pages.dev"],
+      origin: [
+        "*",
+        "https://dynotxt.com",
+        "https://admin.dynotxt.com",
+        "https://master.dynotxt.pages.dev",
+        "https://dynotxt.pages.dev",
+      ],
       credentials: true,
     },
     colors: {
@@ -34,7 +40,7 @@ const getConfigs = () => {
       blogIdLength: 22,
       authorLength: 28,
       title: {
-        minChar: 1,
+        minChar: 0,
         maxChar: 800,
       },
       subtitle: {

@@ -33,6 +33,7 @@ import caseUserViewsGetByBlogId from "../../application/use-cases/views/user-vie
 import caseUserVIewsGetByUserId from "../../application/use-cases/views/user-views-get-all-by-userId";
 import caseUserBlogsSearch from "../../application/use-cases/blog/user-get-blogs-search";
 import rabbitMqConnection from "../../frameworks/rabbitmq";
+import caseUserSearchBlogCategoryList from "../../application/use-cases/blog/user-search-blog-categorys";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -108,8 +109,9 @@ const userController = (
     return await caseUserBlogMoveToTrash(blogRepository, utilsService, user, blogId);
   };
 
-  const getAllBlogsForHome = async () => {
-    return await caseUserBlogsGetForHomeFeed(blogRepository, utilsService);
+  const getAllBlogsForHome = async (req: RequestWithUser) => {
+    const page = Number(req.query.page) || 1;
+    return await caseUserBlogsGetForHomeFeed(blogRepository, utilsService, page);
   };
 
   const putRecoverDeletedBlog = async (req: RequestWithUser) => {
@@ -153,7 +155,8 @@ const userController = (
 
   const getBlogSearchByQuery = async (req: RequestWithUser) => {
     const searchQuery = req.query?.query;
-    return await caseUserBlogsSearch(blogRepository, utilsService, searchQuery as string);
+    const page = Number(req.query?.page) || 1;
+    return await caseUserBlogsSearch(blogRepository, utilsService, searchQuery as string, page);
   };
 
   const putUserLikeBlog = async (req: RequestWithUser) => {
@@ -202,6 +205,11 @@ const userController = (
     return await caseUserVIewsGetByUserId(viewsRepository, utilsService, user, nDaysAgo);
   };
 
+  const getBlogCategorysWithSearchQuery = async (req: RequestWithUser) => {
+    const searchQuery = req.query.query;
+    return await caseUserSearchBlogCategoryList(blogRepository, utilsService, searchQuery as string);
+  };
+
   return {
     postUserNewBlog,
     getUserBlogUploadUrl,
@@ -229,6 +237,7 @@ const userController = (
     postViewsAddNew,
     getViewsByBlogId,
     getViewsByUserId,
+    getBlogCategorysWithSearchQuery,
   };
 };
 

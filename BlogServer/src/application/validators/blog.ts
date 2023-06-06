@@ -6,22 +6,12 @@ const mustBeAStirng = (value: string, createError, name = "Value") => {
   throw createError(400, `${name} must be a string`);
 };
 
-const mustMinChar = (
-  value: string,
-  minLen: number,
-  createError,
-  name = "Value"
-) => {
+const mustMinChar = (value: string, minLen: number, createError, name = "Value") => {
   if (value.length > minLen) return value;
   throw createError(400, `${name} must be greater than ${minLen} characters`);
 };
 
-const mustMaxChar = (
-  value: string,
-  maxLen: number,
-  createError,
-  name = "Value"
-) => {
+const mustMaxChar = (value: string, maxLen: number, createError, name = "Value") => {
   if (value.length < maxLen) return value;
   throw createError(400, `${name} must be less than ${maxLen} characters`);
 };
@@ -32,7 +22,7 @@ const mustMaxChar = (
 // };
 
 export const blogValidator = (blogBody: Blog, createError, noIds?: boolean) => {
-  let { title, subtitle, author, bannerImgURL, blogId, body } = blogBody;
+  let { title, subtitle, author, bannerImgURL, blogId, body, category } = blogBody;
 
   const config = getConfigs();
   const output: Blog = {};
@@ -81,6 +71,10 @@ export const blogValidator = (blogBody: Blog, createError, noIds?: boolean) => {
     //! IS vald boyd
     // TODO
     output.body = body;
+  }
+
+  if (category) {
+    output.category = category;
   }
 
   return output;

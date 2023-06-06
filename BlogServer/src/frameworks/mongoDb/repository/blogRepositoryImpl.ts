@@ -451,8 +451,20 @@ const blogRepositoryImpl = () => {
     ]);
   };
 
-  const getAllPublicBlogs = async () => {
-    return await BlogModel.find({ trashed: false, published: true, disabled: false });
+  const getAllPublicBlogs = async (page: number) => {
+    const aggrigate = BlogModel.aggregate([
+      {
+        $match: {
+          trashed: false,
+          published: true,
+          disabled: false,
+        },
+      },
+    ]);
+    return await BlogModel.aggregatePaginate(aggrigate, {
+      page,
+      limit: 2,
+    });
   };
 
   const softDeleteBlogs = async (blogId: string, author: string) => {
@@ -464,7 +476,7 @@ const blogRepositoryImpl = () => {
     return await blogData.save();
   };
 
-  const searchBlogs = async (searchQuery: string) => {
+  const searchBlogs = async (searchQuery: string, page: number) => {
     const regex = new RegExp(searchQuery, "ig");
     try {
       const resp_a = BlogModel.aggregate([
@@ -476,8 +488,20 @@ const blogRepositoryImpl = () => {
             $text: { $search: searchQuery },
           },
         },
+        {
+          $project: {
+            blogId: 1,
+            title: 1,
+            subtitle: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            bannerImgURL: 1,
+            author: 1,
+            _id: 0,
+          },
+        },
       ]);
-      const resp_A = await BlogModel.aggregatePaginate(resp_a, { page: 1, limit: 10 });
+      const resp_A = await BlogModel.aggregatePaginate(resp_a, { page, limit: 10 });
       if (resp_A.totalDocs > 0) return resp_A;
       const resp_b = BlogModel.aggregate([
         {
@@ -489,11 +513,37 @@ const blogRepositoryImpl = () => {
             $or: [{ title: { $regex: regex } }, { subtitle: { $regex: regex } }],
           },
         },
+        {
+          $project: {
+            blogId: 1,
+            title: 1,
+            subtitle: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            bannerImgURL: 1,
+            author: 1,
+            _id: 0,
+          },
+        },
       ]);
-      return await BlogModel.aggregatePaginate(resp_b, { page: 1, limit: 10 });
+      return await BlogModel.aggregatePaginate(resp_b, { page, limit: 10 });
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const searchBlogCategoryTags = async (searchQuery: string) => {
+    const regex = new RegExp(searchQuery, "ig");
+    const response = await BlogModel.aggregate([
+      {
+        $match: {
+          "category.value": {
+            $regex: regex,
+          },
+        },
+      },
+    ]);
+    return response;
   };
 
   return {
@@ -515,6 +565,7 @@ const blogRepositoryImpl = () => {
     getAllPublicBlogs,
     softDeleteBlogs,
     searchBlogs,
+    searchBlogCategoryTags,
   };
 };
 

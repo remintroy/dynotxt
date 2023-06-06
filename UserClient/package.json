@@ -18,7 +18,7 @@
     "@mantine/notifications": "^6.0.11",
     "@mantine/nprogress": "^6.0.11",
     "@mantine/prism": "^6.0.11",
-    "@mantine/spotlight": "^6.0.13",
+    "@mantine/spotlight": "^6.0.11",
     "@reduxjs/toolkit": "^1.9.5",
     "@tabler/icons-react": "^2.20.0",
     "chart.js": "^4.3.0",
