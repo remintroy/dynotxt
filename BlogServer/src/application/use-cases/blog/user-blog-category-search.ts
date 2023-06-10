@@ -4,9 +4,10 @@ import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositor
 const caseUserSearchBlogCategoryList = async (
   blogRepository: blogRepositoryInteraface,
   utilsService: GetUtils,
-  searchQuery: string
+  searchQuery: string,
+  page: number
 ) => {
-  return await blogRepository.searchBlogCategoryTags(searchQuery).catch(utilsService.throwInternalError());
+  return await blogRepository.searchBlogCategoryTags(searchQuery, page).catch(utilsService.throwInternalError());
 };
 
 export default caseUserSearchBlogCategoryList;
