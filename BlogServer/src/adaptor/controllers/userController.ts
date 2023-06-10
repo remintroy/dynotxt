@@ -33,7 +33,8 @@ import caseUserViewsGetByBlogId from "../../application/use-cases/views/user-vie
 import caseUserVIewsGetByUserId from "../../application/use-cases/views/user-views-get-all-by-userId";
 import caseUserBlogsSearch from "../../application/use-cases/blog/user-get-blogs-search";
 import rabbitMqConnection from "../../frameworks/rabbitmq";
-import caseUserSearchBlogCategoryList from "../../application/use-cases/blog/user-search-blog-categorys";
+import caseUserSearchBlogCategoryList from "../../application/use-cases/blog/user-blog-category-search";
+import caseUserBlogGetFromCategoryList from "../../application/use-cases/blog/user-get-blogs-from-category-list";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -207,7 +208,14 @@ const userController = (
 
   const getBlogCategorysWithSearchQuery = async (req: RequestWithUser) => {
     const searchQuery = req.query.query;
-    return await caseUserSearchBlogCategoryList(blogRepository, utilsService, searchQuery as string);
+    const page = Number(req.query.page) || 1;
+    return await caseUserSearchBlogCategoryList(blogRepository, utilsService, searchQuery as string, page);
+  };
+
+  const getBlogsFromCategoryList = async (req: RequestWithUser) => {
+    const categoryList = req.body;
+    const page = Number(req.query.page) || 1;
+    return await caseUserBlogGetFromCategoryList(blogRepository, utilsService, categoryList, { page });
   };
 
   return {
@@ -238,6 +246,7 @@ const userController = (
     getViewsByBlogId,
     getViewsByUserId,
     getBlogCategorysWithSearchQuery,
+    getBlogsFromCategoryList,
   };
 };
 

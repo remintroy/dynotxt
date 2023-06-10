@@ -16,8 +16,8 @@ const caseUserBlogsGetInPages = async (
     try {
       blogsDataFromDb =
         currentUserId === userId
-          ? await blogRepository.getAllBlogsDisplayWithUidWithPrivate(userId, page)
-          : await blogRepository.getAllBlogsDisplayWithUid(userId, page);
+          ? await blogRepository.getAllBlogsDisplayWithUidWithPrivate(userId, { page })
+          : await blogRepository.getAllBlogsDisplayWithUid(userId, { page });
     } catch (error) {
       throw utilsService.createError(500, "Faild to fetch blog from server", error?.message);
     }

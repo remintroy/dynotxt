@@ -2,6 +2,8 @@ import { Blog } from "../../../entities/blog";
 import BlogModel from "../models/blog";
 
 const blogRepositoryImpl = () => {
+  const commonPageLimit = 10;
+
   const getBlogById = async (blogId: string) => {
     const response = await BlogModel.aggregate([
       {
@@ -213,7 +215,7 @@ const blogRepositoryImpl = () => {
 
     const paginatedValue = await BlogModel.aggregatePaginate(aggrigate, {
       page: page || 1,
-      limit: 12,
+      limit: commonPageLimit,
     });
 
     return paginatedValue;
@@ -254,7 +256,10 @@ const blogRepositoryImpl = () => {
     );
   };
 
-  const getAllBlogsDisplayWithUidWithPrivate = async (userId: string, page: number) => {
+  const getAllBlogsDisplayWithUidWithPrivate = async (
+    userId: string,
+    { sort, page, filter }: { sort?: string; page?: number; filter?: string }
+  ) => {
     const aggrigate = BlogModel.aggregate([
       { $match: { author: userId, trashed: false } },
       {
@@ -268,6 +273,7 @@ const blogRepositoryImpl = () => {
           updatedAt: { $first: "$updatedAt" },
           published: { $first: "$published" },
           bannerImgURL: { $first: "$bannerImgURL" },
+          category: { $first: "$category" },
           author: { $first: "$author" },
         },
       },
@@ -331,14 +337,14 @@ const blogRepositoryImpl = () => {
     ]);
 
     const paginatedValue = await BlogModel.aggregatePaginate(aggrigate, {
-      page: page || 1,
-      limit: 12,
+      page: Number(page) || 1,
+      limit: commonPageLimit,
     });
 
     return paginatedValue;
   };
 
-  const getAllBlogsDisplayWithUid = async (userId: string, page: number) => {
+  const getAllBlogsDisplayWithUid = async (userId: string, { page }: { page: number }) => {
     const aggrigate = BlogModel.aggregate([
       { $match: { author: userId, trashed: false, published: true } },
       {
@@ -351,6 +357,7 @@ const blogRepositoryImpl = () => {
           createdAt: { $first: "$createdAt" },
           updatedAt: { $first: "$updatedAt" },
           published: { $first: "$published" },
+          category: { $first: "$category" },
           bannerImgURL: { $first: "$bannerImgURL" },
           author: { $first: "$author" },
         },
@@ -416,7 +423,7 @@ const blogRepositoryImpl = () => {
 
     const paginatedValue = await BlogModel.aggregatePaginate(aggrigate, {
       page: page || 1,
-      limit: 12,
+      limit: commonPageLimit,
     });
 
     return paginatedValue;
@@ -463,7 +470,7 @@ const blogRepositoryImpl = () => {
     ]);
     return await BlogModel.aggregatePaginate(aggrigate, {
       page,
-      limit: 2,
+      limit: commonPageLimit,
     });
   };
 
@@ -477,6 +484,7 @@ const blogRepositoryImpl = () => {
   };
 
   const searchBlogs = async (searchQuery: string, page: number) => {
+    searchQuery = searchQuery?.trim()?.toLocaleLowerCase();
     const regex = new RegExp(searchQuery, "ig");
     try {
       const resp_a = BlogModel.aggregate([
@@ -496,12 +504,13 @@ const blogRepositoryImpl = () => {
             createdAt: 1,
             updatedAt: 1,
             bannerImgURL: 1,
+            category: 1,
             author: 1,
             _id: 0,
           },
         },
       ]);
-      const resp_A = await BlogModel.aggregatePaginate(resp_a, { page, limit: 10 });
+      const resp_A = await BlogModel.aggregatePaginate(resp_a, { page, limit: commonPageLimit });
       if (resp_A.totalDocs > 0) return resp_A;
       const resp_b = BlogModel.aggregate([
         {
@@ -509,8 +518,7 @@ const blogRepositoryImpl = () => {
             published: true,
             trashed: false,
             disabled: false,
-            // $text: { $search: searchQuery },
-            $or: [{ title: { $regex: regex } }, { subtitle: { $regex: regex } }],
+            $or: [{ title: { $regex: regex } }, { subtitle: { $regex: regex } }, { category: regex }],
           },
         },
         {
@@ -520,30 +528,72 @@ const blogRepositoryImpl = () => {
             subtitle: 1,
             createdAt: 1,
             updatedAt: 1,
+            category: 1,
             bannerImgURL: 1,
             author: 1,
             _id: 0,
           },
         },
       ]);
-      return await BlogModel.aggregatePaginate(resp_b, { page, limit: 10 });
+      return await BlogModel.aggregatePaginate(resp_b, { page, limit: commonPageLimit });
     } catch (error) {
       console.log(error);
     }
   };
 
-  const searchBlogCategoryTags = async (searchQuery: string) => {
+  const searchBlogCategoryTags = async (searchQuery: string, page?: number) => {
     const regex = new RegExp(searchQuery, "ig");
-    const response = await BlogModel.aggregate([
+    let response = BlogModel.aggregate([
       {
         $match: {
-          "category.value": {
+          category: {
+            $regex: regex,
+          },
+        },
+      },
+      {
+        $unwind: "$category",
+      },
+      {
+        $group: {
+          _id: "$category",
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          value: "$_id",
+        },
+      },
+      {
+        $match: {
+          value: {
             $regex: regex,
           },
         },
       },
     ]);
-    return response;
+
+    let output = await BlogModel.aggregatePaginate(response, { page: Number(page) || 1, limit: commonPageLimit });
+    output.docs = output.docs.map((value) => value.value);
+    return output;
+  };
+
+  const getBlogsWithCategoryList = async (categoryList: string[], { page }: { page?: number }) => {
+    try {
+      const response = BlogModel.aggregate([
+        {
+          $match: {
+            category: {
+              $in: Array.isArray(categoryList) ? categoryList : [],
+            },
+          },
+        },
+      ]);
+      return BlogModel.aggregatePaginate(response, { page, limit: commonPageLimit });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return {
@@ -566,6 +616,7 @@ const blogRepositoryImpl = () => {
     softDeleteBlogs,
     searchBlogs,
     searchBlogCategoryTags,
+    getBlogsWithCategoryList,
   };
 };
 

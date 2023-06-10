@@ -9,12 +9,7 @@ export const BlogSchema = new Schema({
   deletedAt: Date,
   trashedAt: Date,
   published: { type: Boolean, default: false },
-  category: [
-    {
-      value: String,
-      createdAt: { type: Date, default: new Date() },
-    },
-  ],
+  category: [String],
   subtitle: String,
   blogId: String,
   author: String,
