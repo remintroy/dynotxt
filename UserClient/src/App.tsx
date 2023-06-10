@@ -131,7 +131,7 @@ function App() {
   useSocketHook();
 
   return (
-    <div>
+    <div >
       {isLoading ? <AppLoaderComponent /> : ""}
       <ModalsProvider>
         <Notifications />

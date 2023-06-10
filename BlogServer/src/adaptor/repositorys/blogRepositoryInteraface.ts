@@ -20,6 +20,7 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
   const softDeleteBlogs = repository.softDeleteBlogs;
   const searchBlogs = repository.searchBlogs;
   const searchBlogCategoryTags = repository.searchBlogCategoryTags;
+  const getBlogsWithCategoryList = repository.getBlogsWithCategoryList;
 
   return {
     getBlogById,
@@ -41,6 +42,7 @@ const blogRepositoryInteraface = (repository: blogRepositoryImpl) => {
     softDeleteBlogs,
     searchBlogs,
     searchBlogCategoryTags,
+    getBlogsWithCategoryList,
   };
 };
 

@@ -2,8 +2,24 @@ import "./style.scss";
 import { useEffect, useState } from "react";
 import { setNavbarShowState } from "../../../lib/redux/slices/navbar";
 import { useAppDispatch } from "../../../lib/redux/hooks";
-import { Button, Card, Container, Flex, Image, Loader, LoadingOverlay, MultiSelect, Overlay, ScrollArea, Stack, Text, Textarea } from "@mantine/core";
-import { IconEdit, IconEye, IconFile, IconGlobe, IconInfoHexagon } from "@tabler/icons-react";
+import {
+  Autocomplete,
+  Badge,
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Image,
+  Loader,
+  LoadingOverlay,
+  Overlay,
+  ScrollArea,
+  Stack,
+  Text,
+  Textarea,
+} from "@mantine/core";
+import { IconEdit, IconEye, IconFile, IconGlobe, IconInfoHexagon, IconX } from "@tabler/icons-react";
 import { Prism } from "@mantine/prism";
 import parse from "html-react-parser";
 import { useParams } from "react-router-dom";
@@ -31,12 +47,15 @@ const EditBlogPage = () => {
   const dispatch = useAppDispatch();
   const [putCurrentState] = usePutCurrentStateMutation();
   const [putPublishBlog] = usePutPublishBlogMutation();
+  const [searchCategoryApi] = useGetSearchBlogCategoryMutation();
+  const [tags, setTags] = useState<string[]>([]);
 
   const debounceDelayInMilliseconds = 1000;
 
   const [debouncedBlogBodyData] = useDebouncedValue(bodyValue.value, debounceDelayInMilliseconds);
   const [debouncedBlogTitle] = useDebouncedValue(title, debounceDelayInMilliseconds);
   const [debouncedBlogSubtitle] = useDebouncedValue(subtitle, debounceDelayInMilliseconds);
+  const [debouncedTags] = useDebouncedValue(tags, debounceDelayInMilliseconds);
 
   const { id: blogId } = useParams();
   const {
@@ -61,6 +80,7 @@ const EditBlogPage = () => {
     if (blogData?.subtitle) setSubTitle(blogData.subtitle);
     if (blogData?.bannerImgURL) setBannerImg(blogData.bannerImgURL);
     if (blogData?.body) setBodyValue((pre) => ({ ...pre, value: blogData?.body?.[0] }));
+    if (blogData?.category) setTags(blogData?.category);
 
     // set loading state with response loading and fetching state from rtk query
     setLoadingForBlogData((isBlogDataFetching || isBlogDataLoading) == true);
@@ -74,14 +94,11 @@ const EditBlogPage = () => {
       const dataToSend = {
         title,
         subtitle,
+        category: tags,
         body: bodyValue.value,
       };
       await putCurrentState({ blogId, data: dataToSend }).unwrap();
-      // notifications.show({
-      //   color: "green",
-      //   title: "Blog data saved",
-      //   message: "Your current state is saved. You can safely close the browser window now",
-      // });
+
       setLoadingForSaveChanges(false);
       //...
     } catch (error: any) {
@@ -123,25 +140,34 @@ const EditBlogPage = () => {
   }, []);
 
   useEffect(() => {
-    blogData && (debouncedBlogBodyData || debouncedBlogTitle || debouncedBlogSubtitle) && uploadCurrentState();
-  }, [debouncedBlogBodyData, debouncedBlogTitle, debouncedBlogSubtitle]);
+    blogData && (debouncedBlogBodyData || debouncedBlogTitle || debouncedBlogSubtitle || debouncedTags) && uploadCurrentState();
+  }, [debouncedBlogBodyData, debouncedBlogTitle, debouncedBlogSubtitle, debouncedTags]);
 
-  const [searchCategoryApi] = useGetSearchBlogCategoryMutation();
+  const handleSetData = (e: any) => {
+    let value = e.target.value?.trim();
+    if (e.keyCode === 13 && value && !tags.includes(value)) {
+      setTags((pre) => [...pre, e.target.value]);
+      e.target.value = "";
+    }
+  };
 
-  const [data] = useState([
-    { value: "react", label: "React" },
-    { value: "ng", label: "Angular" },
-    { value: "svelte", label: "Svelte" },
-    { value: "vue", label: "Vue" },
-    { value: "riot", label: "Riot" },
-    { value: "next", label: "Next.js" },
-    { value: "blitz", label: "Blitz.js" },
-  ]);
+  const handleDeleteCategory = (tag: string) => {
+    setTags((pre: any) => {
+      return pre.filter((tag_pre: any) => tag_pre !== tag);
+    });
+  };
 
-  const searchCategory = async (searchQuery: any) => {
+  const [searchData, setSearchData] = useState([]);
+
+  const searchCategory = async (searchQuery: string) => {
     try {
-      const result = await searchCategoryApi(searchQuery);
-      console.log(result);
+      searchQuery = searchQuery.toLowerCase().trim();
+      const result: any = await searchCategoryApi({ query: searchQuery });
+      if (!searchQuery || result?.data?.docs?.includes(searchQuery)) setSearchData(result?.data?.docs);
+      else {
+        const dataToSet: any = [searchQuery, ...result?.data?.docs];
+        setSearchData(dataToSet);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -212,14 +238,16 @@ const EditBlogPage = () => {
               onChange={(e) => setSubTitle(e.target.value)}
               sx={{ textarea: { fontSize: "1.3rem", fontWeight: "bold" } }}
             ></Textarea>
-            <br />
-            <MultiSelect
-              data={data}
-              onKeyUp={(e: any) => searchCategory(e.target.value)}
-              searchable
-              nothingFound="Nothing found"
-              placeholder="Pick Categorys where your blog belongs to"
-            />
+            <Box py={15}>
+              {tags?.map((tag) => {
+                return (
+                  <Badge key={tag} rightSection={<IconX onClick={() => handleDeleteCategory(tag)} size={"15px"} />}>
+                    {tag}
+                  </Badge>
+                );
+              })}
+            </Box>
+            <Autocomplete onChange={(e) => searchCategory(e)} onKeyUp={handleSetData} placeholder="Pick Tags where your blog belongs to" data={searchData} />
             <br />
             <BlogEditorComponent value={bodyValue} setValue={setBodyValue} />
           </ScrollArea>
