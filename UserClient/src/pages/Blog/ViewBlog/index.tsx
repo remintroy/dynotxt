@@ -2,9 +2,9 @@ import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import parse from "html-react-parser";
 import { Link, useParams } from "react-router-dom";
 import { Suspense, lazy, useEffect, useState } from "react";
-import { Alert, Avatar, Box, Card, Container, Divider, Flex, Grid, Image, Skeleton, Text, Transition } from "@mantine/core";
+import { Alert, AspectRatio, Avatar, Box, Card, Container, Divider, Flex, Grid, Image, Skeleton, Text, Transition } from "@mantine/core";
 import { Prism } from "@mantine/prism";
-import { useGetBlogQuery, useGetBlogsForHomeQuery, usePostBlogViewCountMutation } from "../../../lib/api/blogApi";
+import { useGetBlogQuery, useGetBlogsWithCategoryListMutation, usePostBlogViewCountMutation } from "../../../lib/api/blogApi";
 import { useGetAuthorDataQuery } from "../../../lib/api/authApi";
 import { useAppSelector } from "../../../lib/redux/hooks";
 import { IconExclamationCircle } from "@tabler/icons-react";
@@ -24,8 +24,18 @@ const ViewBlogPage = () => {
   const [postViewCountApi] = usePostBlogViewCountMutation();
   const formatter = Intl.NumberFormat("us", { notation: "compact" });
   const { data: blogData, isError, isLoading: isBlogDataLoading, isFetching: isBlogDataFetching, error }: any = useGetBlogQuery({ blogId });
-  const { data: blogsListData } = useGetBlogsForHomeQuery({});
+  const [blogsListData, setBlogsListData] = useState<any>({});
+  const [getSuggetionsApi] = useGetBlogsWithCategoryListMutation();
+
+  useEffect(() => {
+    (async () => {
+      const response: any = await getSuggetionsApi({ categorys: blogData?.category });
+      setBlogsListData(response.data);
+    })();
+  }, [blogData]);
+
   const { data: authorData, isLoading: isAuthorLoading, isFetching: isAuthorFetching } = useGetAuthorDataQuery(blogData?.author, { skip: !blogData });
+  const [imageLoading, setImageLoading] = useState(true);
 
   useEffect(() => {
     if (isBlogDataLoading || isBlogDataFetching) {
@@ -118,7 +128,22 @@ const ViewBlogPage = () => {
                     </Flex>
                     {/* </Flex> */}
                   </Box>
-                  <Image width="100%" src={blogData?.bannerImgURL} withPlaceholder radius={5} />
+
+                  <Box sx={{ position: "relative" }}>
+                    <Image
+                      onLoad={() => setImageLoading(false)}
+                      display={imageLoading ? "none" : "unset"}
+                      width="100%"
+                      src={blogData?.bannerImgURL}
+                      withPlaceholder
+                      radius={5}
+                    />
+                    {imageLoading && (
+                      <AspectRatio ratio={16 / 9} maw={"100%"}>
+                        <Skeleton width={"100%"} height={"100%"} />
+                      </AspectRatio>
+                    )}
+                  </Box>
                   <br />
                   <Text fw="bold" fz="xl">
                     {blogData?.subtitle}
@@ -149,7 +174,7 @@ const ViewBlogPage = () => {
                       <h2>Related Blogs</h2>
                       <Grid gutter={"lg"}>
                         {blogsListData?.docs?.map((blog: any) => {
-                          return <BlogCardNormalComponent span={12} key={blog?.blogId} blog={blog} />;
+                          return blog?.blogId == blogId ? "" : <BlogCardNormalComponent span={12} key={blog?.blogId} blog={blog} />;
                         })}
                         {blogsListData?.length === 0 && <h3 style={{ padding: 10 }}>Yay.. There is nothing here to show</h3>}
                       </Grid>

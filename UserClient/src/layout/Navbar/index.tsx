@@ -24,14 +24,21 @@ const NavbarLayout = () => {
   const onTrigger = (event: any) => {
     navigate(`/blog/${event?.id}`);
   };
-  const actions = data?.map((blog: any) => {
-    return {
-      id: blog?.blogId,
-      title: blog?.title,
-      onTrigger,
-      icon: <Avatar src={blog?.bannerImgURL} />,
-    };
-  });
+  const [actions, setActions] = useState<any>([]);
+
+  useEffect(() => {
+    setActions(
+      data?.map((blog: any) => {
+        return {
+          id: blog?.blogId,
+          title: blog?.title,
+          keywords: blog?.category,
+          onTrigger,
+          icon: <Avatar src={blog?.bannerImgURL} />,
+        };
+      })
+    );
+  }, [data]);
 
   return (
     <SpotlightProvider

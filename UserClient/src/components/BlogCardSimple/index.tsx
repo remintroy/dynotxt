@@ -1,11 +1,12 @@
 import { Avatar, Box, Card, Divider, Flex, Grid, Image, Skeleton, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 import { useGetUserDataWithUidQuery } from "../../lib/api/authApi";
+import { forwardRef } from "react";
 
-const BlogCardComponent = ({ blog, span }: { blog: any; span?: number }) => {
+const BlogCardComponent = forwardRef(({ blog, span }: { blog: any; span?: number }, ref: any) => {
   const { data: userData, isLoading: isUserDataLoading } = useGetUserDataWithUidQuery(blog?.author, { skip: !blog });
   return (
-    <Grid.Col span={span ?? 12}>
+    <Grid.Col ref={ref} span={span ?? 12}>
       <Box h={"100%"}>
         <Card.Section>
           <Grid>
@@ -18,7 +19,7 @@ const BlogCardComponent = ({ blog, span }: { blog: any; span?: number }) => {
                     },
                   }}
                 >
-                  <Text mt={10} size={"lg"} fw={"bold"} lineClamp={1}>
+                  <Text mt={10} size={"lg"} fw={"bold"} lineClamp={blog?.subtitle && blog?.subtitle?.length > 50 ? 1 : 3}>
                     {blog?.title}
                   </Text>
                   <Text my={10} lineClamp={2}>
@@ -69,6 +70,6 @@ const BlogCardComponent = ({ blog, span }: { blog: any; span?: number }) => {
       </Box>
     </Grid.Col>
   );
-};
+});
 
 export default BlogCardComponent;
