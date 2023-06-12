@@ -25,7 +25,7 @@ const NotificationPopupComponent = () => {
         </ActionIcon>
       )}
       {open && (
-        <Card shadow="lg" ref={ref} withBorder sx={{ position: "absolute", zIndex: 100, top: 78, right: 40, width: 400 }}>
+        <Card shadow="lg" ref={ref} withBorder sx={{ position: "absolute", zIndex: 200, top: 78, right: 40, width: 400 }}>
           <Flex align={"center"} justify={"space-between"} mb={10}>
             <Text fw={"bold"}>Notifications</Text>
             <Text fz="sm" color="dimmed" fw={"bold"}>

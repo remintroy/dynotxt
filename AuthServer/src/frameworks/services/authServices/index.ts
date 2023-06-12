@@ -1,13 +1,14 @@
 import bcrypt from "bcryptjs";
 import * as firebase from "./firebase";
 import getConfigs from "../../../configs";
+import randomId from "random-id";
 
 const authServiceImpl = () => {
   const config = getConfigs();
 
   const verifyIdToken = firebase.verifyIdToken;
 
-  const createOtp = async () => "67F24G";
+  const createOtp = async () => randomId(6, "0");
 
   const createPassordHash = (password: string) => {
     const hash = bcrypt.hash(password, config.bcrypt.salt);

@@ -16,15 +16,6 @@ const HomePage = () => {
     }
   }, [data]);
 
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => {
-    (async () => {
-      const result: any = await searchApi({});
-      setCategorys(result?.data);
-    })();
-    setMounted(true);
-  }, []);
-
   const observer: any = useRef();
   const lastElementRef = useCallback(
     (node: any) => {
@@ -42,6 +33,14 @@ const HomePage = () => {
     [isLoading, isFetching]
   );
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const result: any = await searchApi({});
+      setCategorys(result?.data);
+    })();
+    setMounted(true);
+  }, []);
   return (
     <Transition mounted={mounted} transition="fade" duration={300} timingFunction="ease">
       {(styles) => (
@@ -50,7 +49,7 @@ const HomePage = () => {
             <Flex gap={10}>
               {categorys?.docs?.map((tag: string) => {
                 return (
-                  <Chip checked={false} key={tag}>
+                  <Chip sx={{ textTransform: "capitalize" }} key={tag}>
                     {tag}
                   </Chip>
                 );

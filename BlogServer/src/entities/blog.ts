@@ -13,12 +13,7 @@ export interface Blog {
   body?: [any];
   trashed?: boolean;
   disabled?: boolean;
-  category?: [
-    {
-      value: string;
-      createdAt: Date;
-    }
-  ];
+  category?: string[];
 }
 
 export class Blog {

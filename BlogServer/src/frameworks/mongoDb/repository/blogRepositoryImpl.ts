@@ -258,10 +258,48 @@ const blogRepositoryImpl = () => {
 
   const getAllBlogsDisplayWithUidWithPrivate = async (
     userId: string,
-    { sort, page, filter }: { sort?: string; page?: number; filter?: string }
+    {
+      sort,
+      page,
+      filter,
+    }: {
+      sort?: { key: "date" | "views" | "likes" | "updated"; order: -1 | 1 };
+      page?: number;
+      filter?: ["public" | "private" | "disabled"];
+    }
   ) => {
+    let sortObj: any;
+
+    switch (sort?.key) {
+      case "date": {
+        sortObj = { $sort: { createdAt: Number(sort?.order) || -1 } };
+        break;
+      }
+      case "likes": {
+        sortObj = { $sort: { "reactions.likes": Number(sort?.order) || -1 } };
+        break;
+      }
+      case "views": {
+        sortObj = { $sort: { views: Number(sort?.order) || -1 } };
+        break;
+      }
+      case "updated": {
+        sortObj = { $sort: { updatedAt: Number(sort?.order) || -1 } };
+        break;
+      }
+      default: {
+        sortObj = { $sort: { createdAt: Number(sort?.order) || -1 } };
+      }
+    }
+
+    const filterObj: { $match: Blog } = { $match: { author: userId, trashed: false } };
+
+    if (filter?.includes("public")) filterObj.$match.published = true;
+    if (filter?.includes("disabled")) filterObj.$match.disabled = true;
+    if (filter?.includes("private")) filterObj.$match.published = false;
+
     const aggrigate = BlogModel.aggregate([
-      { $match: { author: userId, trashed: false } },
+      filterObj,
       {
         $group: {
           _id: "$blogId",
@@ -332,7 +370,7 @@ const blogRepositoryImpl = () => {
       },
       { $addFields: { views: { $arrayElemAt: ["$views.count", 0] } } },
       { $addFields: { views: { $ifNull: ["$views", 0] } } },
-      { $sort: { updatedAt: -1 } },
+      sortObj,
       { $project: { _id: 0 } },
     ]);
 

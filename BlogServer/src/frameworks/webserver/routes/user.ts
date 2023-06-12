@@ -99,6 +99,9 @@ export default function userRouter(express: typeof ExpressApp) {
     .delete(expressService.mustLoginAsUser, expressService.makeExpressCallback(controller.deleteUserDislikeBlog));
   router.route("/report/:id").post(expressService.makeExpressCallback(controller.postAddBlogReport));
   router
+    .route("/analytics/views/blog/:id")
+    .get(expressService.makeExpressCallback(controller.getViewsByBlogIdAnalytics));
+  router
     .route("/analytics/view/:id")
     .get(expressService.makeExpressCallback(controller.getViewsByBlogId))
     .post(expressService.makeExpressCallback(controller.postViewsAddNew));
