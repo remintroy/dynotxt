@@ -74,7 +74,7 @@ export const blogValidator = (blogBody: Blog, createError, noIds?: boolean) => {
   }
 
   if (category) {
-    output.category = category;
+    output.category = category?.map((tag: string) => tag?.toLowerCase());
   }
 
   return output;

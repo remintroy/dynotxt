@@ -4,11 +4,13 @@ const viewsRepositoryInterface = (repository: viewsRepositoryImpl) => {
   const addViewByBlogId = repository.addViewByBlogId;
   const getViewsByBlogId = repository.getViewsByBlogId;
   const getAllViewsInLastNDays = repository.getAllViewsInLastNDays;
+  const getAllViewsInLastNDaysWithBlogId = repository.getAllViewsInLastNDaysWithBlogId;
 
   return {
     addViewByBlogId,
     getViewsByBlogId,
     getAllViewsInLastNDays,
+    getAllViewsInLastNDaysWithBlogId,
   };
 };
 
