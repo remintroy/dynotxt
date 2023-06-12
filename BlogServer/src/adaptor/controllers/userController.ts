@@ -35,6 +35,7 @@ import caseUserBlogsSearch from "../../application/use-cases/blog/user-get-blogs
 import rabbitMqConnection from "../../frameworks/rabbitmq";
 import caseUserSearchBlogCategoryList from "../../application/use-cases/blog/user-blog-category-search";
 import caseUserBlogGetFromCategoryList from "../../application/use-cases/blog/user-get-blogs-from-category-list";
+import caseUserVIewsGetByBlogId from "../../application/use-cases/views/user-views-get-all-by-blogId";
 
 const userController = (
   blogRepository: blogRepositoryInteraface,
@@ -95,7 +96,9 @@ const userController = (
     const { user } = req;
     const userId = req.params.id;
     const page = req.query.page ? Number(req.query.page) : 1;
-    return await caseUserBlogsGetInPages(blogRepository, utilsService, user, userId, page);
+    const sortQuery: any = req.query?.sort;
+    const sort = { key: sortQuery?.split("_")?.[0], order: sortQuery?.split("_")?.[1] };
+    return await caseUserBlogsGetInPages(blogRepository, utilsService, user, userId, { page, sort });
   };
 
   const getDeletedBlogs = async (req: RequestWithUser) => {
@@ -202,8 +205,15 @@ const userController = (
 
   const getViewsByUserId = async (req: RequestWithUser) => {
     const { user } = req;
-    const nDaysAgo = 10;
-    return await caseUserVIewsGetByUserId(viewsRepository, utilsService, user, nDaysAgo);
+    const daysAgo = Number(req.query.daysAgo) || 10;
+    return await caseUserVIewsGetByUserId(viewsRepository, utilsService, user, daysAgo);
+  };
+
+  const getViewsByBlogIdAnalytics = async (req: RequestWithUser) => {
+    const { user } = req;
+    const blogId = req.params.id;
+    const daysAgo = Number(req.query.daysAgo) || 10;
+    return await caseUserVIewsGetByBlogId(viewsRepository, utilsService, user, blogId, daysAgo);
   };
 
   const getBlogCategorysWithSearchQuery = async (req: RequestWithUser) => {
@@ -247,6 +257,7 @@ const userController = (
     getViewsByUserId,
     getBlogCategorysWithSearchQuery,
     getBlogsFromCategoryList,
+    getViewsByBlogIdAnalytics,
   };
 };
 

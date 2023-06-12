@@ -1,13 +1,9 @@
 import { useEffect } from "react";
-import {
-  useGetAllTrashedBlogsQuery,
-  usePermenentlyDeleteBlogMutation,
-  usePutRecoverTrashedBlogMutation,
-} from "../../../../lib/api/blogApi";
+import { useGetAllTrashedBlogsQuery, usePermenentlyDeleteBlogMutation, usePutRecoverTrashedBlogMutation } from "../../../../lib/api/blogApi";
 import { useAppDispatch, useAppSelector } from "../../../../lib/redux/hooks";
 import { addBlogToTrashedBlogsProfile, setTrashedBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
 import { Box, Button, Flex, Image, Table, Text } from "@mantine/core";
-import { NavigationProgress, nprogress } from "@mantine/nprogress";
+import { nprogress } from "@mantine/nprogress";
 import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
 
@@ -44,8 +40,7 @@ const ProfilePcTrashedBlogsSubPage = () => {
       notifications.show({
         color: "red",
         title: "Oops something went wrong",
-        message:
-          error?.data?.error ?? "There was an error diring updating blog visiblity. Consier trying agter sometime",
+        message: error?.data?.error ?? "There was an error diring updating blog visiblity. Consier trying agter sometime",
       });
     }
   };
@@ -71,7 +66,6 @@ const ProfilePcTrashedBlogsSubPage = () => {
 
   return (
     <div>
-      <NavigationProgress />
       <Table highlightOnHover verticalSpacing="xs">
         <thead>
           <tr>

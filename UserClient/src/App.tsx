@@ -20,6 +20,7 @@ import SearchTabPage from "./pages/Tabs/Search";
 import VerfiyEmailPage from "./pages/Auth/VerifyEmail";
 import HomePage from "./pages/Home";
 import BlogAnalyticsSettingsPage from "./pages/Settings/BlogAnalytics";
+import { NavigationProgress } from "@mantine/nprogress";
 
 const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
 const SignInPage = lazy(() => import("./pages/Auth/Signin"));
@@ -131,13 +132,16 @@ function App() {
   useSocketHook();
 
   return (
-    <div >
-      {isLoading ? <AppLoaderComponent /> : ""}
-      <ModalsProvider>
-        <Notifications />
-        <RouterProvider router={router} />
-      </ModalsProvider>
-    </div>
+    <Suspense fallback={<AppLoaderComponent />}>
+      <div>
+        <NavigationProgress color="red" />
+        {isLoading ? <AppLoaderComponent /> : ""}
+        <ModalsProvider>
+          <Notifications />
+          <RouterProvider router={router} />
+        </ModalsProvider>
+      </div>
+    </Suspense>
   );
 }
 

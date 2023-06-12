@@ -4,7 +4,7 @@ import store from "../lib/redux/store";
 
 const dispatch = store.dispatch;
 
-const useSidebarHook = () => {
+const useNavbarHook = () => {
   const showSidebar = useAppSelector((state) => state.navbar.showSidebar);
   const showHeader = useAppSelector((state) => state.navbar.showHeader);
   const showFooter = useAppSelector((state) => state.navbar.showFooter);
@@ -21,4 +21,4 @@ const useSidebarHook = () => {
   };
 };
 
-export default useSidebarHook;
+export default useNavbarHook;

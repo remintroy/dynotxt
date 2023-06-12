@@ -4,6 +4,7 @@ const initialState = {
   showHeader: true,
   showSidebar: true,
   showFooter: true,
+  showSidebarWhichIs: null,
   nav: { path: "", title: "" },
 };
 

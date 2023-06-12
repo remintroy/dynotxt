@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Chip, Flex, Image, Loader, Menu, Text } from "@mantine/core";
+import { ActionIcon, Box, Chip, Flex, Image, Loader, Menu, Paper, Select, Text } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { nprogress } from "@mantine/nprogress";
@@ -15,13 +15,20 @@ import {
   usePutPublishBlogMutation,
   usePutUnPublishBlogMutation,
 } from "../../../../lib/api/blogApi";
-import { addBlogToAllBlogsProfile, setAllBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
-import { useEffect } from "react";
+import { addBlogToAllBlogsProfile, resetProfileBlogs, setAllBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
+import { useCallback, useEffect, useRef, useState } from "react";
 import usePathHook from "../../../../hooks/usePath";
+import { IconSort90 } from "@tabler/icons-react";
+import { IconSort09 } from "@tabler/icons-react";
+import { IconSortAZ } from "@tabler/icons-react";
+import { IconSortZA } from "@tabler/icons-react";
 
 const BlogMbAllBlogsSubPage = () => {
   const path = usePathHook();
+  const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<{ key: "date" | "updated" | "views" | "likes"; order: -1 | 1 }>({ key: "updated", order: -1 });
   const allBlogsData = useAppSelector((state) => state.profile.allBlogs);
+  const allBlogsMetaData = useAppSelector((state) => state.profile.allBlogsMetaData);
   const formatter = Intl.NumberFormat("us", { notation: "compact" });
   const dateFormatter = Intl.DateTimeFormat("us", { dateStyle: "short" });
   const [makePublicApi] = usePutPublishBlogMutation();
@@ -29,9 +36,9 @@ const BlogMbAllBlogsSubPage = () => {
   const [deleteBlogApi] = useDeleteBlogWithBlogIdMutation();
   const dispatch = useAppDispatch();
 
-  const { data: blogsData, isLoading, isFetching } = useGetBlogDataDisplayQuery({ uid: path[1], page: 1 });
-  useEffect(() => {
-    // assignig AllBlogs data to redux
+  const { data: blogsData, isLoading, isFetching, refetch } = useGetBlogDataDisplayQuery({ uid: path[1], page, sort });
+
+  const setAllBlogs = () => {
     if (blogsData) {
       blogsData?.docs?.forEach((blog: any) => {
         dispatch(addBlogToAllBlogsProfile(blog));
@@ -41,6 +48,11 @@ const BlogMbAllBlogsSubPage = () => {
       allBlogsMetaData.docs = null;
       dispatch(setAllBlogsMetaDataProfile(allBlogsMetaData));
     }
+  };
+
+  useEffect(() => {
+    setAllBlogs();
+    // assignig AllBlogs data to redux
   }, [blogsData]);
 
   const blogActionHandler = async (apiCallFuntion: any, blogId: string) => {
@@ -110,8 +122,81 @@ const BlogMbAllBlogsSubPage = () => {
     });
   };
 
+  useEffect(() => {
+    refetch();
+    return () => {
+      dispatch(resetProfileBlogs());
+    };
+  }, []);
+
+  useEffect(() => {
+    document.getElementsByTagName("html")[0].scrollTop = 0;
+    dispatch(resetProfileBlogs());
+    setPage(1);
+    setAllBlogs();
+  }, [sort]);
+
+  const observer: any = useRef();
+  const lastElementRef = useCallback(
+    (node: any) => {
+      if (isLoading || isFetching) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        // console.log(entries);
+        if (entries[0]?.isIntersecting) {
+          (allBlogsMetaData?.totalPages ?? 2) > page && setPage((pre) => pre + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+      // console.log(node);
+    },
+    [isLoading, isFetching]
+  );
+
+  const handleSortChange = (e: any) => {
+    const value = e; //
+    if (value == "Oldest") setSort({ key: "date", order: 1 });
+    if (value == "New") setSort({ key: "date", order: -1 });
+    if (value == "Most liked") setSort({ key: "likes", order: -1 });
+    if (value == "Least liked") setSort({ key: "likes", order: 1 });
+    if (value == "Most views") setSort({ key: "views", order: -1 });
+    if (value == "Least views") setSort({ key: "views", order: 1 });
+    if (value == "Last updated") setSort({ key: "updated", order: -1 });
+  };
+
+  useEffect(() => {
+    if (allBlogsMetaData.hasNextPage && isFetching) {
+      nprogress.set(0);
+      nprogress.start();
+    } else nprogress.complete();
+  }, [allBlogsMetaData, isFetching]);
+
   return (
     <div>
+      <Paper pb={20}>
+        <Flex align={"center"} justify={"space-between"} py={10}>
+          <Select
+            defaultValue={"Last updated"}
+            w={"100%"}
+            icon={
+              sort?.key == "likes" || sort?.key == "views" ? (
+                sort.order == -1 ? (
+                  <IconSort90 />
+                ) : (
+                  <IconSort09 />
+                )
+              ) : sort.order == -1 ? (
+                <IconSortAZ />
+              ) : (
+                <IconSortZA />
+              )
+            }
+            placeholder="Select sort order"
+            onChange={handleSortChange}
+            data={["Oldest", "New", "Most liked", "Least liked", "Most views", "Least views", "Last updated"]}
+          />
+        </Flex>
+      </Paper>
       <Flex direction={"column"} gap={15}>
         {Object.keys(allBlogsData).filter((key) => !allBlogsData[key]?.trashed).length == 0 && !isLoading && !isFetching && (
           <Text align="center" py={20}>
@@ -120,14 +205,14 @@ const BlogMbAllBlogsSubPage = () => {
         )}
         {Object.keys(allBlogsData)
           .filter((key) => !allBlogsData[key]?.trashed)
-          .map((key: string) => {
+          .map((key: string, index, arr) => {
             const blog = allBlogsData[key];
             return (
-              <Box key={blog?.blogId}>
+              <Box key={blog?.blogId} ref={index == arr.length - 1 ? lastElementRef : undefined}>
                 <Flex gap={10} justify={"space-between"}>
                   <Flex gap={10}>
                     <Link className="link" to={`/blog/${blog?.blogId}`}>
-                      <Image width={130} height={80} src={blog?.bannerImgURL} />
+                      <Image withPlaceholder width={130} height={80} src={blog?.bannerImgURL} />
                     </Link>
                     <Box>
                       <Link className="link" to={`/blog/${blog?.blogId}`}>
