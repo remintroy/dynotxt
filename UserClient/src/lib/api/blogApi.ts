@@ -101,7 +101,9 @@ const blogApiSlice = createApi({
       invalidatesTags: ["blogDisplay", "home"],
     }),
     getBlogDataDisplay: builder.query({
-      query: ({ uid, page }) => `/user/${uid}?page=${page}`,
+      query: ({ uid, page, sort }) => {
+        return `/user/${uid}?page=${page}&sort=${sort?.key || "updated"}_${sort?.order || -1}`;
+      },
       providesTags: ["blogDisplay"],
     }),
     deleteBlogWithBlogId: builder.mutation({
@@ -184,6 +186,9 @@ const blogApiSlice = createApi({
     getBlogViewCountByUserId: builder.query({
       query: () => `/analytics/view/`,
     }),
+    getBlogViewsCountByBlogIdAnalytics: builder.query({
+      query: ({ blogId }) => `/analytics/views/blog/${blogId}`,
+    }),
     getSearchResults: builder.mutation({
       query: ({ query, page }: any) => {
         let encodedQuery = encodeURIComponent(query);
@@ -246,4 +251,5 @@ export const {
   useGetBlogSearchQuery,
   useGetSearchBlogCategoryMutation,
   useGetBlogsWithCategoryListMutation,
+  useGetBlogViewsCountByBlogIdAnalyticsQuery
 } = blogApiSlice;

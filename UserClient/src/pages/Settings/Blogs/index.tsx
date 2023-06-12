@@ -18,11 +18,10 @@ const BlogsSettingsPage = () => {
   const userDataLoading = useUserDataLoadingHook();
   const navigate = useNavigate();
 
-  
   useEffect(() => {
     if (!userDataLoading && user?.uid !== path[1]) navigate(`/profile/${path[1]}`);
   }, [user]);
-  
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
@@ -32,7 +31,6 @@ const BlogsSettingsPage = () => {
     <Transition mounted={mounted} transition="fade" duration={300} timingFunction="ease">
       {(styles) => (
         <Box style={{ ...styles, padding: thisIsPc ? "20px" : 5 }}>
-          <h2>Manage your blogs</h2>
           <Tabs defaultValue="allblogs">
             <Tabs.List>
               <Tabs.Tab value="allblogs" icon={<IconFileAnalytics size="1rem" />}>

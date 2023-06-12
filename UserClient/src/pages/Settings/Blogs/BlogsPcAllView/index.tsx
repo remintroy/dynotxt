@@ -1,5 +1,5 @@
-import { ActionIcon, Box, Flex, Image, Loader, Menu, Progress, ScrollArea, Table, Text, Tooltip } from "@mantine/core";
-import { IconChevronDown, IconPencil, IconReportAnalytics } from "@tabler/icons-react";
+import { ActionIcon, Box, Divider, Flex, Image, Loader, Menu, Overlay, Paper, Progress, ScrollArea, Select, Table, Text, Tooltip } from "@mantine/core";
+import { IconChevronDown, IconPencil, IconReportAnalytics, IconSort09, IconSort90, IconSortAZ, IconSortZA } from "@tabler/icons-react";
 import { IconWorld } from "@tabler/icons-react";
 import { IconLock } from "@tabler/icons-react";
 import { IconTrash } from "@tabler/icons-react";
@@ -22,6 +22,7 @@ import usePathHook from "../../../../hooks/usePath";
 const ProfilePcAllBlogsTableSubPage = () => {
   const path = usePathHook();
   const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<{ key: "date" | "updated" | "views" | "likes"; order: -1 | 1 }>({ key: "updated", order: -1 });
   const allBlogsData = useAppSelector((state) => state.profile.allBlogs);
   const allBlogsMetaData = useAppSelector((state) => state.profile.allBlogsMetaData);
   const dispatch = useAppDispatch();
@@ -29,9 +30,9 @@ const ProfilePcAllBlogsTableSubPage = () => {
   const [makePrivateApi] = usePutUnPublishBlogMutation();
   const [deleteBlogApi] = useDeleteBlogWithBlogIdMutation();
   const formatter = Intl.NumberFormat("us", { notation: "compact" });
-  const { data: blogsData, isLoading, isFetching } = useGetBlogDataDisplayQuery({ uid: path[1], page: page });
-  useEffect(() => {
-    // assignig AllBlogs data to redux
+  const { data: blogsData, isLoading, isFetching, refetch } = useGetBlogDataDisplayQuery({ uid: path[1], page: page, sort });
+
+  const setAllBlogs = () => {
     if (blogsData) {
       blogsData?.docs?.forEach((blog: any) => {
         dispatch(addBlogToAllBlogsProfile(blog));
@@ -41,7 +42,13 @@ const ProfilePcAllBlogsTableSubPage = () => {
       allBlogsMetaData.docs = null;
       dispatch(setAllBlogsMetaDataProfile(allBlogsMetaData));
     }
-  }, [blogsData]);
+  };
+
+  useEffect(() => {
+    page == 1 && dispatch(resetProfileBlogs());
+    setAllBlogs();
+    // assignig AllBlogs data to redux
+  }, [blogsData, page]);
 
   const blogActionHandler = async (apiCallFuntion: any, blogId: string) => {
     try {
@@ -110,10 +117,18 @@ const ProfilePcAllBlogsTableSubPage = () => {
   };
 
   useEffect(() => {
+    refetch();
     return () => {
       dispatch(resetProfileBlogs());
     };
   }, []);
+
+  useEffect(() => {
+    document.getElementsByTagName("html")[0].scrollTop = 0;
+    dispatch(resetProfileBlogs());
+    setPage(1);
+    setAllBlogs();
+  }, [sort]);
 
   const observer: any = useRef();
   const lastElementRef = useCallback(
@@ -132,9 +147,54 @@ const ProfilePcAllBlogsTableSubPage = () => {
     [isLoading, isFetching]
   );
 
+  const handleSortChange = (e: any) => {
+    const value = e; //
+    if (value == "Oldest") setSort({ key: "date", order: 1 });
+    if (value == "New") setSort({ key: "date", order: -1 });
+    if (value == "Most liked") setSort({ key: "likes", order: -1 });
+    if (value == "Least liked") setSort({ key: "likes", order: 1 });
+    if (value == "Most views") setSort({ key: "views", order: -1 });
+    if (value == "Least views") setSort({ key: "views", order: 1 });
+    if (value == "Last updated") setSort({ key: "updated", order: -1 });
+  };
+
+  useEffect(() => {
+    if (allBlogsMetaData.hasNextPage && isFetching) {
+      nprogress.set(0);
+      nprogress.increment(20);
+      nprogress.start();
+    } else nprogress.complete();
+  }, [allBlogsMetaData, isFetching]);
+
   return (
-    <>
+    <Box sx={{ position: "relative" }}>
+      <Paper sx={{ position: "sticky", top: 70, zIndex: 10 }}>
+        <Flex align={"center"} justify={"space-between"} py={10}>
+          <Text transform="uppercase">Manage blogs</Text>
+          <Select
+            defaultValue={"Last updated"}
+            icon={
+              sort?.key == "likes" || sort?.key == "views" ? (
+                sort.order == -1 ? (
+                  <IconSort90 />
+                ) : (
+                  <IconSort09 />
+                )
+              ) : sort.order == -1 ? (
+                <IconSortAZ />
+              ) : (
+                <IconSortZA />
+              )
+            }
+            placeholder="Select sort order"
+            onChange={handleSortChange}
+            data={["Oldest", "New", "Most liked", "Least liked", "Most views", "Least views", "Last updated"]}
+          ></Select>
+        </Flex>
+      </Paper>
+      <Divider />
       <ScrollArea>
+        {(isLoading || (isFetching && page == 1)) && <Overlay />}
         <Table highlightOnHover verticalSpacing="xs">
           <thead>
             <tr>
@@ -168,7 +228,7 @@ const ProfilePcAllBlogsTableSubPage = () => {
                       >
                         <Flex gap={20}>
                           <Box h={100}>
-                            <Image src={blog?.bannerImgURL} width={150} height={100} />
+                            <Image withPlaceholder src={blog?.bannerImgURL} width={150} height={100} />
                           </Box>
                           <Box maw={500} miw={300}>
                             <Text lineClamp={blog?.subtitle ? 1 : 2} fz={"md"}>
@@ -298,13 +358,13 @@ const ProfilePcAllBlogsTableSubPage = () => {
               })}
           </tbody>
         </Table>
+        {allBlogsMetaData?.hasNextPage && !isFetching && (
+          <Flex justify={"center"} py={20}>
+            <Loader />
+          </Flex>
+        )}
       </ScrollArea>
-      {allBlogsMetaData.hasNextPage && isFetching && (
-        <Flex justify={"center"} py={20}>
-          <Loader />
-        </Flex>
-      )}
-    </>
+    </Box>
   );
 };
 
