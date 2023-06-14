@@ -37,7 +37,7 @@ import caseUserSearchBlogCategoryList from "../../application/use-cases/blog/use
 import caseUserBlogGetFromCategoryList from "../../application/use-cases/blog/user-get-blogs-from-category-list";
 import caseUserVIewsGetByBlogId from "../../application/use-cases/views/user-views-get-all-by-blogId";
 
-const createUserController = (
+const userController = (
   blogRepository: blogRepositoryInteraface,
   blogService: blogServiceInterface,
   reactionRepository: reactionRepositoryInterface,
@@ -48,7 +48,7 @@ const createUserController = (
   rabbitmq: rabbitMqConnection
 ) => {
   // create new blog which is currently a draft
-  const blogCreateNew = async (req: RequestWithUser) => {
+  const postUserNewBlog = async (req: RequestWithUser) => {
     const userId = req.user;
     const blogData = req.body;
     const response = await caseUserBlogAddNew(blogRepository, blogService, utilsService, blogData, userId);
@@ -56,168 +56,167 @@ const createUserController = (
   };
 
   const getUserBlogUploadUrl = async (req: RequestWithUser) => {
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     const author = req.user;
     return await caseUserBlogCreateBannerUploadUrl(blogRepository, blogService, utilsService, blogId, author);
   };
 
-  const blogUpdateData = async (req: RequestWithUser) => {
-    const blogId = req.params.blogId;
+  const putUserUpdateBlog = async (req: RequestWithUser) => {
+    const blogId = req.params.id;
     const author = req.user;
     const blogData = req.body;
     return await caseUserBlogUpdate(blogRepository, utilsService, blogId, author, blogData);
   };
 
-  const blogGetById = async (req: RequestWithUser) => {
+  const getUserBlogData = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogGet(blogRepository, utilsService, blogId, user);
   };
 
   const getUserBlogDataForEdit = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogGetDataToEdit(blogRepository, utilsService, blogId, user);
   };
 
   const putUserPublishBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogMakePublic(blogRepository, utilsService, blogId, user);
   };
 
   const putUserUnpublishBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogMakePrivate(blogRepository, utilsService, blogId, user);
   };
 
-  const userGetAllBlogs = async (req: RequestWithUser) => {
+  const getAllBlogsDisplay = async (req: RequestWithUser) => {
     const { user } = req;
-    const userId = req.params.userId;
+    const userId = req.params.id;
     const page = req.query.page ? Number(req.query.page) : 1;
     const sortQuery: any = req.query?.sort;
     const sort = { key: sortQuery?.split("_")?.[0], order: sortQuery?.split("_")?.[1] };
     return await caseUserBlogsGetInPages(blogRepository, utilsService, user, userId, { page, sort });
   };
 
-  const trashGetByUser = async (req: RequestWithUser) => {
+  const getDeletedBlogs = async (req: RequestWithUser) => {
     const { user } = req;
     const page = req.query.page ? Number(req.query.page) : 1;
     return await caseUserBlogGetTrashed(blogRepository, utilsService, user, page);
   };
 
-  const blogDelete = async (req: RequestWithUser) => {
+  const deleteUserBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogMoveToTrash(blogRepository, utilsService, user, blogId);
   };
 
-  const blogGetAllWithQuery = async (req: RequestWithUser) => {
+  const getAllBlogsForHome = async (req: RequestWithUser) => {
     const page = Number(req.query.page) || 1;
-    const querys = req.query;
-    return await caseUserBlogsGetForHomeFeed(blogRepository, utilsService, querys, page);
+    return await caseUserBlogsGetForHomeFeed(blogRepository, utilsService, page);
   };
 
-  const trashRecoverById = async (req: RequestWithUser) => {
+  const putRecoverDeletedBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogRecoverFromTrash(blogRepository, utilsService, user, blogId);
   };
 
-  const trashDeleteById = async (req: RequestWithUser) => {
+  const deleteBlogPermenetly = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserBlogSoftDeleteFromTrash(blogRepository, utilsService, blogId, user);
   };
 
-  const commentsPostWithBlogId = async (req: RequestWithUser) => {
+  const putUserComment = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     const commentData = req.body;
     return await caseUserCommentAddNew(commentRepository, blogRepository, utilsService, blogId, user, commentData);
   };
 
-  const commentsGetWithBlogId = async (req: RequestWithUser) => {
+  const getUserBlogComments = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserCommentsGet(commentRepository, blogRepository, utilsService, blogId, user);
   };
 
-  const commentsDelete = async (req: RequestWithUser) => {
+  const deleteUserBlogComment = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     const commentId = req.params.cid;
     return await caseUserCommentDelete(commentRepository, blogRepository, utilsService, blogId, user, commentId);
   };
 
-  const blogPostRepost = async (req: RequestWithUser) => {
+  const postAddBlogReport = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     const { message } = req.body;
     return await caseUserFlagsAdd(flagsRepository, utilsService, user, blogId, message);
   };
 
-  const searchGetBlogsByQuery = async (req: RequestWithUser) => {
+  const getBlogSearchByQuery = async (req: RequestWithUser) => {
     const searchQuery = req.query?.query;
     const page = Number(req.query?.page) || 1;
     return await caseUserBlogsSearch(blogRepository, utilsService, searchQuery as string, page);
   };
 
-  const reactionsPostLike = async (req: RequestWithUser) => {
+  const putUserLikeBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserReactionLike(reactionRepository, utilsService, user, blogId);
   };
 
-  const reactionsDeleteLike = async (req: RequestWithUser) => {
+  const deleteLikeBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserReactionLikeRemove(reactionRepository, utilsService, user, blogId);
   };
 
-  const reactionsPostDislike = async (req: RequestWithUser) => {
+  const putUserDislikeBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserReactionDislike(reactionRepository, utilsService, user, blogId);
   };
 
-  const reactionsDeleteDislike = async (req: RequestWithUser) => {
+  const deleteUserDislikeBlog = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserReactionDislikeRemove(reactionRepository, utilsService, user, blogId);
   };
 
-  const reactionsGetByBlogId = async (req: RequestWithUser) => {
+  const getBlogReactionStatus = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     return await caseUserReactionLikeGetStatus(reactionRepository, utilsService, user, blogId);
   };
 
-  const viewsAddNewByBlogId = async (req: RequestWithUser) => {
-    const blogId = req.params.blogId;
+  const postViewsAddNew = async (req: RequestWithUser) => {
+    const blogId = req.params.id;
     return await caseUserViewsAddNew(viewsRepository, blogRepository, utilsService, blogId);
   };
 
-  const viewsGetByBlogId = async (req: RequestWithUser) => {
-    const blogId = req.params.blogId;
+  const getViewsByBlogId = async (req: RequestWithUser) => {
+    const blogId = req.params.id;
     return await caseUserViewsGetByBlogId(viewsRepository, utilsService, blogId);
   };
 
-  const analyticsGetAllViewsByUser = async (req: RequestWithUser) => {
+  const getViewsByUserId = async (req: RequestWithUser) => {
     const { user } = req;
     const daysAgo = Number(req.query.daysAgo) || 10;
     return await caseUserVIewsGetByUserId(viewsRepository, utilsService, user, daysAgo);
   };
 
-  const analyticsGetViewsByBlogId = async (req: RequestWithUser) => {
+  const getViewsByBlogIdAnalytics = async (req: RequestWithUser) => {
     const { user } = req;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     const daysAgo = Number(req.query.daysAgo) || 10;
     return await caseUserVIewsGetByBlogId(viewsRepository, utilsService, user, blogId, daysAgo);
   };
 
-  const searchGetCategorysWithQuery = async (req: RequestWithUser) => {
+  const getBlogCategorysWithSearchQuery = async (req: RequestWithUser) => {
     const searchQuery = req.query.query;
     const page = Number(req.query.page) || 1;
     return await caseUserSearchBlogCategoryList(blogRepository, utilsService, searchQuery as string, page);
@@ -230,38 +229,36 @@ const createUserController = (
   };
 
   return {
-    blogCreateNew,
-    blogUpdateData,
-    blogGetById,
-    blogDelete,
-    blogPostRepost,
-    blogGetAllWithQuery,
-    commentsPostWithBlogId,
-    commentsGetWithBlogId,
-    commentsDelete,
-    trashGetByUser,
-    trashRecoverById,
-    trashDeleteById,
-    reactionsGetByBlogId,
-    reactionsPostLike,
-    reactionsDeleteLike,
-    reactionsPostDislike,
-    reactionsDeleteDislike,
-    analyticsGetViewsByBlogId,
-    analyticsGetAllViewsByUser,
-    viewsAddNewByBlogId,
-    viewsGetByBlogId,
-    searchGetBlogsByQuery,
-    searchGetCategorysWithQuery,
-    userGetAllBlogs,
-    // ! --
-    // controllers below is staged for removal
-    putUserPublishBlog,
-    putUserUnpublishBlog,
+    postUserNewBlog,
     getUserBlogUploadUrl,
+    putUserUpdateBlog,
+    getUserBlogData,
     getUserBlogDataForEdit,
+    putUserPublishBlog,
+    putUserComment,
+    getUserBlogComments,
+    getBlogSearchByQuery,
+    deleteUserBlogComment,
+    getAllBlogsDisplay,
+    putUserUnpublishBlog,
+    deleteUserBlog,
+    deleteBlogPermenetly,
+    getDeletedBlogs,
+    putRecoverDeletedBlog,
+    getAllBlogsForHome,
+    putUserLikeBlog,
+    deleteLikeBlog,
+    putUserDislikeBlog,
+    deleteUserDislikeBlog,
+    getBlogReactionStatus,
+    postAddBlogReport,
+    postViewsAddNew,
+    getViewsByBlogId,
+    getViewsByUserId,
+    getBlogCategorysWithSearchQuery,
     getBlogsFromCategoryList,
+    getViewsByBlogIdAnalytics,
   };
 };
 
-export default createUserController;
+export default userController;

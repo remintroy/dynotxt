@@ -115,7 +115,7 @@ const blogApiSlice = createApi({
     }),
     permenentlyDeleteBlog: builder.mutation({
       query: (blogId) => ({
-        url: `/blog/${blogId}/permenent`,
+        url: `/trash/${blogId}/`,
         method: "DELETE",
       }),
       invalidatesTags: ["blogDisplay", "deletedBlogs", "home"],
@@ -132,37 +132,39 @@ const blogApiSlice = createApi({
       invalidatesTags: ["deletedBlogs", "blogDisplay"],
     }),
     getBlogsForHome: builder.query({
-      query: ({ page }) => `/public/all?page=${page}`,
+      query: ({ page, category }) => {
+        return `/blog?page=${page}&category=${category?.join ? category?.join("_") : ""}`;
+      },
       providesTags: ["home"],
     }),
     getBlogReactionStatus: builder.query({
-      query: (blogId) => `/like/${blogId}`,
+      query: (blogId) => `/reaction/${blogId}`,
       providesTags: ["reactionStatus"],
     }),
     postBlogLike: builder.mutation({
       query: (blogId) => ({
-        url: `/like/${blogId}`,
+        url: `/reaction/${blogId}/like`,
         method: "POST",
       }),
       invalidatesTags: ["reactionStatus"],
     }),
     postBlogDislike: builder.mutation({
       query: (blogId) => ({
-        url: `/dislike/${blogId}`,
+        url: `/reaction/${blogId}/dislike`,
         method: "POST",
       }),
       invalidatesTags: ["reactionStatus"],
     }),
     deleteBlogLike: builder.mutation({
       query: (blogId) => ({
-        url: `/like/${blogId}`,
+        url: `/reaction/${blogId}/like`,
         method: "DELETE",
       }),
       invalidatesTags: ["reactionStatus"],
     }),
     deleteBlogDislike: builder.mutation({
       query: (blogId) => ({
-        url: `/dislike/${blogId}`,
+        url: `/reaction/${blogId}/dislike`,
         method: "DELETE",
       }),
       invalidatesTags: ["reactionStatus"],
@@ -176,7 +178,7 @@ const blogApiSlice = createApi({
     }),
     postBlogViewCount: builder.mutation({
       query: (blogId) => ({
-        url: `/analytics/view/${blogId}`,
+        url: `/view/${blogId}`,
         method: "POST",
       }),
     }),
@@ -187,7 +189,7 @@ const blogApiSlice = createApi({
       query: () => `/analytics/view/`,
     }),
     getBlogViewsCountByBlogIdAnalytics: builder.query({
-      query: ({ blogId }) => `/analytics/views/blog/${blogId}`,
+      query: ({ blogId }) => `/view/${blogId}`,
     }),
     getSearchResults: builder.mutation({
       query: ({ query, page }: any) => {
@@ -208,11 +210,12 @@ const blogApiSlice = createApi({
       },
     }),
     getBlogsWithCategoryList: builder.mutation({
-      query: ({ categorys, page }: { categorys: any; page?: number }) => ({
-        url: `category/blogs?page=${Number(page) || 1}`,
-        method: "POST",
-        body: categorys,
-      }),
+      query: ({ categorys, page }: { categorys: any; page?: number }) => {
+        return {
+          url: `/blog/?page=${Number(page) || 1}&&category=${categorys ? categorys?.join("_") : ""}`,
+          method: "GET",
+        };
+      },
     }),
   }),
 });
@@ -251,5 +254,5 @@ export const {
   useGetBlogSearchQuery,
   useGetSearchBlogCategoryMutation,
   useGetBlogsWithCategoryListMutation,
-  useGetBlogViewsCountByBlogIdAnalyticsQuery
+  useGetBlogViewsCountByBlogIdAnalyticsQuery,
 } = blogApiSlice;

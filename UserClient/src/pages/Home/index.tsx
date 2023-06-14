@@ -6,13 +6,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const HomePage = () => {
   const [page, setPage] = useState(1);
   const [docs, setDocs] = useState<any>([]);
-  const { data, isLoading, isFetching } = useGetBlogsForHomeQuery({ page });
   const [categorys, setCategorys] = useState<any>({});
   const [searchApi] = useGetSearchBlogCategoryMutation();
+  const [selectedCategorys, setSelectedCategory] = useState<string[]>([]);
+  const { data, isLoading, isFetching, refetch } = useGetBlogsForHomeQuery({ page, category: selectedCategorys });
 
   useEffect(() => {
     if (data) {
-      setDocs((pre: any) => [...pre, ...data?.docs]);
+      page == 1 ? setDocs([...data?.docs]) : setDocs((pre: any) => [...pre, ...data?.docs]);
     }
   }, [data]);
 
@@ -33,6 +34,11 @@ const HomePage = () => {
     [isLoading, isFetching]
   );
 
+  useEffect(() => {
+    setPage(1);
+    refetch();
+  }, [selectedCategorys]);
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     (async () => {
@@ -49,7 +55,16 @@ const HomePage = () => {
             <Flex gap={10}>
               {categorys?.docs?.map((tag: string) => {
                 return (
-                  <Chip sx={{ textTransform: "capitalize" }} key={tag}>
+                  <Chip
+                    sx={{ textTransform: "capitalize" }}
+                    key={tag}
+                    onChange={(selected) =>
+                      setSelectedCategory((pre) => {
+                        if (!selected) return pre.filter((a) => a !== tag);
+                        return [...pre, tag];
+                      })
+                    }
+                  >
                     {tag}
                   </Chip>
                 );

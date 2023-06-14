@@ -496,14 +496,23 @@ const blogRepositoryImpl = () => {
     ]);
   };
 
-  const getAllPublicBlogs = async (page: number) => {
+  const getAllPublicBlogs = async (querys: any, page: number) => {
+    const categoryList = querys?.category?.split("_");
+
+    interface Filter extends Blog {
+      category?: any;
+    }
+    const filter: Filter = { trashed: false, published: true, disabled: false };
+
+    if (querys?.category) {
+      filter.category = {
+        $in: Array.isArray(categoryList) ? categoryList : [],
+      };
+    }
+
     const aggrigate = BlogModel.aggregate([
       {
-        $match: {
-          trashed: false,
-          published: true,
-          disabled: false,
-        },
+        $match: filter,
       },
     ]);
     return await BlogModel.aggregatePaginate(aggrigate, {
