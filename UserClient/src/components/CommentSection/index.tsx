@@ -71,13 +71,13 @@ const CommentComponent = ({ data, skip, blogId }: { data: any; skip?: boolean; b
   );
 };
 
-const CommentSectionComponent = ({ blogId, skip, blog }: { blogId: string | undefined; skip?: boolean; blog?: any }) => {
+const CommentSectionComponent = ({ blogId, skip, blog, forDisplay }: { blogId: string | undefined; skip?: boolean; blog?: any; forDisplay?: boolean }) => {
   const { data, isLoading, isFetching } = useGetCommentsQuery(blogId, { skip });
   const [uploadNewComment] = usePostNewCommentMutation();
   const user = useUserDataHook();
   const [comment, setComment] = useState("");
   const [uploadLoading, setUploadLoading] = useState(false);
-  const [showAllComments, setShowAllComments] = useState(false);
+  const [showAllComments, setShowAllComments] = useState(forDisplay == true);
 
   const postNewComment = async () => {
     try {
@@ -95,14 +95,14 @@ const CommentSectionComponent = ({ blogId, skip, blog }: { blogId: string | unde
   return (
     <>
       {(data?.length > 0 || !blog?.disabled) && (
-        <Paper withBorder p={25} px={30} mt={20} sx={{ position: "relative" }}>
+        <Paper  py={25} mt={20} sx={{ position: "relative" }}>
           <Flex align={"center"} justify={"space-between"}>
             <Flex align={"end"} gap={20}>
               <h2 style={{ padding: 0, margin: 0 }}>Comments</h2>
             </Flex>
           </Flex>
           <Text color="dimmed">{data?.length ? data?.length : 0} comments</Text>
-          {user && !blog?.disabled && (
+          {user && !blog?.disabled && !forDisplay && (
             <Grid mt="xs" sx={{ position: "sticky", bottom: 0 }}>
               <Grid.Col span={11}>
                 {" "}
@@ -140,9 +140,15 @@ const CommentSectionComponent = ({ blogId, skip, blog }: { blogId: string | unde
             })}
 
           <Flex justify={"end"} mt={25}>
-            <Button variant="default" rightIcon={!showAllComments ? <IconChevronRight /> : <IconChevronUp />} onClick={() => setShowAllComments((pre) => !pre)}>
-              {showAllComments ? "Hide all comments" : "Show all comments"}
-            </Button>
+            {!forDisplay && (
+              <Button
+                variant="default"
+                rightIcon={!showAllComments ? <IconChevronRight /> : <IconChevronUp />}
+                onClick={() => setShowAllComments((pre) => !pre)}
+              >
+                {showAllComments ? "Hide all comments" : "Show all comments"}
+              </Button>
+            )}
           </Flex>
         </Paper>
       )}
