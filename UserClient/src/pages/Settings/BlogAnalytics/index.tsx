@@ -4,6 +4,7 @@ import { Box, Button, Card, Flex, Grid, Image, Skeleton, Tabs, Text, Transition,
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { IconEdit, IconExternalLink, IconFileAnalytics, IconMessage } from "@tabler/icons-react";
+import CommentSectionComponent from "../../../components/CommentSection";
 
 const BlogAnalyticsSettingsPage = () => {
   const { id: blogId } = useParams();
@@ -118,6 +119,7 @@ const BlogAnalyticsSettingsPage = () => {
 
             <Tabs.Panel value="Comments" pt="xs">
               {commentData && commentData?.length == 0 && <Text>No comments yet</Text>}
+              <CommentSectionComponent blogId={blogId} forDisplay={true}/>
             </Tabs.Panel>
           </Tabs>
         </Box>

@@ -4,9 +4,12 @@ import blogRepositoryInteraface from "../../../adaptor/repositorys/blogRepositor
 const caseUserBlogsGetForHomeFeed = async (
   blogRepository: blogRepositoryInteraface,
   utilsService: GetUtils,
+  querys: any,
   page: number
 ) => {
-  return await blogRepository.getAllPublicBlogs(page).catch(utilsService.throwInternalError("Faild to get blogs"));
+  return await blogRepository
+    .getAllPublicBlogs(querys, page)
+    .catch(utilsService.throwInternalError("Faild to get blogs"));
 };
 
 export default caseUserBlogsGetForHomeFeed;

@@ -29,10 +29,6 @@ const getConfigs = () => {
       ],
       credentials: true,
     },
-    colors: {
-      serverIdColor: "yellow",
-      mainLogColor: "white",
-    },
     rabbitmq: {
       url: process.env.RABBITMQ_URL,
     },
