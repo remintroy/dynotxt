@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { logout, refresh } from "../redux/userSlice";
+import { logout, refresh } from "../redux/slices/user";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: "https://server.dynotxt.com/auth/api/v1",
@@ -31,7 +31,7 @@ const userApiSlice = createApi({
   tagTypes: ["userData", "allUserData", "singleFollow", "userDataPublic"],
   endpoints: (builder) => ({
     signin: builder.mutation({
-      query: ({ idToken }) => ({
+      query: (idToken) => ({
         url: "/signin",
         method: "POST",
         body: {

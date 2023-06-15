@@ -6,22 +6,12 @@ const mustBeAStirng = (value: string, createError, name = "Value") => {
   throw createError(400, `${name} must be a string`);
 };
 
-const mustMinChar = (
-  value: string,
-  minLen: number,
-  createError,
-  name = "Value"
-) => {
+const mustMinChar = (value: string, minLen: number, createError, name = "Value") => {
   if (value.length > minLen) return value;
   throw createError(400, `${name} must be greater than ${minLen} characters`);
 };
 
-const mustMaxChar = (
-  value: string,
-  maxLen: number,
-  createError,
-  name = "Value"
-) => {
+const mustMaxChar = (value: string, maxLen: number, createError, name = "Value") => {
   if (value.length < maxLen) return value;
   throw createError(400, `${name} must be less than ${maxLen} characters`);
 };
@@ -31,8 +21,8 @@ const mustMaxChar = (
 //   throw createError(400, `${name} must be an array`);
 // };
 
-export const blogValidator = (blogBody: Blog, createError, noIds?: boolean) => {
-  let { title, subtitle, author, bannerImgURL, blogId, body } = blogBody;
+export const blogValidator = (blogBody: Blog, createError: any, noIds?: boolean) => {
+  let { title, subtitle, author, bannerImgURL, blogId, body, category, published } = blogBody;
 
   const config = getConfigs();
   const output: Blog = {};
@@ -71,16 +61,19 @@ export const blogValidator = (blogBody: Blog, createError, noIds?: boolean) => {
 
   if (bannerImgURL) {
     bannerImgURL = mustBeAStirng(bannerImgURL, createError, "Banner Image URL");
-    //! IS valid url
-    // TODO
     output.bannerImgURL = bannerImgURL;
   }
 
   if (body) {
-    // body = mustBeArray(body, createError, "Body");
-    //! IS vald boyd
-    // TODO
     output.body = body;
+  }
+
+  if (category) {
+    output.category = category?.map((tag: string) => tag?.toLowerCase());
+  }
+
+  if (published) {
+    output.published = published;
   }
 
   return output;

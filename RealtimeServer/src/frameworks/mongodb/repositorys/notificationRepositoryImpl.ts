@@ -2,23 +2,46 @@ import NotificationModel from "../models/notifications";
 import { notificationContent } from "../models/notifications.schema";
 
 const notificationRepositoryImpl = () => {
-  const addNotification = async (userId: string, notificationData: notificationContent) => {
-    const existingData = await NotificationModel.findOne({ userId });
-    if (!existingData) return await new NotificationModel({ userId, notifications: [notificationData] }).save();
-    existingData.notifications.push(notificationData);
-    return await existingData.save();
-  };
-
   const getAllUnreadedNotifications = async (userId: string) => {
     return await NotificationModel.aggregate([
       { $match: { userId } },
-      { $unset: "$notifications" },
+      { $unwind: "$notifications" },
       { $match: { "notifications.readed": false } },
+      { $sort: { "notifications.createdAt": -1 } },
     ]);
+  };
+
+  const getAllNotifications = async (userId: string) => {
+    return await NotificationModel.aggregate([
+      { $match: { userId } },
+      {
+        $unwind: "$notifications",
+      },
+      {
+        $project: {
+          data: "$notifications",
+        },
+      },
+      { $replaceRoot: { newRoot: "$data" } },
+      { $sort: { createdAt: -1 } },
+    ]);
+  };
+
+  const addNotification = async (userId: string, notificationData: notificationContent) => {
+    const existingData = await NotificationModel.findOne({ userId });
+    if (!existingData) {
+      await new NotificationModel({ userId, notifications: notificationData }).save();
+    } else {
+      existingData.notifications.push(notificationData);
+      await existingData.save();
+    }
+
+    return await getAllNotifications(userId);
   };
 
   return {
     addNotification,
+    getAllNotifications,
     getAllUnreadedNotifications,
   };
 };

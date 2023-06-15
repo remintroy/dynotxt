@@ -1,34 +1,35 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import AuthPage from "./pages/auth";
-import NavBarComponent from "./layout/navbar";
-import NothingFoundBackground from "./pages/error";
-import HomePage from "./pages/home";
-import SignIn from "./pages/auth/login";
-import SignUp from "./pages/auth/signup";
-import { Notifications } from "@mantine/notifications";
-import UserProfilePage from "./pages/profile/";
-import BlogViewPage from "./pages/blog/viewBlog";
-import VerfiyEmailPage from "./pages/auth/verifyEmail";
-import { useGetUserDataQuery } from "./lib/api/authApi";
-import { useEffect, lazy, Suspense } from "react";
-import { useAppDispatch } from "./lib/redux/hooks";
-import { resetUserData, setUser, setUserStatus } from "./lib/redux/userSlice";
-import EditBlogPage from "./pages/blog/editBlog";
-import { Box } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
-import TestPage from "./pages/test";
-import PageInitialLoader from "./components/pageInitialLoader";
-import { setConfigThisIsPc } from "./lib/redux/configSlice";
-import ProfileDashboardLayout from "./layout/profileDashboard";
-const ProfileCommentsPage = lazy(() => import("./pages/profile/comments"));
-const ProfileBlogsPage = lazy(() => import("./pages/profile/blogs"));
-const AccountProfilePage = lazy(() => import("./pages/profile/accountPage"));
+import { Notifications } from "@mantine/notifications";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { useAppDispatch } from "./lib/redux/hooks";
+import { useGetUserDataQuery } from "./lib/api/authApi";
+import { resetUserData, setUser, setUserStatus } from "./lib/redux/slices/user";
+import { Suspense, lazy, useEffect } from "react";
+import NavbarLayout from "./layout/Navbar";
+import AppLoaderComponent from "./components/AppLoader";
+import AuthLayout from "./layout/Navbar/Auth";
+import ProfilePage from "./pages/Settings/Profile";
+import BlogsSettingsPage from "./pages/Settings/Blogs";
+import ViewBlogPage from "./pages/Blog/ViewBlog";
+import ProfileSettingsDashboardPage from "./pages/Settings/Dashboard";
+import useSocketHook from "./hooks/useSocket";
+import NotificationsTabPage from "./pages/Tabs/Notifications";
+import SettingsTabPage from "./pages/Tabs/Settings";
+import AccountProfilePage from "./pages/Settings/Account";
+import SearchTabPage from "./pages/Tabs/Search";
+import VerfiyEmailPage from "./pages/Auth/VerifyEmail";
+import HomePage from "./pages/Home";
+import BlogAnalyticsSettingsPage from "./pages/Settings/BlogAnalytics";
+import { NavigationProgress } from "@mantine/nprogress";
+
+const EditBlogPage = lazy(() => import("./pages/Blog/EditBlog"));
+const SignInPage = lazy(() => import("./pages/Auth/Signin"));
+const SignUpPage = lazy(() => import("./pages/Auth/Signup"));
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <NavBarComponent />,
-    errorElement: <NothingFoundBackground />,
+    element: <NavbarLayout />,
     children: [
       {
         path: "/",
@@ -36,68 +37,77 @@ const router = createBrowserRouter([
       },
       {
         path: "blog/:id",
-        element: <BlogViewPage />,
+        element: <ViewBlogPage />,
+      },
+      {
+        path: "/blog/analytics/:id",
+        element: <BlogAnalyticsSettingsPage />,
+      },
+      {
+        path: "profile/:id",
+        element: <ProfilePage />,
+      },
+      {
+        path: "profile/:id/dashboard",
+        element: <ProfileSettingsDashboardPage />,
+      },
+      {
+        path: "profile/:id/blogs",
+        element: <BlogsSettingsPage />,
+      },
+      {
+        path: "profile/:id/account",
+        element: <AccountProfilePage />,
+      },
+      {
+        path: "tab/notifications",
+        element: <NotificationsTabPage />,
+      },
+      {
+        path: "tab/settings",
+        element: <SettingsTabPage />,
+      },
+      {
+        path: "tab/search",
+        element: <SearchTabPage />,
       },
     ],
   },
   {
-    path: "/profile/:id",
-    element: <ProfileDashboardLayout />,
+    path: "blog/edit/:id",
+    element: (
+      <Suspense fallback={<AppLoaderComponent />}>
+        <EditBlogPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/auth/",
+    element: <AuthLayout />,
     children: [
       {
-        path: "/profile/:id",
-        element: <UserProfilePage />,
-      },
-      {
-        path: "/profile/:id/blogs",
+        path: "signin",
         element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <ProfileBlogsPage />
+          <Suspense fallback={<AppLoaderComponent />}>
+            <SignInPage />
           </Suspense>
         ),
       },
       {
-        path: "/profile/:id/comments",
+        path: "signup",
         element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <ProfileCommentsPage />
+          <Suspense fallback={<AppLoaderComponent />}>
+            <SignUpPage />
           </Suspense>
         ),
       },
       {
-        path: "/profile/:id/account",
+        path: "verify-email/:uid",
         element: (
-          <Suspense fallback={<div>Loading...</div>}>
-            <AccountProfilePage />
+          <Suspense fallback={<AppLoaderComponent />}>
+            <VerfiyEmailPage />
           </Suspense>
         ),
-      },
-    ],
-  },
-  {
-    path: "/blog/edit/:id",
-    element: <EditBlogPage />,
-  },
-  {
-    path: "/test",
-    element: <TestPage />,
-  },
-  {
-    path: "/",
-    element: <AuthPage />,
-    errorElement: <NothingFoundBackground />,
-    children: [
-      {
-        path: "/auth/signin",
-        element: <SignIn />,
-      },
-      {
-        path: "/auth/signup",
-        element: <SignUp />,
-      },
-      {
-        path: "/auth/verify-email/:uid",
-        element: <VerfiyEmailPage />,
       },
     ],
   },
@@ -107,35 +117,31 @@ function App() {
   const { data, isError, isLoading, isFetching } = useGetUserDataQuery({});
   const dispatch = useAppDispatch();
 
+  /**
+   * Adds user data or the status of user data to redux
+   * This runs on every time page loads
+   */
   useEffect(() => {
-    if (isError) {
-      // dispatch(resetUserData());
-      dispatch(setUserStatus({ error: true }));
-    } else if (isFetching || isLoading) {
-      // dispatch(resetUserData());
-      dispatch(setUserStatus({ loading: true }));
-    } else if (data) {
+    dispatch(setUserStatus({ error: isError, loading: isLoading || isFetching }));
+    if (data && !isError && !isLoading && !isFetching) {
       dispatch(resetUserData());
       dispatch(setUser(data));
     }
   }, [data, isFetching, isLoading, isError]);
 
-  useEffect(() => {
-    window.addEventListener("resize", () => {
-      dispatch(setConfigThisIsPc(window.innerWidth > 766));
-    });
-  }, []);
+  useSocketHook();
 
   return (
-    <Box className="App">
-      {isLoading && <PageInitialLoader />}
-      {!isLoading && (
+    <Suspense fallback={<AppLoaderComponent />}>
+      <div>
+        <NavigationProgress color="red" />
+        {isLoading ? <AppLoaderComponent /> : ""}
         <ModalsProvider>
           <Notifications />
           <RouterProvider router={router} />
         </ModalsProvider>
-      )}
-    </Box>
+      </div>
+    </Suspense>
   );
 }
 

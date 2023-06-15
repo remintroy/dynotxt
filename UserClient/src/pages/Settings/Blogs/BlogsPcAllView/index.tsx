@@ -1,0 +1,371 @@
+import { ActionIcon, Box, Divider, Flex, Image, Loader, Menu, Overlay, Paper, Progress, ScrollArea, Select, Table, Text, Tooltip } from "@mantine/core";
+import { IconChevronDown, IconPencil, IconReportAnalytics, IconSort09, IconSort90, IconSortAZ, IconSortZA } from "@tabler/icons-react";
+import { IconWorld } from "@tabler/icons-react";
+import { IconLock } from "@tabler/icons-react";
+import { IconTrash } from "@tabler/icons-react";
+import { IconExternalLink } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
+import { addBlogToAllBlogsProfile, resetProfileBlogs, setAllBlogsMetaDataProfile } from "../../../../lib/redux/slices/profile";
+import { modals } from "@mantine/modals";
+import { nprogress } from "@mantine/nprogress";
+import { useAppDispatch, useAppSelector } from "../../../../lib/redux/hooks";
+import {
+  useDeleteBlogWithBlogIdMutation,
+  useGetBlogDataDisplayQuery,
+  usePutPublishBlogMutation,
+  usePutUnPublishBlogMutation,
+} from "../../../../lib/api/blogApi";
+import { notifications } from "@mantine/notifications";
+import { useCallback, useEffect, useRef, useState } from "react";
+import usePathHook from "../../../../hooks/usePath";
+
+const ProfilePcAllBlogsTableSubPage = () => {
+  const path = usePathHook();
+  const [page, setPage] = useState(1);
+  const [sort, setSort] = useState<{ key: "date" | "updated" | "views" | "likes"; order: -1 | 1 }>({ key: "updated", order: -1 });
+  const allBlogsData = useAppSelector((state) => state.profile.allBlogs);
+  const allBlogsMetaData = useAppSelector((state) => state.profile.allBlogsMetaData);
+  const dispatch = useAppDispatch();
+  const [makePublicApi] = usePutPublishBlogMutation();
+  const [makePrivateApi] = usePutUnPublishBlogMutation();
+  const [deleteBlogApi] = useDeleteBlogWithBlogIdMutation();
+  const formatter = Intl.NumberFormat("us", { notation: "compact" });
+  const { data: blogsData, isLoading, isFetching, refetch } = useGetBlogDataDisplayQuery({ uid: path[1], page: page, sort });
+
+  const setAllBlogs = () => {
+    if (blogsData) {
+      blogsData?.docs?.forEach((blog: any) => {
+        dispatch(addBlogToAllBlogsProfile(blog));
+      });
+      let allBlogsMetaData: any = JSON.stringify(blogsData);
+      allBlogsMetaData = JSON.parse(allBlogsMetaData);
+      allBlogsMetaData.docs = null;
+      dispatch(setAllBlogsMetaDataProfile(allBlogsMetaData));
+    }
+  };
+
+  useEffect(() => {
+    page == 1 && dispatch(resetProfileBlogs());
+    setAllBlogs();
+    // assignig AllBlogs data to redux
+  }, [blogsData, page]);
+
+  const blogActionHandler = async (apiCallFuntion: any, blogId: string) => {
+    try {
+      nprogress.set(0);
+      nprogress.start();
+      // calling currsponding api
+      const response = await apiCallFuntion(blogId).unwrap();
+      nprogress.complete();
+      return response;
+    } catch (error: any) {
+      nprogress.complete();
+      notifications.show({
+        color: "red",
+        title: "Oops something went wrong",
+        message: error?.data?.error ?? "There was an error diring updating blog visiblity. Consier trying agter sometime",
+      });
+    }
+  };
+
+  const handleConfirmation = async (actionApi: any, blogId: string, message: string, button: string, color?: string) => {
+    modals.openConfirmModal({
+      centered: true,
+      title: "Are you sure?",
+      confirmProps: { color },
+      children: <Text size="sm">{message}</Text>,
+      labels: { confirm: button, cancel: "Cancel" },
+      onConfirm: () => {
+        blogActionHandler(actionApi, blogId);
+      },
+    });
+  };
+
+  const makePublic = (blogId: string) => {
+    handleConfirmation(
+      makePublicApi,
+      blogId,
+      "This change the visiblity of this blog to pubic. Your will be shared and listed in searchs and can be seen by anyone.",
+      "Make public"
+    );
+  };
+
+  const makePrivate = (blogId: string) => {
+    handleConfirmation(
+      makePrivateApi,
+      blogId,
+      "This change the visiblity of this blog to private. Your blog won't be able view by other users.",
+      "Make private",
+      "red"
+    );
+  };
+
+  const trashBlog = (blogId: string) => {
+    modals.openConfirmModal({
+      centered: true,
+      title: "Are you sure?",
+      confirmProps: { color: "red" },
+      children: <Text size="sm">This will move your blog to trash and you can recover blog from trash at any time.</Text>,
+      labels: { confirm: "Move to trash", cancel: "Cancel" },
+      onConfirm: async () => {
+        const response = await blogActionHandler(deleteBlogApi, blogId);
+        if (response) {
+          dispatch(addBlogToAllBlogsProfile({ ...allBlogsData[blogId], trashed: true }));
+        }
+      },
+    });
+  };
+
+  useEffect(() => {
+    refetch();
+    return () => {
+      dispatch(resetProfileBlogs());
+    };
+  }, []);
+
+  useEffect(() => {
+    document.getElementsByTagName("html")[0].scrollTop = 0;
+    dispatch(resetProfileBlogs());
+    setPage(1);
+    setAllBlogs();
+  }, [sort]);
+
+  const observer: any = useRef();
+  const lastElementRef = useCallback(
+    (node: any) => {
+      if (isLoading || isFetching) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        // console.log(entries);
+        if (entries[0]?.isIntersecting) {
+          (allBlogsMetaData?.totalPages ?? 2) > page && setPage((pre) => pre + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+      // console.log(node);
+    },
+    [isLoading, isFetching]
+  );
+
+  const handleSortChange = (e: any) => {
+    const value = e; //
+    if (value == "Oldest") setSort({ key: "date", order: 1 });
+    if (value == "New") setSort({ key: "date", order: -1 });
+    if (value == "Most liked") setSort({ key: "likes", order: -1 });
+    if (value == "Least liked") setSort({ key: "likes", order: 1 });
+    if (value == "Most views") setSort({ key: "views", order: -1 });
+    if (value == "Least views") setSort({ key: "views", order: 1 });
+    if (value == "Last updated") setSort({ key: "updated", order: -1 });
+  };
+
+  useEffect(() => {
+    if (allBlogsMetaData.hasNextPage && isFetching) {
+      nprogress.set(0);
+      nprogress.increment(20);
+      nprogress.start();
+    } else nprogress.complete();
+  }, [allBlogsMetaData, isFetching]);
+
+  return (
+    <Box sx={{ position: "relative" }}>
+      <Paper sx={{ position: "sticky", top: 70, zIndex: 10 }}>
+        <Flex align={"center"} justify={"space-between"} py={10}>
+          <Text transform="uppercase">Manage blogs</Text>
+          <Select
+            defaultValue={"Last updated"}
+            icon={
+              sort?.key == "likes" || sort?.key == "views" ? (
+                sort.order == -1 ? (
+                  <IconSort90 />
+                ) : (
+                  <IconSort09 />
+                )
+              ) : sort.order == -1 ? (
+                <IconSortAZ />
+              ) : (
+                <IconSortZA />
+              )
+            }
+            placeholder="Select sort order"
+            onChange={handleSortChange}
+            data={["Oldest", "New", "Most liked", "Least liked", "Most views", "Least views", "Last updated"]}
+          ></Select>
+        </Flex>
+      </Paper>
+      <Divider />
+      <ScrollArea>
+        {(isLoading || (isFetching && page == 1)) && <Overlay />}
+        <Table highlightOnHover verticalSpacing="xs">
+          <thead>
+            <tr>
+              <th>Blog</th>
+              <th>Visiblity</th>
+              <th>views</th>
+              <th>comments</th>
+              <th>Restrictions</th>
+              <th>Date</th>
+              <th>Likes & dislikes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(allBlogsData)
+              .filter((key) => !allBlogsData[key]?.trashed)
+              .map((key: string, index, arr) => {
+                const blog = allBlogsData[key];
+                const totalViews = Number((blog?.reactions?.likes || 0) + (blog?.reactions?.dislikes || 0));
+                const likePercent = ~~((blog?.reactions?.likes / totalViews) * 100);
+                return (
+                  <tr key={blog?.blogId} ref={index == arr.length - 1 ? lastElementRef : undefined}>
+                    <td>
+                      <Box
+                        sx={{
+                          ":hover": {
+                            ".hoverable": {
+                              display: "flex",
+                            },
+                          },
+                        }}
+                      >
+                        <Flex gap={20}>
+                          <Box h={100}>
+                            <Image withPlaceholder src={blog?.bannerImgURL} width={150} height={100} />
+                          </Box>
+                          <Box maw={500} miw={300}>
+                            <Text lineClamp={blog?.subtitle ? 1 : 2} fz={"md"}>
+                              {blog?.title}
+                            </Text>
+                            <Text lineClamp={1} color="dimmed" fz={"sm"}>
+                              {blog?.subtitle}
+                            </Text>
+                            <Flex p={10} gap={5} className="hoverable" sx={{ display: "none" }}>
+                              <Tooltip withArrow label="Edit your blog">
+                                <Link to={`/blog/edit/${blog?.blogId}`}>
+                                  <ActionIcon>
+                                    <IconPencil size={"20px"} />
+                                  </ActionIcon>
+                                </Link>
+                              </Tooltip>
+                              <Tooltip label="Open your blog" withArrow>
+                                <Link to={`/blog/${blog?.blogId}`}>
+                                  <ActionIcon>
+                                    <IconExternalLink size={"20px"} />
+                                  </ActionIcon>
+                                </Link>
+                              </Tooltip>
+                              <Tooltip label="Move to trash" withArrow>
+                                <ActionIcon onClick={() => trashBlog(blog?.blogId)}>
+                                  <IconTrash size={"20px"} />
+                                </ActionIcon>
+                              </Tooltip>
+                              <Tooltip label="Blog analytics" withArrow>
+                                <Link to={`/blog/analytics/${blog?.blogId}`}>
+                                  <ActionIcon>
+                                    <IconReportAnalytics size={"20px"} />
+                                  </ActionIcon>
+                                </Link>
+                              </Tooltip>
+                            </Flex>
+                          </Box>
+                        </Flex>
+                      </Box>
+                    </td>
+                    <td>
+                      {blog?.disabled ? (
+                        "-"
+                      ) : blog?.published ? (
+                        <Menu>
+                          <Menu.Target>
+                            <Tooltip withArrow label="You blog is currently public click to change">
+                              <Flex sx={{ cursor: "pointer" }} align={"center"} gap={5}>
+                                <IconWorld size={"20px"} />
+                                Public
+                                <ActionIcon>
+                                  <IconChevronDown size={"15px"} />
+                                </ActionIcon>
+                              </Flex>
+                            </Tooltip>
+                          </Menu.Target>
+                          <Menu.Dropdown>
+                            <Menu.Item icon={<IconLock size={14} />} onClick={() => makePrivate(blog?.blogId)}>
+                              Make private
+                            </Menu.Item>
+                          </Menu.Dropdown>
+                        </Menu>
+                      ) : (
+                        <Menu>
+                          <Menu.Target>
+                            <Tooltip withArrow label="You blog is currently private click to change">
+                              <Flex sx={{ cursor: "pointer" }} align={"center"} gap={5}>
+                                <IconLock size={"20px"} />
+                                Private
+                                <IconChevronDown size={"15px"} />
+                              </Flex>
+                            </Tooltip>
+                          </Menu.Target>
+                          <Menu.Dropdown>
+                            <Menu.Item icon={<IconWorld size={14} />} onClick={() => makePublic(blog?.blogId)}>
+                              Make public
+                            </Menu.Item>
+                          </Menu.Dropdown>
+                        </Menu>
+                      )}
+                    </td>
+                    <td>
+                      <Tooltip label={`${blog?.views} views`}>
+                        <Text>{formatter.format(blog?.views)} </Text>
+                      </Tooltip>
+                    </td>
+                    <td>{formatter.format(blog?.comments)}</td>
+                    <td>
+                      {blog?.disabled ? (
+                        <>
+                          <Tooltip withArrow label="We have found something inappropriate in you blog">
+                            <Text>Disabled</Text>
+                          </Tooltip>
+                        </>
+                      ) : (
+                        <>
+                          <Tooltip withArrow label="Your blog has no restrictions">
+                            <Text>None</Text>
+                          </Tooltip>
+                        </>
+                      )}
+                    </td>
+                    <td>
+                      <Tooltip withArrow label="Date which your blog was created">
+                        <Box>
+                          <Text>{new Date(blog?.createdAt).toDateString()}</Text>
+                          <Text color="dimmed">created</Text>
+                        </Box>
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <Tooltip
+                        withArrow
+                        label={`Your blog has ${formatter.format(blog?.reactions?.likes)} likes and ${formatter.format(blog?.reactions?.dislikes)} dislikes`}
+                      >
+                        <Box>
+                          <Text align="end">{likePercent}%</Text>
+                          <Text color="dimmed" align="end">
+                            {formatter.format(blog?.reactions?.likes)} Likes
+                          </Text>
+                          <Progress value={likePercent} mt={10} />
+                        </Box>
+                      </Tooltip>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </Table>
+        {allBlogsMetaData?.hasNextPage && !isFetching && (
+          <Flex justify={"center"} py={20}>
+            <Loader />
+          </Flex>
+        )}
+      </ScrollArea>
+    </Box>
+  );
+};
+
+export default ProfilePcAllBlogsTableSubPage;

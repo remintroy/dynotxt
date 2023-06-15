@@ -36,10 +36,29 @@ const viewsRepositoryImpl = () => {
     ]);
   };
 
+  const getAllViewsInLastNDaysWithBlogId = async (userId: string, blogId: string, lastNDays?: number) => {
+    const currentDate: any = new Date();
+    const calculatedDate = currentDate - (lastNDays ?? 10) * 60 * 60 * 24 * 1000;
+    return await ViewsModel.aggregate([
+      { $match: { blogId, userId, createdAt: { $gte: new Date(calculatedDate) } } },
+      {
+        $group: {
+          _id: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+          count: { $sum: 1 },
+          blogId: { $first: "$blogId" },
+          userId: { $first: "$userId" },
+        },
+      },
+      { $project: { _id: 0, date: "$_id", count: 1, blogId: 1, userId: 1 } },
+      { $sort: { date: 1 } },
+    ]);
+  };
+
   return {
     addViewByBlogId,
     getViewsByBlogId,
     getAllViewsInLastNDays,
+    getAllViewsInLastNDaysWithBlogId,
   };
 };
 

@@ -26,6 +26,5 @@ export default function expressConfig(app: Express, configs: typeof getConfigs) 
   );
   app.use(cookieParser());
   app.use(cors(config.cors));
-
-  // other configurations
+  // other configurations...
 }

@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userSlice from "./userSlice";
-import navBarSlice from "./navBarSlice";
-import configSlice from "./configSlice";
+import userSlice from "./slices/user";
+import navBarSlice from "./slices/navbar";
+import profileSlice from "./slices//profile";
+import configSlice from "./slices/config";
+import notificationSlice from "./slices/notification";
 import { userApiMiddleware, userApiReducer, userApiReducerPath } from "../api/authApi";
 import { blogApiMiddleware, blogApiReducer, blogApiReducerPath } from "../api/blogApi";
-import profileSlice from "./profileSlice";
+import searchSlice from "./slices/search";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +14,8 @@ const store = configureStore({
     navbar: navBarSlice,
     config: configSlice,
     profile: profileSlice,
+    notification: notificationSlice,
+    search: searchSlice,
     [userApiReducerPath]: userApiReducer,
     [blogApiReducerPath]: blogApiReducer,
   },
@@ -19,7 +23,6 @@ const store = configureStore({
 });
 
 export default store;
-
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}

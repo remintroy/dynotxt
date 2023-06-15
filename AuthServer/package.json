@@ -37,9 +37,11 @@
     "mongoose-paginate-v2": "^1.7.1",
     "morgan": "^1.10.0",
     "random-id": "^1.0.4",
-    "validator": "^13.9.0"
+    "validator": "^13.9.0",
+    "amqplib": "^0.10.3"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",

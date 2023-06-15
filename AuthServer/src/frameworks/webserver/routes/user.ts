@@ -17,6 +17,7 @@ import GetJwt from "dynotxt-common-services/build/jwt";
 import GetEmail from "dynotxt-common-services/build/email";
 import GetUtils from "dynotxt-common-services/build/utils";
 import getConfigs from "../../../configs";
+import rabbitMqConnection from "../../rabbitmq";
 
 export default function v1UserRouter(express: typeof ExpressApp) {
   const router = express.Router();
@@ -39,6 +40,8 @@ export default function v1UserRouter(express: typeof ExpressApp) {
   const authService = authServiceInterface(authServiceImpl());
   const otpRepository = otpRepositoryInterface(otpRepositoryImpl());
 
+  const rabbitmq = rabbitMqConnection();
+
   const controller = userController(
     userRepository,
     tokenRepository,
@@ -48,7 +51,8 @@ export default function v1UserRouter(express: typeof ExpressApp) {
     validator,
     userJwtService,
     emailService,
-    utilService
+    utilService,
+    rabbitmq
   );
 
   router.use(expressService.createAuthInit({ userJwt: userJwtService }));

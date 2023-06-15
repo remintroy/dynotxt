@@ -1,27 +1,29 @@
-const { build } = require("esbuild");
+const { buildSync } = require("esbuild");
 const nodemon = require("nodemon");
 
 // Function to build the project
 const buildProject = async () => {
   console.log("Blog Building...");
+
   try {
-    await build({
+    buildSync({
       platform: "node",
       bundle: true,
       entryPoints: ["src/index.ts"],
       outdir: "build",
     });
-    console.log("Blog Build completed successfully.");
   } catch (error) {
     console.error("Build failed:", error);
   }
-};
 
-// Trigger the initial build
-buildProject();
+  console.log("Blog Build completed successfully.");
+};
 
 // Watch for file changes and trigger the build
 nodemon({
   ext: "json,ts", // Specify the file extensions to watch
   watch: ["./src"], // Specify the directories to watch for changes
-}).on("restart", buildProject);
+  script: "build/index.js",
+})
+  .on("restart", buildProject)
+  .once("start", buildProject);
