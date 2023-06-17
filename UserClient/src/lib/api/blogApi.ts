@@ -88,15 +88,21 @@ const blogApiSlice = createApi({
     }),
     putPublishBlog: builder.mutation({
       query: (blogId) => ({
-        url: `/blog/${blogId}/publish`,
+        url: `/blog/${blogId}/`,
         method: "PUT",
+        body: {
+          published: true,
+        },
       }),
       invalidatesTags: ["blogDisplay"],
     }),
     putUnPublishBlog: builder.mutation({
       query: (blogId) => ({
-        url: `/blog/${blogId}/unpublish`,
+        url: `/blog/${blogId}/`,
         method: "PUT",
+        body: {
+          published: false,
+        },
       }),
       invalidatesTags: ["blogDisplay", "home"],
     }),
