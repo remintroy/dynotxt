@@ -1,4 +1,6 @@
-# DYNOTXT - Blog your story now
+# DYNOTXT - Blog your story now 
+
+![Preview](https://github.com/remintroy/dynotxt/assets/86014784/0455ebd1-cd27-42c1-bdd0-dad8fdfc72ff)
 
 Dynotxt is a platform to write and publish your stories and articles. You can also provide documentation for your projects. Currently, this project is under development status and will be released soon. 
 
