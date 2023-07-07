@@ -29,5 +29,5 @@ jobs:
             cd /home/ubuntu/dynotxt
             git pull origin production
             npm install
-            npm run build
+            npm run build_backend
             pm2 restart 0 1 2
