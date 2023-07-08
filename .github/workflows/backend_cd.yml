@@ -12,22 +12,28 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Configure SSH Key
+        
+      - name: Building files
+        run: | 
+          npm i pnpm -g
+          pnpm i
+          pnpm run build_backend
+          
+      - name: Generate SSH key
         run: |
-          echo "$PRIVATE_KEY" > example.pem
-          chmod 600 example.pem
-
-      - name: Deploy to EC2 Instance
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: |
-            ${{ secrets.PRIVATE_KEY }}
-          script: |
-            cd /home/ubuntu/dynotxt
-            git pull origin production
-            npm install
-            npm run build_backend
-            pm2 restart 0 1 2
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/example.pem
+          chmod 600 ~/example.pem
+          
+      - name: Copy build files
+        run: |
+          scp -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/authserver/build/index.js
+          scp -i "~/example.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/blogserver/build/index.js
+          scp -i "~/example.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/realtimeserver/build/index.js
+    
+      - name: SSH into Ubuntu instance and restarting server
+        run: |
+          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
+          cd dynotxt_host
+          pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server 
+          '
+            
