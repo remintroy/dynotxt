@@ -15,7 +15,7 @@ jobs:
         
       - name: Generate SSH key
         run: |
-          echo "${{ secrets.PRIVATE_KEY }}" > example.pem
+          echo ${{ secrets.PRIVATE_KEY }} > example.pem
           chmod 600 example.pem
          
       - name: SSH into Ubuntu instance
