@@ -15,12 +15,12 @@ jobs:
         
       - name: Generate SSH key
         run: |
-          echo ${{ secrets.PRIVATE_KEY }} > example.pem
-          chmod 600 example.pem
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/example.pem
+          chmod 600 ~/example.pem
          
       - name: SSH into Ubuntu instance
         run: |
-          ssh -i "example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o FingerprintHash=sha256 -o VerifyHostKeyDNS=yes
+          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o FingerprintHash=sha256 -o VerifyHostKeyDNS=yes
           cd /home/ubuntu/dynotxt
           git pull origin production
           npm install
