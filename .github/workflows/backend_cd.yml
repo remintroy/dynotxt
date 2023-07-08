@@ -20,12 +20,13 @@ jobs:
          
       - name: SSH into Ubuntu instance
         run: |
-          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new
+          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new '
           pwd
           whoami
           cd dynotxt
           git pull origin production
           npm install
           npm run build_backend
-          pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server
+          pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server 
+          '
             
