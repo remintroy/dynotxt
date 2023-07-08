@@ -12,10 +12,16 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        
+      - name: Generate SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PRIVATE_KEY }}" | base64 -d > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
 
       - name: SSH into Ubuntu instance
         run: |
-          ssh -i ${{ secrets.PRIVATE_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'Hello, Ubuntu instance!'"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'Hello, Ubuntu instance!'"
           cd /home/ubuntu/dynotxt
           git pull origin production
           npm install
