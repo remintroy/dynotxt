@@ -15,11 +15,12 @@ jobs:
         
       - name: Generate SSH key
         run: |
-          echo "$PRIVATE_KEY" > example.pem
+          echo "${{ secrets.PRIVATE_KEY }}" > example.pem
           chmod 600 example.pem
           
       - name: check pem
-        run:  echo "$PRIVATE_KEY"
+        run: |
+          cat example.pem
 
       - name: SSH into Ubuntu instance
         run: |
