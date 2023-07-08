@@ -17,10 +17,12 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > example.pem
           chmod 600 example.pem
+          
+      - name: check pem
+        run:  echo "$PRIVATE_KEY"
 
       - name: SSH into Ubuntu instance
         run: |
-          cat example.pem
           ssh -i example.pem ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'Hello, Ubuntu instance!'"
           cd /home/ubuntu/dynotxt
           git pull origin production
