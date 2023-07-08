@@ -16,8 +16,10 @@ jobs:
 
       - name: Build Project
         run: |
-          npm install
-          npm run bulid
+          npm i pnpm -g
+          cd AdminClient
+          pnpm install
+          pnpm run build
 
       - name: Generate SSH key
         run: |
@@ -25,7 +27,7 @@ jobs:
           chmod 600 ~/secret.pem
 
       - name: Copy build files to EC2
-        run: scp -o StrictHostKeyChecking=accept-new -i "~/secret.pem" -r AdminClient/dist/ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/adminclient/dist
+        run: scp -o StrictHostKeyChecking=accept-new -i "~/secret.pem" -r dist/ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/adminclient/dist
 
       - name: SSH to EC2 and restart Admin_client
         run: |
