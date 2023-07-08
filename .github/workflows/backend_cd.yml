@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Deploy to EC2
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
           scp -i "~/example.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/blogserver/build/index.js
           scp -i "~/example.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/realtimeserver/build/index.js
     
-      - name: SSH into Ubuntu instance and restarting server
+      - name: SSH into EC2 instance and restarting server
         run: |
           ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
           cd dynotxt_host
