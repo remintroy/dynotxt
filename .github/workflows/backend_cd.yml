@@ -18,12 +18,17 @@ jobs:
           npm i pnpm -g
           pnpm i
           pnpm run build_backend
-        
+          
       - name: Generate SSH key
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > ~/example.pem
           chmod 600 ~/example.pem
-         
+          
+      - name: Copy build files
+        run: |
+          scp -i "~/example.pem" AuthSever/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/authserver
+        
+    
       - name: SSH into Ubuntu instance
         run: |
           ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new '
