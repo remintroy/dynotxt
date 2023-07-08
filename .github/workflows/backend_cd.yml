@@ -26,16 +26,14 @@ jobs:
           
       - name: Copy build files
         run: |
-          scp  -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/authserver
-        
+          scp -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/authserver/build
+          scp -i "~/example.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/blogserver/build
+          scp -i "~/example.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/realtimeserver/build
     
       - name: SSH into Ubuntu instance
         run: |
-          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new '
-          cd dynotxt
-          git pull origin production
-          npm install
-          npm run build_backend
+          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
+          cd dynotxt_host
           pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server 
           '
             
