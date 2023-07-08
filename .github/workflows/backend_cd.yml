@@ -15,8 +15,10 @@ jobs:
         
       - name: Building files
         run: | 
-          pnpm i
-          pnpm run build_backend
+          node -v
+          npm -v
+          npm i
+          npm run build_backend
         
       - name: Generate SSH key
         run: |
