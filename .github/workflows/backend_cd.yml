@@ -13,6 +13,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
         
+      - name: Building files
+        run: | 
+          pnpm i
+          pnpm run build_backend
+        
       - name: Generate SSH key
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > ~/example.pem
@@ -21,8 +26,6 @@ jobs:
       - name: SSH into Ubuntu instance
         run: |
           ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new '
-          pwd
-          whoami
           cd dynotxt
           git pull origin production
           npm install
