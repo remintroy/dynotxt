@@ -1,0 +1,34 @@
+name: Deploy AdminClient to EC2
+
+on:
+  push:
+    branches:
+      - production
+    paths:
+      - "AdminClient/**"
+
+jobs:
+  deploy_admin_client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build Project
+        run: |
+          npm install
+          npm run bulid
+
+      - name: Generate SSH key
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/secret.pem
+          chmod 600 ~/secret.pem
+
+      - name: Copy build files to EC2
+        run: scp -o StrictHostKeyChecking=accept-new -i "~/secret.pem" -r AdminClient/dist/ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/adminclient/dist
+
+      - name: SSH to EC2 and restart Admin_client
+        run: |
+          ssh -i "~/secret.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
+          pm2 restart dynotxt_admin_client
+          '

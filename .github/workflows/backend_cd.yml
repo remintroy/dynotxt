@@ -1,39 +1,40 @@
-name: Deploy to EC2
+name: Deploy backend to EC2
 
 on:
   push:
     branches:
       - production
+    paths:
+      - "AuthServer/**"
+      - "BlogServer/**"
+      - "RealtimeServer/**"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-        
+
       - name: Building files
-        run: | 
+        run: |
           npm i pnpm -g
           pnpm i
           pnpm run build_backend
-          
+
       - name: Generate SSH key
         run: |
-          echo "${{ secrets.PRIVATE_KEY }}" > ~/example.pem
-          chmod 600 ~/example.pem
-          
+          echo "${{ secrets.PRIVATE_KEY }}" > ~/secret.pem
+          chmod 600 ~/secret.pem
+
       - name: Copy build files
         run: |
-          scp -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/authserver/build/index.js
-          scp -i "~/example.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/blogserver/build/index.js
-          scp -i "~/example.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/realtimeserver/build/index.js
-    
+          scp -o StrictHostKeyChecking=accept-new -i "~/secret.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/authserver/build/index.js
+          scp -i "~/secret.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/blogserver/build/index.js
+          scp -i "~/secret.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/realtimeserver/build/index.js
+
       - name: SSH into EC2 instance and restarting server
         run: |
-          ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
-          cd dynotxt_host
+          ssh -i "~/secret.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
           pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server 
           '
-            
