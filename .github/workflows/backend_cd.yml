@@ -22,7 +22,7 @@ jobs:
         run: |
           ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new
           pwd
-          echo pwd
+          whoami
           cd dynotxt
           git pull origin production
           npm install
