@@ -26,9 +26,7 @@ jobs:
           
       - name: Copy build files
         run: |
-          pwd
-          ls
-          scp  -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthSever/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/authserver
+          scp  -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/authserver
         
     
       - name: SSH into Ubuntu instance
