@@ -21,6 +21,8 @@ jobs:
       - name: SSH into Ubuntu instance
         run: |
           ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} -o StrictHostKeyChecking=accept-new
+          pwd
+          echo pwd
           cd dynotxt
           git pull origin production
           npm install
