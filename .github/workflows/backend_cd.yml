@@ -12,14 +12,18 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
+        
+      - name: Configure SSH Key
+        run: |
+          echo "$PRIVATE_KEY" > example.pem
+          chmod 600 example.pem
 
       - name: Deploy to EC2 Instance
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: |
-            ${{ secrets.PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/dynotxt
             git pull origin production
