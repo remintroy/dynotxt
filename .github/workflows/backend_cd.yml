@@ -26,11 +26,11 @@ jobs:
           
       - name: Copy build files
         run: |
-          scp -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/authserver/build
-          scp -i "~/example.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/blogserver/build
-          scp -i "~/example.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt_host/realtimeserver/build
+          scp -o StrictHostKeyChecking=accept-new -i "~/example.pem" AuthServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/authserver/build
+          scp -i "~/example.pem" BlogServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/blogserver/build
+          scp -i "~/example.pem" RealtimeServer/build/index.js ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:dynotxt/realtimeserver/build
     
-      - name: SSH into Ubuntu instance
+      - name: SSH into Ubuntu instance and restarting server
         run: |
           ssh -i "~/example.pem" ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} '
           cd dynotxt_host
