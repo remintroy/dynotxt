@@ -23,7 +23,8 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
+          key: |
+             ${{ secrets.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/dynotxt
             git pull origin production
