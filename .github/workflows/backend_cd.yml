@@ -13,15 +13,12 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Deploy to EC2 Instance
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          script: |
-            cd /home/ubuntu/dynotxt
-            git pull origin production
-            npm install
-            npm run build_backend
-            pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server
+      - name: SSH into Ubuntu instance
+        run: |
+          ssh -i ${{ secrets.PRIVATE_KEY }} ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "echo 'Hello, Ubuntu instance!'"
+          cd /home/ubuntu/dynotxt
+          git pull origin production
+          npm install
+          npm run build_backend
+          pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server
+            
