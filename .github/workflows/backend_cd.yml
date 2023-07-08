@@ -25,4 +25,4 @@ jobs:
             git pull origin production
             npm install
             npm run build_backend
-            pm2 restart 0 1 2
+            pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server
