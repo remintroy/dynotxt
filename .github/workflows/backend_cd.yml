@@ -13,11 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Configure SSH Key
-        run: |
-          echo "$PRIVATE_KEY" > example.pem
-          chmod 600 example.pem
-
       - name: Deploy to EC2 Instance
         uses: appleboy/ssh-action@master
         with:
