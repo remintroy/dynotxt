@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:alpine
 
 WORKDIR /app
 
@@ -8,11 +8,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
+ENV PORT=80
 
-ENV PORT=5001
-
-EXPOSE 5001
+EXPOSE 80
 
 CMD ["node","build/index.js"]
 
