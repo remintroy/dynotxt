@@ -14,7 +14,7 @@
     "build": "pnpm i && concurrently \"pnpm run pnpm_install_build_authserver\" \"pnpm run pnpm_install_build_blogserver\" \"pnpm run pnpm_install_build_realtimeserver\" \"pnpm run pnpm_install_build_commonservices\" \"pnpm run pnpm_install_build_adminclient\" \"pnpm run pnpm_install_build_userclient\"",
     "pnpm_run_authserver": "cd AuthServer && pnpm start",
     "pnpm_run_blogserver": "cd BlogServer && pnpm start",
-    "pnpm_run_realtimeserver": "cd Realtimeserver && pnpm start",
+    "pnpm_run_realtimeserver": "cd RealtimeServer && pnpm start",
     "pnpm_run_userclient": "cd UserClient && pnpm run dev",
     "pnpm_run_adminclient": "cd AdminClient && pnpm run dev",
     "client": "concurrently \"pnpm run pnpm_run_userclient\" \"pnpm run pnpm_run_adminclient\"",
