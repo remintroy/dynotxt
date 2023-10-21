@@ -39,7 +39,7 @@
     "morgan": "^1.10.0",
     "random-id": "^1.0.4",
     "validator": "^13.9.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.3"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.1",
