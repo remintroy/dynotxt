@@ -1,0 +1,43 @@
+name: Deploy authserver to EC2
+
+on:
+  push:
+    branches:
+      - production
+    # paths:
+    #   - "AuthServer/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Building files
+        run: |
+          cd AuthServer
+          npm i pnpm -g
+          pnpm i
+          pnpm run build
+
+      - name: Generate SSH key
+        run: |
+          echo "${{ secrets.AUTH_SERVER_PRIVATE_KEY }}" > ~/secret.pem
+          chmod 600 ~/secret.pem
+
+      - name: Updating envs in server
+        run: |
+          ssh -o StrictHostKeyChecking=accept-new  -i "~/secret.pem" ${{ secrets.AUTH_SERVER_EC2_USERNAME }}@${{ secrets.AUTH_SERVER_EC2_HOST }} '
+          mkdir -p dynotxt/authserver && mkdir -p dynotxt/authserver/keys && cd dynotxt/authserver && echo "${{ secrets.AUTH_SERVER_ENVS }}" > .env && cd keys && echo "${{ secrets.FIREBASE_ADMIN_KEY }}" > firebase.json
+          '
+
+      - name: Copy build files
+        run: |
+          scp -i "~/secret.pem" AuthServer/build/index.js ${{ secrets.AUTH_SERVER_EC2_USERNAME }}@${{ secrets.AUTH_SERVER_EC2_HOST }}:dynotxt/authserver/index.js
+
+    #   - name: SSH into EC2 instance and restarting server
+    #     run: |
+    #       ssh -i "~/secret.pem" ${{ secrets.AUTH_SERVER_EC2_USERNAME }}@${{ secrets.AUTH_SERVER_EC2_HOST }} '
+    #       pm2 restart dynotxt_auth_server dynotxt_blog_server dynotxt_real_server
+    #       '
