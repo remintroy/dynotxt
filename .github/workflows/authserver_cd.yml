@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - production
-    # paths:
-    #   - "AuthServer/**"
+    paths:
+      - "AuthServer/**"
 
 jobs:
   deploy:
