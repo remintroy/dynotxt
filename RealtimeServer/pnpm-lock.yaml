@@ -24,8 +24,8 @@ dependencies:
     specifier: ^7.5.2
     version: 7.5.2
   socket.io:
-    specifier: ^4.6.1
-    version: 4.6.1
+    specifier: ^4.6.2
+    version: 4.6.2
 
 devDependencies:
   '@types/amqplib':
@@ -1196,8 +1196,8 @@ packages:
       - supports-color
     dev: false
 
-  /socket.io@4.6.1:
-    resolution: {integrity: sha512-KMcaAi4l/8+xEjkRICl6ak8ySoxsYG+gG6/XfRCPJPQ/haCRIJBTL4wIl8YCsmtaBovcAXGLOShyVWQ/FG8GZA==}
+  /socket.io@4.6.2:
+    resolution: {integrity: sha512-Vp+lSks5k0dewYTfwgPT9UeGGd+ht7sCpB7p0e83VgO4X/AHYWhXITMrNk/pg8syY2bpx23ptClCQuHhqi2BgQ==}
     engines: {node: '>=10.0.0'}
     dependencies:
       accepts: 1.3.8
