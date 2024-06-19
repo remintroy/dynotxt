@@ -17,7 +17,7 @@
     "events": "^3.3.0",
     "express": "^4.19.2",
     "mongoose": "^7.5.2",
-    "socket.io": "^4.6.1"
+    "socket.io": "^4.6.2"
   },
   "devDependencies": {
     "@types/amqplib": "^0.10.1",
