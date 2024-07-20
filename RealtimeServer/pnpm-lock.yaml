@@ -682,8 +682,8 @@ packages:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
 
-  socket.io-adapter@2.5.2:
-    resolution: {integrity: sha512-87C3LO/NOMc+eMcpcxUBebGjkpMDkNBS9tf7KJqcDsmL936EChtVva71Dw2q4tQcuVC+hAUy4an2NO/sYXmwRA==}
+  socket.io-adapter@2.5.5:
+    resolution: {integrity: sha512-eLDQas5dzPgOWCk9GuuJC2lBqItuhKI4uxGgo9aIV7MYbk2h9Q6uULEh8WBzThoI7l+qU9Ast9fVUmkqPP9wYg==}
 
   socket.io-parser@4.2.4:
     resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
@@ -761,18 +761,6 @@ packages:
   whatwg-url@11.0.0:
     resolution: {integrity: sha512-RKT8HExMpoYx4igMiVMY83lN6UeITKJlBQ+vR/8ZJ8OCdSiN3RwCq+9gH0+Xzj0+5IrM6i4j/6LuvzbZIQgEcQ==}
     engines: {node: '>=12'}
-
-  ws@8.11.0:
-    resolution: {integrity: sha512-HPG3wQd9sNQoT9xHyNCXoDUa+Xw/VevmY9FoHyQ+g+rrMn4j6FB4np7Z0OhdTgjx6MgQLK7jwSy1YecU1+4Asg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
 
   ws@8.17.1:
     resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
@@ -1418,11 +1406,13 @@ snapshots:
 
   smart-buffer@4.2.0: {}
 
-  socket.io-adapter@2.5.2:
+  socket.io-adapter@2.5.5:
     dependencies:
-      ws: 8.11.0
+      debug: 4.3.4
+      ws: 8.17.1
     transitivePeerDependencies:
       - bufferutil
+      - supports-color
       - utf-8-validate
 
   socket.io-parser@4.2.4:
@@ -1439,7 +1429,7 @@ snapshots:
       cors: 2.8.5
       debug: 4.3.4
       engine.io: 6.5.5
-      socket.io-adapter: 2.5.2
+      socket.io-adapter: 2.5.5
       socket.io-parser: 4.2.4
     transitivePeerDependencies:
       - bufferutil
@@ -1504,8 +1494,6 @@ snapshots:
     dependencies:
       tr46: 3.0.0
       webidl-conversions: 7.0.0
-
-  ws@8.11.0: {}
 
   ws@8.17.1: {}
 
