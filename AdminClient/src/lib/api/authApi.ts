@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { logout, refresh } from "../redux/userSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://server.dynotxt.com/auth/su/api/v1/",
+  baseUrl: "https://server-dynotxt.remin.in/auth/su/api/v1/",
   credentials: "include",
   prepareHeaders(headers, api: any) {
     const token = api.getState().user.accessToken;

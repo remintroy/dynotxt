@@ -20,3 +20,5 @@ Dynotxt is a platform to write and publish your stories and articles. You can al
 ! Note - The code may not work as expected because the project is under development and will be updated soon.
 
 More documentation is coming. Stay tuned : )
+
+<p align="left"> <img src="https://komarev.com/ghpvc/?username=remintroy&label=Repo%20views&color=0e75b6&style=flat" alt="remintroy" /> </p>

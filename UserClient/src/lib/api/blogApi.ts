@@ -2,14 +2,14 @@ import { logout, refresh } from "../redux/slices/user";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://server.dynotxt.com/blog/api/v1",
+  baseUrl: "https://server-dynotxt.remin.in/blog/api/v1",
   credentials: "include",
   prepareHeaders: async (headers, api: any) => {
     const token = api.getState().user.accessToken;
     if (token) headers.set("Authorization", `Bearer ${token}`);
     else {
       try {
-        const response: any = await fetch("https://server.dynotxt.com/auth/api/v1/user_data", {
+        const response: any = await fetch("https://server-dynotxt.remin.in/auth/api/v1/user_data", {
           credentials: "include",
         });
         const data = await response.json();
@@ -25,7 +25,7 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => {
   let result = await baseQuery(args, apis, extraOptions);
   if (result?.error?.status === 401) {
-    const refreshResponse: any = await baseQuery("https://server.dynotxt.com/auth/api/v1/refresh", apis, extraOptions);
+    const refreshResponse: any = await baseQuery("https://server-dynotxt.remin.in/auth/api/v1/refresh", apis, extraOptions);
     if (refreshResponse?.data?.accessToken) {
       apis.dispatch(refresh(refreshResponse?.data?.accessToken));
       result = await baseQuery(args, apis, extraOptions);

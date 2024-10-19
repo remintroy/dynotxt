@@ -2,14 +2,14 @@ import { logout, refresh } from "../redux/userSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "https://server.dynotxt.com/blog/su/api/v1",
+  baseUrl: "https://server-dynotxt.remin.in/blog/su/api/v1",
   credentials: "include",
   prepareHeaders: async (headers, api: any) => {
     const token = api.getState().user.accessToken;
     if (token) headers.set("Authorization", `Bearer ${token}`);
     else {
       try {
-        const response: any = await fetch("https://server.dynotxt.com/auth/su/api/v1/user_data", {
+        const response: any = await fetch("https://server-dynotxt.remin.in/auth/su/api/v1/user_data", {
           credentials: "include",
         });
         const data = await response.json();
@@ -26,7 +26,7 @@ const baseQueryWithRefetch = async (args: any, apis: any, extraOptions: any) => 
   let result = await baseQuery(args, apis, extraOptions);
   if (result?.error?.status === 401) {
     const refreshResponse: any = await baseQuery(
-      "https://server.dynotxt.com/auth/su/api/v1/refresh",
+      "https://server-dynotxt.remin.in/auth/su/api/v1/refresh",
       apis,
       extraOptions
     );
