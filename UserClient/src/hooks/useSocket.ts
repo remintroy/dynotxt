@@ -8,7 +8,7 @@ const useSocketHook = () => {
   const dispatch = useAppDispatch();
 
   if (user) {
-    const server = io("server.dynotxt.com", {
+    const server = io("server-dynotxt.remin.in", {
       path: "/real/",
       auth: {
         uid: user?.uid,
