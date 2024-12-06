@@ -42,8 +42,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       mongoose:
-        specifier: ^7.5.0
-        version: 7.5.0
+        specifier: ^7.8.3
+        version: 7.8.3
       mongoose-paginate-v2:
         specifier: ^1.7.1
         version: 1.7.1
@@ -95,7 +95,7 @@ importers:
         version: 8.39.0
       eslint-config-airbnb-base:
         specifier: ^15.0.0
-        version: 15.0.0(eslint-plugin-import@2.27.5(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-typescript@3.5.5)(eslint@8.39.0))(eslint@8.39.0)
+        version: 15.0.0(eslint-plugin-import@2.27.5)(eslint@8.39.0)
       eslint-config-prettier:
         specifier: ^8.8.0
         version: 8.8.0(eslint@8.39.0)
@@ -1089,8 +1089,8 @@ packages:
   bser@2.1.1:
     resolution: {integrity: sha512-gQxTNE/GAfIIrmHLUE3oJyp5FO6HRBfhjnw4/wMmA63ZGDJnWBmgY/lyQBpnDUkGmAhbSe39tx2d/iTOAfglwQ==}
 
-  bson@5.4.0:
-    resolution: {integrity: sha512-WRZ5SQI5GfUuKnPTNmAYPiKIof3ORXAF4IRU5UcgmivNIon01rWQlw5RUH954dpu8yGL8T59YShVddIPaU/gFA==}
+  bson@5.5.1:
+    resolution: {integrity: sha512-ix0EwukN2EpC0SRWIj/7B5+A6uQMQy6KMREI9qQqvgpkV2frH63T0UDVd1SYedL6dNCmDBYB3QtXi4ISk9YT+g==}
     engines: {node: '>=14.20.1'}
 
   buffer-equal-constant-time@1.0.1:
@@ -2320,8 +2320,8 @@ packages:
   mongodb-connection-string-url@2.6.0:
     resolution: {integrity: sha512-WvTZlI9ab0QYtTYnuMLgobULWhokRjtC7db9LtcVfJ+Hsnyr5eo6ZtNAt3Ly24XZScGMelOcGtm7lSn0332tPQ==}
 
-  mongodb@5.8.1:
-    resolution: {integrity: sha512-wKyh4kZvm6NrCPH8AxyzXm3JBoEf4Xulo0aUWh3hCgwgYJxyQ1KLST86ZZaSWdj6/kxYUA3+YZuyADCE61CMSg==}
+  mongodb@5.9.2:
+    resolution: {integrity: sha512-H60HecKO4Bc+7dhOv4sJlgvenK4fQNqqUIlXxZYQNbfEWSALGAwGoyJd/0Qwk4TttFXUOHJ2ZJQe/52ScaUwtQ==}
     engines: {node: '>=14.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -2345,8 +2345,8 @@ packages:
     resolution: {integrity: sha512-J8DJw3zRXcXOKoZv+RvO9tt5HotRnbo2iCR3lke+TtsQsYwQvbY3EgUkPqZXw6qCX2IByvXrW5SGNdAB0od/Cw==}
     engines: {node: '>=4.0.0'}
 
-  mongoose@7.5.0:
-    resolution: {integrity: sha512-FpOWOb0AJuaVcplmEyIJ2eCbVGe4gOoniPD+pmft5BrGrNrsFcnYXlERdXtBApGHMHPwD7WbxTyhCbUNr72F3Q==}
+  mongoose@7.8.3:
+    resolution: {integrity: sha512-eFnbkKgyVrICoHB6tVJ4uLanS7d5AIo/xHkEbQeOv6g2sD7gh/1biRwvFifsmbtkIddQVNr3ROqHik6gkknN3g==}
     engines: {node: '>=14.20.1'}
 
   morgan@1.10.0:
@@ -4345,7 +4345,7 @@ snapshots:
     dependencies:
       node-int64: 0.4.0
 
-  bson@5.4.0: {}
+  bson@5.5.1: {}
 
   buffer-equal-constant-time@1.0.1: {}
 
@@ -4702,7 +4702,7 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-config-airbnb-base@15.0.0(eslint-plugin-import@2.27.5(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-typescript@3.5.5)(eslint@8.39.0))(eslint@8.39.0):
+  eslint-config-airbnb-base@15.0.0(eslint-plugin-import@2.27.5)(eslint@8.39.0):
     dependencies:
       confusing-browser-globals: 1.0.11
       eslint: 8.39.0
@@ -4728,7 +4728,7 @@ snapshots:
       debug: 4.3.4
       enhanced-resolve: 5.15.0
       eslint: 8.39.0
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-plugin-import@2.27.5)(eslint@8.39.0))(eslint@8.39.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.39.0)
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-typescript@3.5.5)(eslint@8.39.0)
       get-tsconfig: 4.6.2
       globby: 13.2.2
@@ -4741,7 +4741,7 @@ snapshots:
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.8.0(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-plugin-import@2.27.5)(eslint@8.39.0))(eslint@8.39.0):
+  eslint-module-utils@2.8.0(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.39.0):
     dependencies:
       debug: 3.2.7(supports-color@5.5.0)
     optionalDependencies:
@@ -4761,7 +4761,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.39.0
       eslint-import-resolver-node: 0.3.7
-      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-plugin-import@2.27.5)(eslint@8.39.0))(eslint@8.39.0)
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.59.0(eslint@8.39.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.5)(eslint@8.39.0)
       has: 1.0.3
       is-core-module: 2.12.1
       is-glob: 4.0.3
@@ -5939,9 +5939,9 @@ snapshots:
       '@types/whatwg-url': 8.2.2
       whatwg-url: 11.0.0
 
-  mongodb@5.8.1:
+  mongodb@5.9.2:
     dependencies:
-      bson: 5.4.0
+      bson: 5.5.1
       mongodb-connection-string-url: 2.6.0
       socks: 2.7.1
     optionalDependencies:
@@ -5949,11 +5949,11 @@ snapshots:
 
   mongoose-paginate-v2@1.7.1: {}
 
-  mongoose@7.5.0:
+  mongoose@7.8.3:
     dependencies:
-      bson: 5.4.0
+      bson: 5.5.1
       kareem: 2.5.1
-      mongodb: 5.8.1
+      mongodb: 5.9.2
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
